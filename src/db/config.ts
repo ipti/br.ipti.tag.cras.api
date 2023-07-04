@@ -1,13 +1,13 @@
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-    "cras-db",
-    "root",
-    "",
+    process.env.DATABASE_NAME,
+    process.env.DATABASE_USERNAME,
+    process.env.DATABASE_PASSWORD,
     {
-        host: "localhost",
+        host: process.env.DATABASE_URL,
         dialect: 'mariadb',
-        port: 3306
+        port: process.env.PORT
     }
 );
 
