@@ -1,28 +1,31 @@
 import express from "express";
 
-import database from "./db/config";
+import connection from "./db/config";
 
+import usersRoutes from "./modules/users/routes/routes";
+import authRoutes from "./modules/auth/routes/routes";
+// import { errors } from 'celebrate';
 
-(async () => {
-  // const database = require('./db/config');
+const app = express();
+// app.use(cors());
 
-  try {
-    const resultado = await database.sync();
-    console.log(resultado);
-  } catch (error) {
-    console.log(error);
-  }
-})();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-const app = express()
-const port = 3000
+// app.use(errors());
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use(usersRoutes);
+app.use(authRoutes);
 
-
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+connection
+  .sync()
+  .then(() => {
+    console.log("Database successfully connected");
+  })
+  .catch((err: any) => {
+    console.log("Error", err);
+  });
+app.listen(3000, () => {
+  console.log("Server started on port 3000");
+});

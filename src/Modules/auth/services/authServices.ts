@@ -1,0 +1,86 @@
+import { makeErrorMessage } from "../../util/errorServices";
+import { ErrorType } from "../../util/errorType";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+
+import { UserServices } from "../../users/services/userServices";
+
+
+export const AuthService = () => {
+
+    const validLogin = async (email: string, password: string) => {
+        const user = await UserServices().getUserByUserEmail(email);
+        if (!user) {
+            const error: ErrorType = makeErrorMessage("Username not found", 404);
+            throw error;
+        }
+        async function match(plainTextPassword: string, hashedPassword: string) {
+            if (!plainTextPassword || !hashedPassword) {
+                return false;
+            }
+
+            const isMatch = bcrypt.compareSync(plainTextPassword, hashedPassword);
+
+            if (isMatch) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        const passwordMatch = await match(password, user?.password);
+
+        if (!passwordMatch) {
+            const error: ErrorType = makeErrorMessage(
+                "Password is incorrect",
+                401
+            );
+            throw error;
+        }
+
+        user.password = "undefined";
+        const id = user.id;
+        const token = jwt.sign({ id }, "sercretkeyfortagapi", { expiresIn: "3h" });
+
+        return { token, id: id, auth: true };
+    };
+
+    async function verifyToken(authorization: Array<string>) {
+        const header = authorization;
+
+        if (header.length === 0) {
+            const error: ErrorType = makeErrorMessage("Token não encontrado", 401);
+            throw error;
+        }
+
+        function wrongFormat(type: string, token: string) {
+            if (!type || !token) {
+                return true;
+            }
+
+            return false;
+        }
+
+        const [type, token] = header;
+
+        if (wrongFormat(type, token)) {
+            const error: ErrorType = makeErrorMessage("Token mal formatado", 401);
+            throw error;
+        }
+
+        const decoded: any = jwt.verify(token, "sercretkeyfortagapi");
+
+        if (!decoded) {
+            const error: ErrorType = makeErrorMessage("Token mal formatado", 401);
+            throw error;
+        }
+
+        return decoded.id;
+    }
+
+    return {
+        validLogin,
+        verifyToken,
+    }
+}
+
