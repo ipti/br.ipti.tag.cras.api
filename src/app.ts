@@ -2,8 +2,8 @@ import express from "express";
 
 import connection from "./db/config";
 
-import usersRoutes from "./modules/users/routes/routes";
-import authRoutes from "./modules/auth/routes/routes";
+import usersRoutes from "./Modules/Users/routes/users.routes";
+import authRoutes from "./Modules/auth/routes/auth.routes";
 // import { errors } from 'celebrate';
 
 const app = express();

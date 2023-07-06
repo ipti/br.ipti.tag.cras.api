@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { AuthService } from "../services/authServices";
+import { AuthService } from "../services/auth.services";
 
 export const login: RequestHandler = async (req, res, next) => {
   try {
@@ -15,9 +15,10 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
   try {
     const authorization = req.headers.authorization;
     const token = authorization!.split(" ");
+    console.log(token)
     const decoded = await AuthService().verifyToken(token);
     Object.assign(req, { userId: decoded });
-    return next();
+    return "";
   } catch (err: any) {
     return res.status(err.code).json({ message: err.message });
   }

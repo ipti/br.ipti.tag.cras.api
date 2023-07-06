@@ -1,9 +1,9 @@
 const routes = require("express").Router();
 
 import { celebrate, Joi, Segments } from "celebrate";
-import { UserController } from "../controller";
 
-import { verifyToken } from "../../auth/controller"
+import { verifyToken } from "../../auth/controller/auth.controller"
+import { UserController } from "../controller/users.controller";
 
 routes.route("/user").post(
     celebrate({

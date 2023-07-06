@@ -1,9 +1,9 @@
-import { makeErrorMessage } from "../../util/errorServices";
-import { ErrorType } from "../../util/errorType";
+import { makeErrorMessage } from "../../../util/error.services";
+import { ErrorType } from "../../../util/error.type";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { UserServices } from "../../users/services/userServices";
+import { UserServices } from "../../Users/services/users.services";
 
 
 export const AuthService = () => {
@@ -45,10 +45,17 @@ export const AuthService = () => {
         return { token, id: id, auth: true };
     };
 
-    async function verifyToken(authorization: Array<string>) {
+    async function verifyToken(authorization: Array<string> | undefined) {
         const header = authorization;
 
-        if (header.length === 0) {
+        console.log(header)
+
+        if (header!.length === 0) {
+            const error: ErrorType = makeErrorMessage("Token não encontrado", 401);
+            throw error;
+        }
+
+        if(!header){
             const error: ErrorType = makeErrorMessage("Token não encontrado", 401);
             throw error;
         }

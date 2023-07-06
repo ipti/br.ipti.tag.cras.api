@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize'
 const dbName = "cras-db"
 const dbUser = "root"
 const dbHost = "localhost"
-const dbPassword = ""
+const dbPassword = "root"
 
 const sequelize = new Sequelize(
     dbName,

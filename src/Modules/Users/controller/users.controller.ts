@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { UserServices } from "../services/userServices";
+import { UserServices } from "../services/users.services";
 
 
 export const UserController = () => {

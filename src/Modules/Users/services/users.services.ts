@@ -1,7 +1,7 @@
 
-import Users from "../model/index";
-import { makeErrorMessage } from "../../util/errorServices";
-import { ErrorType } from "../../util/errorType";
+import Users from "../model/users.model";
+import { makeErrorMessage } from "../../../util/error.services";
+import { ErrorType } from "../../../util/error.type";
 
 
 export const UserServices = () => {

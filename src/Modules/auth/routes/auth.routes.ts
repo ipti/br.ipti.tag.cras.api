@@ -1,6 +1,6 @@
 const routes = require("express").Router();
 import { celebrate, Joi, Segments } from "celebrate";
-import { login } from "../controller/index";
+import { login } from "../controller/auth.controller";
 
 routes.route("/auth/login").post(
   celebrate({
