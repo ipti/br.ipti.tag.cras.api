@@ -2,14 +2,18 @@ import { makeErrorMessage } from "../../../util/error.services";
 import { ErrorType } from "../../../util/error.type";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-
+import { Knex } from "knex";
 import { UserServices } from "../../Users/services/users.services";
+import { UserAttributes } from "../../Users/model/users.model";
 
 
 export const AuthService = () => {
 
-    const validLogin = async (email: string, password: string) => {
-        const user = await UserServices().getUserByUserEmail(email);
+    const userServices = UserServices();
+
+    const validLogin = async (knex: Knex,email: string, password: string) => {
+
+        const user: any = await userServices.getUserByUserEmail(knex, email);
         if (!user) {
             const error: ErrorType = makeErrorMessage("Username not found", 404);
             throw error;

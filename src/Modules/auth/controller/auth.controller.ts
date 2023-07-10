@@ -2,9 +2,12 @@ import { RequestHandler } from "express";
 import { AuthService } from "../services/auth.services";
 
 export const login: RequestHandler = async (req, res, next) => {
+
+  const authServices = AuthService();
   try {
+    const knex = req.app.locals.knex;
     const { email, password } = req.body;
-    const token = await AuthService().validLogin(email, password);
+    const token = await authServices.validLogin(knex, email, password);
     return res.status(200).json({ message: "Login successfully", data: token });
   } catch (err: any) {
     return res.status(err.code).json({ message: err.message });

@@ -1,6 +1,7 @@
 const routes = require("express").Router();
 import { celebrate, Joi, Segments } from "celebrate";
 import { login } from "../controller/auth.controller";
+import ChangeDatabaseConnection from "../../../middlewares/changeDatabaseConnection";
 
 routes.route("/auth/login").post(
   celebrate({
@@ -9,6 +10,7 @@ routes.route("/auth/login").post(
       password: Joi.string().required(),
     }),
   }),
+  ChangeDatabaseConnection.changeDatabase,
   login
 );
 

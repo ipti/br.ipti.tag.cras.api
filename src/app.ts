@@ -18,14 +18,7 @@ app.use(express.json());
 app.use(usersRoutes);
 app.use(authRoutes);
 
-connection
-  .sync()
-  .then(() => {
-    console.log("Database successfully connected");
-  })
-  .catch((err: any) => {
-    console.log("Error", err);
-  });
+
 app.listen(3000, () => {
   console.log("Server started on port 3000");
 });

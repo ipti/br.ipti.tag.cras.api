@@ -4,6 +4,7 @@ import { celebrate, Joi, Segments } from "celebrate";
 
 import { verifyToken } from "../../auth/controller/auth.controller"
 import { UserController } from "../controller/users.controller";
+import ChangeDatabaseConnection from "../../../middlewares/changeDatabaseConnection";
 
 routes.route("/user").post(
     celebrate({
@@ -14,10 +15,11 @@ routes.route("/user").post(
             type_user: Joi.number().required(),
         }),
     }),
+    ChangeDatabaseConnection.changeDatabase,
     UserController().CreateUser
 );
 
-routes.route("/user").get(verifyToken, UserController().getAllUsers);
+routes.route("/user").get(ChangeDatabaseConnection.changeDatabase, UserController().getAllUsers);
 
 routes.route("/user/:id").get(
     celebrate({
@@ -25,6 +27,7 @@ routes.route("/user/:id").get(
             id: Joi.number().required(),
         }),
     }),
+    ChangeDatabaseConnection.changeDatabase,
     verifyToken,
     UserController().getUserById
 )
@@ -38,6 +41,7 @@ routes.route("/user/:id").put(
             type_user: Joi.number().required(),
         }),
     }),
+    ChangeDatabaseConnection.changeDatabase,
     verifyToken,
     UserController().updateUser
 )
@@ -48,6 +52,7 @@ routes.route("/user/:id").delete(
         id: Joi.number().required(),
       }),
     }),
+    ChangeDatabaseConnection.changeDatabase,
     verifyToken,
     UserController().deleteUser
   );
