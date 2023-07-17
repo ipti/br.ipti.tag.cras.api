@@ -1,53 +1,46 @@
-import knex, { Knex } from 'knex';
+import { Sequelize } from 'sequelize';
 
-const dbName = "cras-db"
-const dbUser = "root"
-const dbHost = "localhost"
-const dbPassword = "root"
+const dbName = 'cras-db';
+const dbUser = 'root';
+const dbHost = 'localhost';
+const dbPassword = 'root';
 
 class DbConnection {
-    private static _instance?: any;
-    private localConnection?: Knex;
+  private static _instance: DbConnection;
+  private localConnection?: Sequelize;
 
+  private constructor() {
+    this.localConnection = new Sequelize({
+      dialect: 'mariadb',
+      host: dbHost,
+      database: dbName,
+      username: dbUser,
+      password: dbPassword,
+    });
+  }
 
-    private constructor() {
-        this.localConnection = knex(
-            {
-                client: "mysql",
-                connection: {
-                    host: dbHost,
-                    user: dbUser,
-                    password: dbPassword,
-                    database: dbName
-                }
-            }
-        )
+  static getInstance(): DbConnection {
+    if (!DbConnection._instance) {
+      DbConnection._instance = new DbConnection();
     }
+    return DbConnection._instance;
+  }
 
-    static getInstance() {
-        if (!DbConnection._instance) {
-          DbConnection._instance = new DbConnection();
-        }
-        return this._instance;
-    }
+  setConnection(dbName: string): Sequelize {
+    this.localConnection = new Sequelize({
+      dialect: 'mariadb',
+      host: dbHost,
+      database: dbName,
+      username: dbUser,
+      password: dbPassword,
+    });
+    return this.localConnection!;
+  }
 
-    setConnection(dbName: string) {
-        this.localConnection = knex({
-          client: 'mysql',
-          connection: {
-            host: dbHost,
-            user: dbUser,
-            password: dbPassword,
-            database: dbName
-          }
-        })
-        return this.localConnection!;
-      }
-    
-      getConnection() {
-        return this.localConnection!;
-      }
+  getConnection(): Sequelize {
+    return this.localConnection!;
+  }
 }
 
-
+export const sequelize = DbConnection.getInstance().getConnection();
 export default DbConnection;

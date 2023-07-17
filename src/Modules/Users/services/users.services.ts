@@ -2,123 +2,73 @@
 import Users, { UserAttributes } from "../model/users.model";
 import { makeErrorMessage } from "../../../util/error.services";
 import { ErrorType } from "../../../util/error.type";
-import { Knex } from "knex";
-import { Request } from "express";
-
-
+import DbConnection from "../../../db/config";
 
 
 export const UserServices = () => {
 
-    const validUserToCreate = async (knex: Knex, body: UserAttributes) => {
-        const validUser = await getUserByUserEmail(knex, body.email);
+    const connection = DbConnection.getInstance().getConnection();
+
+    const validUserToCreate = async (body: UserAttributes) => {
+        const validUser = await getUserByUserEmail(body.email);
         if (validUser) {
             const error: ErrorType = makeErrorMessage(
-                "user already exists",
+                "Username already exists",
                 409
-                );
-                throw error;
-            }
-
-            const objection = await Users.query(knex)
-            .insert(body)
-            .catch((err: any) => {
-                const error: ErrorType = makeErrorMessage("Error creating user", 500);
-                throw error;
-            })
-            .finally(() => {
-                knex.destroy();
-            });
-            
-            console.log(objection)
-
-
-        return objection;
+            );
+            throw error;
+        }
+        const user = await Users(connection).create({ ...body });
+        return user;
     }
 
-    const getUserByUserEmail = async (knex: Knex, email: string) => {
-        const objection = await Users.query(knex)
-            .where({ email: email })
-            .then((res) => {
-                if (!res) {
-                    const error: ErrorType = makeErrorMessage("User not found", 404);
-                    throw error;
-                }
-                return res;
-            })
-            .finally(() => {
-                knex.destroy();
-            });
-        return objection[0];
+    const getUserByUserEmail = async (email: string) => {
+        const user: UserAttributes | null = await Users(connection).findOne({ where: { email } });
+        return user;
     };
 
 
 
-    const getUserById = async (knex: Knex, request: Request, id: string) => {
-        const query = request.query;
-        const objection = await Users.query(knex)
-            .findById(id)
-            .where(query)
-            .then((res) => {
-                if (!res) {
-                    const error: ErrorType = makeErrorMessage("User not found", 404);
-                    throw error;
-                }
-                return res;
-            })
-            .finally(() => {
-                knex.destroy();
-            });
-
-        return objection;
+    const getUserById = async (id: string) => {
+        const user: UserAttributes | null = await Users(connection).findByPk(id);
+        if (!user) {
+            const error: ErrorType = makeErrorMessage(
+                "User not found",
+                404
+            );
+            throw error;
+        }
+        return user;
     };
 
-    const getAllUsers = async (knex: Knex, request: Request) => {
-        const query = request.query;
-        const objection = (
-            await Users.query(knex)
-                .where(query)
-                .then((res) => {
-                    if (res.length === 0) {
-                        const error: ErrorType = makeErrorMessage("Users not found", 404);
-                        throw error;
-                    }
-                    return res;
-                }).finally(() => {
-                    knex.destroy();
-                }))
-
-        return objection;
+    const getAllUsers = async () => {
+        const allUsers: UserAttributes[] = await Users(connection).findAll();
+        if (allUsers.length === 0) {
+            const error: ErrorType = makeErrorMessage(
+                "No users found",
+                404
+            );
+            throw error;
+        }
+        return allUsers;
     };
 
-    const updateUser = async (knex: Knex, id: string, body: UserAttributes) => {
-
-        const objection = (
-            await Users.query(knex)
-                .updateAndFetchById(id, body)
-                .catch((err: any) => {
-                    const error: ErrorType = makeErrorMessage("User cannot be updated!", 401);
-                    throw error;
-                }).finally(() => {
-                    knex.destroy();
-                })
-        )
-        return objection;
+    const updateUser = async (id: string, body: UserAttributes) => {
+        await getUserById(id);
+        await Users(connection).update({ ...body }, { where: { id } });
+        const updatedUser: UserAttributes | null = await getUserById(id);
+        return updatedUser;
     };
 
-    const deleteUser = async (knex: Knex, id: string) => {
 
-        const objection = await Users.query(knex)
-            .deleteById(id).catch((err: any) => {
-                const error: ErrorType = makeErrorMessage("User cannot be deleted!", 401);
-                throw error;
-            }).finally(() => {
-                knex.destroy();
-            })
+
+    const deleteUser = async (id: string) => {
+        const deletedUser: UserAttributes | null = await Users(connection).findByPk(id);
+        await Users(connection).destroy({ where: { id } });
+        return deletedUser;
     };
 
     return {
         validUserToCreate, getAllUsers, updateUser, deleteUser, getUserById, getUserByUserEmail
     }
 }
-

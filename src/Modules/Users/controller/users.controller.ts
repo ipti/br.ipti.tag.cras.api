@@ -4,15 +4,10 @@ import { UserServices } from "../services/users.services";
 
 export const UserController = () => {
 
-    const userServices = UserServices() 
-
 
     const CreateUser: RequestHandler = async (req, res, next) => {
-        const knex = req.app.locals.knex;
-        console.log("euuu")
-
         try {
-            const user = await userServices.validUserToCreate(knex ,req.body);
+            const user = await UserServices().validUserToCreate(req.body);
             return res
                 .status(200)
                 .json({ message: "User created successfully", data: user });
@@ -22,10 +17,9 @@ export const UserController = () => {
     }
 
     const deleteUser: RequestHandler = async (req, res, next) => {
-        const knex = req.app.locals.knex;
         try {
             const { id } = req.params;
-            const deletedUser = await userServices.deleteUser(knex, id);
+            const deletedUser = await UserServices().deleteUser(id);
             return res
                 .status(200)
                 .json({ message: "User deleted successfully", data: deletedUser });
@@ -35,10 +29,8 @@ export const UserController = () => {
     };
 
     const getAllUsers: RequestHandler = async (req, res, next) => {
-
-        const knex = req.app.locals.knex;
         try {
-            const allUsers = await userServices.getAllUsers(knex, req);
+            const allUsers = await UserServices().getAllUsers();
             return res
                 .status(200)
                 .json({ message: "Users fetched successfully", data: allUsers });
@@ -48,11 +40,9 @@ export const UserController = () => {
     };
 
     const getUserById: RequestHandler = async (req, res, next) => {
-
-        const knex = req.app.locals.knex;
         try {
             const { id } = req.params;
-            const user = await userServices.getUserById(knex, req, id);
+            const user = await UserServices().getUserById(id);
             return res
                 .status(200)
                 .json({ message: "User fetched successfully", data: user });
@@ -62,10 +52,9 @@ export const UserController = () => {
     };
 
     const updateUser: RequestHandler = async (req, res, next) => {
-        const knex = req.app.locals.knex;
         try {
             const { id } = req.params;
-            const updatedUser = await userServices.updateUser(knex, id, req.body);
+            const updatedUser = await UserServices().updateUser(id, req.body);
             return res
                 .status(200)
                 .json({ message: "User updated successfully", data: updatedUser });
@@ -78,4 +67,3 @@ export const UserController = () => {
         CreateUser, updateUser, getUserById, getAllUsers, deleteUser
     }
 }
-

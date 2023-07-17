@@ -1,13 +1,12 @@
 import { RequestHandler } from "express";
 import { AuthService } from "../services/auth.services";
+import { makeErrorMessage } from "../../../util/error.services";
+import { ErrorType } from "../../../util/error.type";
 
 export const login: RequestHandler = async (req, res, next) => {
-
-  const authServices = AuthService();
   try {
-    const knex = req.app.locals.knex;
     const { email, password } = req.body;
-    const token = await authServices.validLogin(knex, email, password);
+    const token = await AuthService().validLogin(email, password);
     return res.status(200).json({ message: "Login successfully", data: token });
   } catch (err: any) {
     return res.status(err.code).json({ message: err.message });
@@ -16,12 +15,16 @@ export const login: RequestHandler = async (req, res, next) => {
 
 export const verifyToken: RequestHandler = async (req, res, next) => {
   try {
+    const authService = AuthService();
     const authorization = req.headers.authorization;
-    const token = authorization!.split(" ");
-    console.log(token)
-    const decoded = await AuthService().verifyToken(token);
+    const token = authorization?.split(" ");
+    if(token === undefined){
+      const error: ErrorType = makeErrorMessage("Token não encontrado", 401);
+      throw error;
+    }
+    const decoded = await authService.verifyToken(token);
     Object.assign(req, { userId: decoded });
-    return "";
+    return next();
   } catch (err: any) {
     return res.status(err.code).json({ message: err.message });
   }
