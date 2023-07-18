@@ -1,8 +1,8 @@
 
+import DbConnection from "../../../db/config";
 import { makeErrorMessage } from "../../../util/error.services";
 import { ErrorType } from "../../../util/error.type";
-import DbConnection from "../../../db/config";
-import CustomServices, { CustomServicesAttributes } from "../model/customservices.model";
+import Service, { CustomServicesAttributes } from "../model/customservices.model";
 
 
 export const CustomServicesServices = () => {
@@ -10,7 +10,8 @@ export const CustomServicesServices = () => {
     const connection = DbConnection.getInstance().getConnection();
 
     const validCustomSevicesToCreate = async (body: CustomServicesAttributes) => {
-        const services = await CustomServices(connection).create({ ...body });
+        console.log(body)
+        const services = await Service.create({ ...body });
         return services;
     }
 
@@ -22,7 +23,7 @@ export const CustomServicesServices = () => {
 
 
     const getCustomSevicesById = async (id: string) => {
-        const user: CustomServicesAttributes | null = await CustomServices(connection).findByPk(id);
+        const user: CustomServicesAttributes | null = await Service.findByPk(id);
         if (!user) {
             const error: ErrorType = makeErrorMessage(
                 "User not found",
@@ -34,7 +35,7 @@ export const CustomServicesServices = () => {
     };
 
     const getAllCustomSevices = async () => {
-        const allServices: CustomServicesAttributes[] = await CustomServices(connection).findAll();
+        const allServices: CustomServicesAttributes[] = await Service.findAll();
         if (allServices.length === 0) {
             const error: ErrorType = makeErrorMessage(
                 "No users found",
@@ -47,7 +48,7 @@ export const CustomServicesServices = () => {
 
     const updateCustomServices = async (id: string, body: CustomServicesAttributes) => {
         await getCustomSevicesById(id);
-        await CustomServices(connection).update({ ...body }, { where: { id } });
+        await Service.update({ ...body }, { where: { id } });
         const updatedUser: CustomServicesAttributes | null = await getCustomSevicesById(id);
         return updatedUser;
     };
@@ -55,8 +56,8 @@ export const CustomServicesServices = () => {
 
 
     const deleteCustomServices = async (id: string) => {
-        const deletedUser: CustomServicesAttributes | null = await CustomServices(connection).findByPk(id);
-        await CustomServices(connection).destroy({ where: { id } });
+        const deletedUser: CustomServicesAttributes | null = await Service.findByPk(id);
+        await Service.destroy({ where: { id } });
         return deletedUser;
     };
 

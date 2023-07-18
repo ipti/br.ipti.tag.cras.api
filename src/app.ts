@@ -1,10 +1,10 @@
 import express from "express";
 
-import { sequelize } from "./db/config";
+import DbConnection, { sequelize } from "./db/config";
 
 import usersRoutes from "./Modules/Users/routes/users.routes";
 import authRoutes from "./Modules/auth/routes/auth.routes";
-import customServices from "./Modules/customServices/routes/customservices.routes"
+import customServices from "./Modules/customServices/routes/customservices.routes";
 // import { errors } from 'celebrate';
 
 const app = express();
@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(usersRoutes);
 app.use(authRoutes);
 app.use(customServices);
+
+const connection = DbConnection.getInstance().getConnection();
 
 sequelize
   .sync()

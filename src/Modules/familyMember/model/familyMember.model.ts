@@ -3,34 +3,36 @@ import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 import { sequelize } from '../../../db/config';
 
 
-export interface UserAttributes {
+export interface FamilyMemberAttributes {
     id: number;
-    email: string
     name: string;
-    password: string;
-    type_user: number;
+    age: number;
+    nis: string;
+    sex: number;
+    kinship: string;
+    loas_bpc: string;
+    family_scholarship: string;
+    social_security: string;
+    monthly_income: string;
 }
 
-export interface UserInput extends Optional<UserAttributes, "id"> { }
-export interface UserOuput extends Required<UserAttributes> { }
+export interface FamilyMemberInput extends Optional<FamilyMemberAttributes, "id"> { }
+export interface FamilyMemberOuput extends Required<FamilyMemberAttributes> { }
 
-class User extends Model<UserAttributes, UserInput> implements UserAttributes {
+class FamilyMember extends Model<FamilyMemberAttributes, FamilyMemberInput> implements FamilyMemberAttributes {
     id!: number;
     name!: string;
-    email!: string;
-    password!: string;
-    type_user!: number;
-
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-
-    public async comparePassword(password: string): Promise<boolean> {
-        return bcrypt.compare(password, this.password);
-    }
+    age!: number;
+    nis!: string;
+    sex!: number;
+    kinship!: string;
+    loas_bpc!: string;
+    family_scholarship!: string;
+    social_security!: string;
+    monthly_income!: string; 
 }
 
-User.init(
+FamilyMember.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -59,7 +61,7 @@ User.init(
     },
     {
         sequelize: sequelize,
-        tableName: "users",
+        tableName: "family_member",
         timestamps: true,
         paranoid: true,
         createdAt: true,
@@ -69,13 +71,10 @@ User.init(
 
 
 
-User.beforeCreate(async (user) => {
-    const hashedPassword = await bcrypt.hashSync(user.password, 10);
-    user.password = hashedPassword;
-});
 
 
 
 
 
-export default User;
+
+export default FamilyMember;

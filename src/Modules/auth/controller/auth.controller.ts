@@ -9,7 +9,7 @@ export const login: RequestHandler = async (req, res, next) => {
     const token = await AuthService().validLogin(email, password);
     return res.status(200).json({ message: "Login successfully", data: token });
   } catch (err: any) {
-    return res.status(err.code).json({ message: err.message });
+    return res.status(500).json({ message:"ERRO" });
   }
 };
 

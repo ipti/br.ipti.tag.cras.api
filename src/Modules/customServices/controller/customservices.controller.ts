@@ -12,6 +12,7 @@ export const CustomServicesController = () => {
                 .status(200)
                 .json({ message: "Services created successfully", data: services });
         } catch (err: any) {
+            console.log(err)
             return res.status(err.code).json({ message: err.message });
         }
     }

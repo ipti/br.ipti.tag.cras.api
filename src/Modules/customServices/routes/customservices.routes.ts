@@ -11,11 +11,11 @@ routes.route("/service").post(
         [Segments.BODY]: Joi.object().keys({
             request: Joi.string().required(),
             result: Joi.string().required(),
-            password: Joi.string().required(),
+            arrangements: Joi.string().required(),
             service: Joi.number().required(),
             responsible_technician: Joi.number().required(),
             user_or_family_members: Joi.number().required(),
-
+            date_service: Joi.date().required()
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
@@ -37,12 +37,13 @@ routes.route("/service/:id").get(
 routes.route("/service/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            request: Joi.string(),
-            result: Joi.string(),
-            password: Joi.string(),
-            service: Joi.number(),
-            responsible_technician: Joi.number(),
-            user_or_family_members: Joi.number(),
+            request: Joi.string().required(),
+            result: Joi.string().required(),
+            arrangements: Joi.string().required(),
+            service: Joi.number().required(),
+            responsible_technician: Joi.number().required(),
+            user_or_family_members: Joi.number().required(),
+            date_service: Joi.date().required()
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
