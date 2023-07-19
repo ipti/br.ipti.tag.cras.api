@@ -63,7 +63,17 @@ User.init(
         timestamps: true,
         paranoid: true,
         createdAt: true,
-        updatedAt: 'updateTimestamp'
+        updatedAt: 'updateTimestamp',
+        indexes: [
+            {
+              name: "PRIMARY",
+              unique: true,
+              using: "BTREE",
+              fields: [
+                { name: "id" },
+              ]
+            },
+          ]
     }
 );
 

@@ -16,6 +16,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.3.3",
     "@types/sequelize": "^4.28.15",
+    "sequelize-auto": "^0.8.8",
     "typescript": "^5.1.6"
   },
   "dependencies": {
@@ -28,7 +29,7 @@
     "knex": "^2.5.0",
     "mariadb": "^3.2.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.4.4",
+    "mysql2": "^3.5.2",
     "objection": "^3.0.4",
     "sequelize": "^6.32.1"
   }
