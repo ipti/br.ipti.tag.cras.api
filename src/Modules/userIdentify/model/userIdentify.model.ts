@@ -1,11 +1,11 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { atendimentos, atendimentosId } from './atendimentos';
-import type { control_attendance, control_attendanceId } from './control_attendance';
-import type { endereco, enderecoId } from './endereco';
-import type { membro_familiar, membro_familiarId } from './membro_familiar';
-import type { situacao_financeira, situacao_financeiraId } from './situacao_financeira';
-import type { vulnerabilidade, vulnerabilidadeId } from './vulnerabilidade';
+import { endereco, enderecoId } from '../../address/model/address.model';
+import { atendimentos, atendimentosId } from '../../customServices/model/customservices.model';
+import { control_attendance, control_attendanceId } from '../../controlAttendance/model/controlAttendance.model';
+import { membro_familiar, membro_familiarId } from '../../familyMember/model/familyMember.model';
+import { situacao_financeira, situacao_financeiraId } from '../../financialSituation/model/financialsSituation.model';
+import { vulnerabilidade, vulnerabilidadeId } from '../../vulnerability/model/vulnerability.model';
 
 export interface identificacao_usuarioAttributes {
   id: number;

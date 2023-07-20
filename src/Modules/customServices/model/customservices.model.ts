@@ -1,85 +1,106 @@
-import { DataTypes, Model, Optional, Sequelize } from "sequelize";
-import { sequelize } from "../../../db/config";
+import * as Sequelize from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
+import { identificacao_usuario, identificacao_usuarioId } from '../../userIdentify/model/userIdentify.model';
 
-export interface CustomServicesAttributes {
-    id: number;
-    date_service: Date;
-    service: number;
-    request: string;
-    arrangements: string;
-    result: string;
-    responsible_technician: number;
-    user_or_family_members: number;
+export interface atendimentosAttributes {
+  id: number;
+  servico: string;
+  solicitacao: string;
+  encaminhamento: string;
+  resultado: string;
+  tecnico: string;
+  id_identificacao_usuario: number;
+  id_membro_familiar: number;
+  data: string;
 }
 
-export interface ServicesInput extends Optional<CustomServicesAttributes, "id"> { }
-export interface ServicesOuput extends Required<CustomServicesAttributes> { }
+export type atendimentosPk = "id";
+export type atendimentosId = atendimentos[atendimentosPk];
+export type atendimentosOptionalAttributes = "id";
+export type atendimentosCreationAttributes = Optional<atendimentosAttributes, atendimentosOptionalAttributes>;
 
-class Service extends Model<CustomServicesAttributes, ServicesInput> implements CustomServicesAttributes {
-    id!: number;
-    date_service!: Date;
-    service!: number;
-    request!: string;
-    arrangements!: string;
-    result!: string;
-    responsible_technician!: number;
-    user_or_family_members!: number;
+export class atendimentos extends Model<atendimentosAttributes, atendimentosCreationAttributes> implements atendimentosAttributes {
+  id!: number;
+  servico!: string;
+  solicitacao!: string;
+  encaminhamento!: string;
+  resultado!: string;
+  tecnico!: string;
+  id_identificacao_usuario!: number;
+  id_membro_familiar!: number;
+  data!: string;
 
+  // atendimentos belongsTo identificacao_usuario via id_identificacao_usuario
+  id_identificacao_usuario_identificacao_usuario!: identificacao_usuario;
+  getId_identificacao_usuario_identificacao_usuario!: Sequelize.BelongsToGetAssociationMixin<identificacao_usuario>;
+  setId_identificacao_usuario_identificacao_usuario!: Sequelize.BelongsToSetAssociationMixin<identificacao_usuario, identificacao_usuarioId>;
+  createId_identificacao_usuario_identificacao_usuario!: Sequelize.BelongsToCreateAssociationMixin<identificacao_usuario>;
 
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-
+  static initModel(sequelize: Sequelize.Sequelize): typeof atendimentos {
+    return atendimentos.init({
+    id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    servico: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
+    solicitacao: {
+      type: DataTypes.STRING(250),
+      allowNull: false
+    },
+    encaminhamento: {
+      type: DataTypes.STRING(250),
+      allowNull: false
+    },
+    resultado: {
+      type: DataTypes.STRING(250),
+      allowNull: false
+    },
+    tecnico: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
+    id_identificacao_usuario: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'identificacao_usuario',
+        key: 'id'
+      }
+    },
+    id_membro_familiar: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    data: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    }
+  }, {
+    sequelize,
+    tableName: 'atendimentos',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "atendimentos_FK",
+        using: "BTREE",
+        fields: [
+          { name: "id_identificacao_usuario" },
+        ]
+      },
+    ]
+  });
+  }
 }
-
-Service.init(
-        {
-            id: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                autoIncrement: true,
-                primaryKey: true,
-                allowNull: false,
-                unique: true,
-            },
-            request: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            arrangements: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true
-            },
-            result: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            service: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            responsible_technician: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            user_or_family_members: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            date_service: {
-                type: DataTypes.DATE,
-                allowNull: false
-            }
-        },
-        {
-            sequelize: sequelize,
-            tableName: "services",
-            timestamps: true,
-            paranoid: true,
-            createdAt: true,
-            updatedAt: 'updateTimestamp'
-        }
-    );
-
-
-
-export default Service;

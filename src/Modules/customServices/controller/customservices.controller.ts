@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { CustomServicesServices } from "../services/customservices.services";
+import { AtendimentosServices } from "../services/customservices.services";
 
 
 export const CustomServicesController = () => {
@@ -7,7 +7,7 @@ export const CustomServicesController = () => {
 
     const CreateCustomServices: RequestHandler = async (req, res, next) => {
         try {
-            const services = await CustomServicesServices().validCustomSevicesToCreate(req.body);
+            const services = await AtendimentosServices().validCustomSevicesToCreate(req.body);
             return res
                 .status(200)
                 .json({ message: "Services created successfully", data: services });
@@ -20,7 +20,7 @@ export const CustomServicesController = () => {
     const deleteCustomServices: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const deletedCustomServices = await CustomServicesServices().deleteCustomServices(id);
+            const deletedCustomServices = await AtendimentosServices().deleteCustomServices(id);
             return res
                 .status(200)
                 .json({ message: "Service deleted successfully", data: deletedCustomServices });
@@ -31,7 +31,7 @@ export const CustomServicesController = () => {
 
     const getAllCustomServices: RequestHandler = async (req, res, next) => {
         try {
-            const allCustomServices = await CustomServicesServices().getAllCustomSevices();
+            const allCustomServices = await AtendimentosServices().getAllCustomSevices();
             return res
                 .status(200)
                 .json({ message: "Services fetched successfully", data: allCustomServices });
@@ -43,7 +43,7 @@ export const CustomServicesController = () => {
     const getCustomServicesById: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const service = await CustomServicesServices().getCustomSevicesById(id);
+            const service = await AtendimentosServices().getCustomSevicesById(id);
             return res
                 .status(200)
                 .json({ message: "User fetched successfully", data: service });
@@ -55,7 +55,7 @@ export const CustomServicesController = () => {
     const updateCustomServices: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const updatedCustomServices = await CustomServicesServices().updateCustomServices(id, req.body);
+            const updatedCustomServices = await AtendimentosServices().updateCustomServices(id, req.body);
             return res
                 .status(200)
                 .json({ message: "Services updated successfully", data: updatedCustomServices });
