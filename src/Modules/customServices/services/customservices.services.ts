@@ -10,7 +10,6 @@ export const AtendimentosServices = () => {
     const connection = DbConnection.getInstance().getConnection();
 
     const validCustomSevicesToCreate = async (body: atendimentosAttributes) => {
-        console.log(body)
         const services = await atendimentos.create({ ...body });
         return services;
     }

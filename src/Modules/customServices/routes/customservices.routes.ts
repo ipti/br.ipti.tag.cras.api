@@ -4,25 +4,28 @@ import { celebrate, Joi, Segments } from "celebrate";
 
 import ChangeDatabaseConnection from "../../../middlewares/changeDatabaseConnection";
 import { CustomServicesController } from "../controller/customservices.controller";
+import { verifyToken } from "../../auth/controller/auth.controller";
 
 
 routes.route("/service").post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            request: Joi.string().required(),
-            result: Joi.string().required(),
-            arrangements: Joi.string().required(),
-            service: Joi.number().required(),
-            responsible_technician: Joi.number().required(),
-            user_or_family_members: Joi.number().required(),
-            date_service: Joi.date().required()
+            solicitacao: Joi.string().required(),
+            resultado: Joi.string().required(),
+            encaminhamento: Joi.string().required(),
+            servico: Joi.string().required(),
+            tecnico: Joi.string().required(),
+            id_identificacao_usuario: Joi.number(),
+            id_membro_familiar: Joi.number(),
+            data: Joi.string().required()
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     CustomServicesController().CreateCustomServices
 );
 
-routes.route("/service").get(ChangeDatabaseConnection.changeDatabase, CustomServicesController().getAllCustomServices);
+routes.route("/service").get(ChangeDatabaseConnection.changeDatabase, verifyToken, CustomServicesController().getAllCustomServices);
 
 routes.route("/service/:id").get(
     celebrate({
@@ -31,22 +34,25 @@ routes.route("/service/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     CustomServicesController().getCustomServicesById
 )
 
 routes.route("/service/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            request: Joi.string().required(),
-            result: Joi.string().required(),
-            arrangements: Joi.string().required(),
-            service: Joi.number().required(),
-            responsible_technician: Joi.number().required(),
-            user_or_family_members: Joi.number().required(),
-            date_service: Joi.date().required()
+            solicitacao: Joi.string().required(),
+            resultado: Joi.string().required(),
+            encaminhamento: Joi.string().required(),
+            servico: Joi.string().required(),
+            tecnico: Joi.string().required(),
+            id_identificacao_usuario: Joi.number(),
+            id_membro_familiar: Joi.number(),
+            data: Joi.string().required()
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     CustomServicesController().updateCustomServices
 )
 
@@ -57,6 +63,7 @@ routes.route("/service/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     CustomServicesController().deleteCustomServices
 );
 

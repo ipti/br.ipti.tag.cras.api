@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
-import { TypeServicesServices } from "../services/typeServices.services";
+import { UserIdentifyServices } from "../services/userIdentify.model";
 
 
-export const TypeServicesController = () => {
+export const UserIdentifyController = () => {
 
 
-    const CreateTypeServices: RequestHandler = async (req, res, next) => {
+    const CreateUserIdentify: RequestHandler = async (req, res, next) => {
         try {
-            const user = await TypeServicesServices().validTypeServicesToCreate(req.body);
+            const user = await UserIdentifyServices().validUserIdentifyToCreate(req.body);
             return res
                 .status(200)
                 .json({ message: "User created successfully", data: user });
@@ -16,10 +16,10 @@ export const TypeServicesController = () => {
         }
     }
 
-    const deleteTypeServices: RequestHandler = async (req, res, next) => {
+    const deleteUserIdentify: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const deletedUser = await TypeServicesServices().deleteTypeServices(id);
+            const deletedUser = await UserIdentifyServices().deleteUserIdentify(id);
             return res
                 .status(200)
                 .json({ message: "User deleted successfully", data: deletedUser });
@@ -28,9 +28,9 @@ export const TypeServicesController = () => {
         }
     };
 
-    const getAllTypeServices: RequestHandler = async (req, res, next) => {
+    const getAllUserIdentify: RequestHandler = async (req, res, next) => {
         try {
-            const allUsers = await TypeServicesServices().getAllTypeServices();
+            const allUsers = await UserIdentifyServices().getAllUserIdentify();
             return res
                 .status(200)
                 .json({ message: "Users fetched successfully", data: allUsers });
@@ -39,10 +39,10 @@ export const TypeServicesController = () => {
         }
     };
 
-    const getTypeServicesById: RequestHandler = async (req, res, next) => {
+    const getUserIdentifyById: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const user = await TypeServicesServices().getTypeServicesById(id);
+            const user = await UserIdentifyServices().getUserIdentifyById(id);
             return res
                 .status(200)
                 .json({ message: "User fetched successfully", data: user });
@@ -51,10 +51,10 @@ export const TypeServicesController = () => {
         }
     };
 
-    const updateTypeServices: RequestHandler = async (req, res, next) => {
+    const updateUserIdentify: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
-            const updatedUser = await TypeServicesServices().updateTypeServices(id, req.body);
+            const updatedUser = await UserIdentifyServices().updateUserIdentify(id, req.body);
             return res
                 .status(200)
                 .json({ message: "User updated successfully", data: updatedUser });
@@ -64,6 +64,6 @@ export const TypeServicesController = () => {
     };
 
     return {
-        CreateTypeServices, updateTypeServices, getTypeServicesById, getAllTypeServices, deleteTypeServices
+        CreateUserIdentify, updateUserIdentify, getUserIdentifyById, getAllUserIdentify, deleteUserIdentify
     }
 }

@@ -11,7 +11,6 @@ export const TechnicianServices = () => {
 
     const validTechnicianToCreate = async (body: tecnicoAttributes) => {
 
-        // console.log(connection)
         const validUser = await getTechnicianByName(body.name);
         if (validUser) {
             const error: ErrorType = makeErrorMessage(

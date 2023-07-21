@@ -114,150 +114,156 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
   createId_vulnerabilidade_vulnerabilidade!: Sequelize.BelongsToCreateAssociationMixin<vulnerabilidade>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof identificacao_usuario {
-    return identificacao_usuario.init({
-    id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
-    id_endereco: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'endereco',
-        key: 'id'
+
+    const model = identificacao_usuario.init({
+      id: {
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true
       },
-      unique: "Identification_person_ibfk_1"
-    },
-    id_situacao_financeira: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'situacao_financeira',
-        key: 'id'
+      id_endereco: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'endereco',
+          key: 'id'
+        },
+        unique: "Identification_person_ibfk_1"
       },
-      unique: "Identification_person_ibfk_5"
-    },
-    id_vulnerabilidade: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'vulnerabilidade',
-        key: 'id'
+      id_situacao_financeira: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'situacao_financeira',
+          key: 'id'
+        },
+        unique: "Identification_person_ibfk_5"
       },
-      unique: "Identification_person_ibfk_3"
-    },
-    nome: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    apelido: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    data_nascimento: {
-      type: DataTypes.DATEONLY,
-      allowNull: true
-    },
-    certidao_nascimento: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    NIS: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    numero_rg: {
-      type: DataTypes.STRING(11),
-      allowNull: true
-    },
-    data_emissao_rg: {
-      type: DataTypes.DATEONLY,
-      allowNull: true
-    },
-    uf_rg: {
-      type: DataTypes.STRING(2),
-      allowNull: true
-    },
-    emissao_rg: {
-      type: DataTypes.STRING(11),
-      allowNull: true
-    },
-    cpf: {
-      type: DataTypes.STRING(11),
-      allowNull: false
-    },
-    deficiente: {
-      type: DataTypes.STRING(1),
-      allowNull: false
-    },
-    deficiencia: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    mae: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    pai: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    estado_civil: {
-      type: DataTypes.STRING(20),
-      allowNull: false
-    },
-    escolaridade: {
-      type: DataTypes.STRING(1),
-      allowNull: false
-    },
-    data_inicial: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    data_final: {
-      type: DataTypes.DATEONLY,
-      allowNull: true
-    }
-  }, {
-    sequelize,
-    tableName: 'identificacao_usuario',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "id" },
-        ]
+      id_vulnerabilidade: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'vulnerabilidade',
+          key: 'id'
+        },
+        unique: "Identification_person_ibfk_3"
       },
-      {
-        name: "id_address",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "id_endereco" },
-        ]
+      nome: {
+        type: DataTypes.STRING(255),
+        allowNull: false
       },
-      {
-        name: "id_situationFinancial",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "id_situacao_financeira" },
-        ]
+      apelido: {
+        type: DataTypes.STRING(255),
+        allowNull: false
       },
-      {
-        name: "id_Vulnerabilities",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "id_vulnerabilidade" },
-        ]
+      data_nascimento: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
       },
-    ]
-  });
+      certidao_nascimento: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      NIS: {
+        type: DataTypes.BIGINT,
+        allowNull: true
+      },
+      numero_rg: {
+        type: DataTypes.STRING(11),
+        allowNull: true
+      },
+      data_emissao_rg: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+      },
+      uf_rg: {
+        type: DataTypes.STRING(2),
+        allowNull: true
+      },
+      emissao_rg: {
+        type: DataTypes.STRING(11),
+        allowNull: true
+      },
+      cpf: {
+        type: DataTypes.STRING(11),
+        allowNull: false
+      },
+      deficiente: {
+        type: DataTypes.STRING(1),
+        allowNull: false
+      },
+      deficiencia: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      mae: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      pai: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      estado_civil: {
+        type: DataTypes.STRING(20),
+        allowNull: false
+      },
+      escolaridade: {
+        type: DataTypes.STRING(1),
+        allowNull: false
+      },
+      data_inicial: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+      },
+      data_final: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+      }
+    }, {
+      sequelize,
+      tableName: 'identificacao_usuario',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            { name: "id" },
+          ]
+        },
+        {
+          name: "id_address",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            { name: "id_endereco" },
+          ]
+        },
+        {
+          name: "id_situationFinancial",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            { name: "id_situacao_financeira" },
+          ]
+        },
+        {
+          name: "id_Vulnerabilities",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            { name: "id_vulnerabilidade" },
+          ]
+        },
+      ]
+    });
+
+   
+
+    return model;
   }
+
 }

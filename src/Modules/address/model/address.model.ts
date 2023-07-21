@@ -35,55 +35,65 @@ export class endereco extends Model<enderecoAttributes, enderecoCreationAttribut
   createIdentificacao_usuario!: Sequelize.HasOneCreateAssociationMixin<identificacao_usuario>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof endereco {
-    return endereco.init({
-    id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
-    endereco: {
-      type: DataTypes.STRING(250),
-      allowNull: false
-    },
-    telefone: {
-      type: DataTypes.STRING(20),
-      allowNull: false
-    },
-    ponto_referencia: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    condicoes_moradia: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    tipo_construcao: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    comodos: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    valor_aluguel: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    }
-  }, {
-    sequelize,
-    tableName: 'endereco',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "id" },
-        ]
+
+    const model = endereco.init({
+      id: {
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true
       },
-    ]
-  });
+      endereco: {
+        type: DataTypes.STRING(250),
+        allowNull: false
+      },
+      telefone: {
+        type: DataTypes.STRING(20),
+        allowNull: false
+      },
+      ponto_referencia: {
+        type: DataTypes.STRING(200),
+        allowNull: false
+      },
+      condicoes_moradia: {
+        type: DataTypes.STRING(200),
+        allowNull: false
+      },
+      tipo_construcao: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+      },
+      comodos: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+      },
+      valor_aluguel: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+      }
+    }, {
+      sequelize,
+      tableName: 'endereco',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            { name: "id" },
+          ]
+        },
+      ]
+    });
+
+    endereco.initModel(sequelize)
+
+    endereco.hasOne(identificacao_usuario, {
+      as: "identificacao_usuario",
+      foreignKey: "id_endereco",
+      sourceKey: "id"
+    });
+    return model;
   }
 }

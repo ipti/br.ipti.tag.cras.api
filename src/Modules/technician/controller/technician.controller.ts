@@ -2,10 +2,10 @@ import { RequestHandler } from "express";
 import { TechnicianServices } from "../services/technician.services";
 
 
-export const UserController = () => {
+export const TechnicianController = () => {
 
 
-    const CreateUser: RequestHandler = async (req, res, next) => {
+    const CreateTechnician: RequestHandler = async (req, res, next) => {
         try {
             const user = await TechnicianServices().validTechnicianToCreate(req.body);
             return res
@@ -16,7 +16,7 @@ export const UserController = () => {
         }
     }
 
-    const deleteUser: RequestHandler = async (req, res, next) => {
+    const deleteTechnician: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
             const deletedUser = await TechnicianServices().deleteTechnician(id);
@@ -28,7 +28,7 @@ export const UserController = () => {
         }
     };
 
-    const getAllUsers: RequestHandler = async (req, res, next) => {
+    const getAllTechnician: RequestHandler = async (req, res, next) => {
         try {
             const allUsers = await TechnicianServices().getAllTechnician();
             return res
@@ -39,7 +39,7 @@ export const UserController = () => {
         }
     };
 
-    const getUserById: RequestHandler = async (req, res, next) => {
+    const getTechnicianById: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
             const user = await TechnicianServices().getTechnicianById(id);
@@ -51,7 +51,7 @@ export const UserController = () => {
         }
     };
 
-    const updateUser: RequestHandler = async (req, res, next) => {
+    const updateTechnician: RequestHandler = async (req, res, next) => {
         try {
             const { id } = req.params;
             const updatedUser = await TechnicianServices().updateTechnician(id, req.body);
@@ -64,6 +64,6 @@ export const UserController = () => {
     };
 
     return {
-        CreateUser, updateUser, getUserById, getAllUsers, deleteUser
+        CreateTechnician, updateTechnician, getTechnicianById, getAllTechnician, deleteTechnician
     }
 }

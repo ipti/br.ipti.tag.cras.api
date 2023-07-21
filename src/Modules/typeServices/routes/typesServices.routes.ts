@@ -3,25 +3,23 @@ const routes = require("express").Router();
 import { celebrate, Joi, Segments } from "celebrate";
 
 import ChangeDatabaseConnection from "../../../middlewares/changeDatabaseConnection";
-import { UserController } from "../controller/users.controller";
+import { TypeServicesController } from "../controller/typeServices.controller";
 import { verifyToken } from "../../auth/controller/auth.controller";
 
-routes.route("/user").post(
+routes.route("/typesServices").post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
             name: Joi.string().required(),
-            email: Joi.string().required().email(),
-            password: Joi.string().required(),
-            type_user: Joi.number().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    UserController().CreateUser
+    verifyToken,
+    TypeServicesController().CreateTypeServices
 );
 
-routes.route("/user").get(ChangeDatabaseConnection.changeDatabase, verifyToken, UserController().getAllUsers);
+routes.route("/typesServices").get(ChangeDatabaseConnection.changeDatabase, verifyToken,TypeServicesController().getAllTypeServices);
 
-routes.route("/user/:id").get(
+routes.route("/typesServices/:id").get(
     celebrate({
         [Segments.PARAMS]: Joi.object().keys({
             id: Joi.number().required(),
@@ -29,24 +27,21 @@ routes.route("/user/:id").get(
     }),
     ChangeDatabaseConnection.changeDatabase,
     verifyToken,
-    UserController().getUserById
+    TypeServicesController().getTypeServicesById
 )
 
-routes.route("/user/:id").put(
+routes.route("/typesServices/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
             name: Joi.string().required(),
-            email: Joi.string().required().email(),
-            password: Joi.string().required(),
-            type_user: Joi.number().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
     verifyToken,
-    UserController().updateUser
+    TypeServicesController().updateTypeServices
 )
 
-routes.route("/user/:id").delete(
+routes.route("/typesServices/:id").delete(
     celebrate({
         [Segments.PARAMS]: Joi.object().keys({
             id: Joi.number().required(),
@@ -54,7 +49,7 @@ routes.route("/user/:id").delete(
     }),
     ChangeDatabaseConnection.changeDatabase,
     verifyToken,
-    UserController().deleteUser
+    TypeServicesController().deleteTypeServices
 );
 
 export default routes;
