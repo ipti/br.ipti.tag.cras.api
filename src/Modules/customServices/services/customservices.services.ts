@@ -40,7 +40,7 @@ export const AtendimentosServices = () => {
                 "No users found",
                 404
             );
-            throw error;
+            return []
         }
         return allServices;
     };

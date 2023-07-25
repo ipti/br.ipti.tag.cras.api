@@ -21,11 +21,10 @@ routes.route("/service").post(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     CustomServicesController().CreateCustomServices
 );
 
-routes.route("/service").get(ChangeDatabaseConnection.changeDatabase, verifyToken, CustomServicesController().getAllCustomServices);
+routes.route("/service").get(ChangeDatabaseConnection.changeDatabase, CustomServicesController().getAllCustomServices);
 
 routes.route("/service/:id").get(
     celebrate({
@@ -34,7 +33,6 @@ routes.route("/service/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     CustomServicesController().getCustomServicesById
 )
 
@@ -52,7 +50,7 @@ routes.route("/service/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
+
     CustomServicesController().updateCustomServices
 )
 
@@ -63,7 +61,6 @@ routes.route("/service/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     CustomServicesController().deleteCustomServices
 );
 

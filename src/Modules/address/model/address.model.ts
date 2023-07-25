@@ -87,13 +87,13 @@ export class endereco extends Model<enderecoAttributes, enderecoCreationAttribut
       ]
     });
 
-    endereco.initModel(sequelize)
+    // endereco.initModel(sequelize)
 
-    endereco.hasOne(identificacao_usuario, {
-      as: "identificacao_usuario",
-      foreignKey: "id_endereco",
-      sourceKey: "id"
-    });
+    // endereco.hasOne(identificacao_usuario, {
+    //   as: "identificacao_usuario",
+    //   foreignKey: "id_endereco",
+    //   sourceKey: "id"
+    // });
     return model;
   }
 }

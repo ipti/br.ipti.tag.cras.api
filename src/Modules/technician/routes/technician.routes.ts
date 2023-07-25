@@ -13,11 +13,10 @@ routes.route("/technician").post(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TechnicianController().CreateTechnician
 );
 
-routes.route("/technician").get(ChangeDatabaseConnection.changeDatabase, verifyToken, TechnicianController().getAllTechnician);
+routes.route("/technician").get(ChangeDatabaseConnection.changeDatabase, TechnicianController().getAllTechnician);
 
 routes.route("/technician/:id").get(
     celebrate({
@@ -26,7 +25,6 @@ routes.route("/technician/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TechnicianController().getTechnicianById
 )
 
@@ -37,7 +35,6 @@ routes.route("/technician/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TechnicianController().updateTechnician
 )
 
@@ -48,7 +45,6 @@ routes.route("/technician/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TechnicianController().deleteTechnician
 );
 

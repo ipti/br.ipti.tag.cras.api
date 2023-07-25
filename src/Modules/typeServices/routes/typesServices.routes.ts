@@ -13,11 +13,10 @@ routes.route("/typesServices").post(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TypeServicesController().CreateTypeServices
 );
 
-routes.route("/typesServices").get(ChangeDatabaseConnection.changeDatabase, verifyToken,TypeServicesController().getAllTypeServices);
+routes.route("/typesServices").get(ChangeDatabaseConnection.changeDatabase, TypeServicesController().getAllTypeServices);
 
 routes.route("/typesServices/:id").get(
     celebrate({
@@ -26,7 +25,6 @@ routes.route("/typesServices/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TypeServicesController().getTypeServicesById
 )
 
@@ -37,7 +35,6 @@ routes.route("/typesServices/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TypeServicesController().updateTypeServices
 )
 
@@ -48,7 +45,6 @@ routes.route("/typesServices/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     TypeServicesController().deleteTypeServices
 );
 

@@ -11,15 +11,7 @@ export const TypeServicesServices = () => {
 
     const validTypeServicesToCreate = async (body: servicoAttributes) => {
 
-        // console.log(connection)
-        const validUser = await getTypeServicesByName(body.name);
-        if (validUser) {
-            const error: ErrorType = makeErrorMessage(
-                "Username already exists",
-                409
-            );
-            throw error;
-        }
+        
         const user = await servico.create({ ...body });
         return user;
     }

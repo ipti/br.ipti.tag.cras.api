@@ -19,7 +19,7 @@ routes.route("/user").post(
     UserController().CreateUser
 );
 
-routes.route("/user").get(ChangeDatabaseConnection.changeDatabase, verifyToken, UserController().getAllUsers);
+routes.route("/user").get(ChangeDatabaseConnection.changeDatabase,UserController().getAllUsers);
 
 routes.route("/user/:id").get(
     celebrate({
@@ -28,7 +28,6 @@ routes.route("/user/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserController().getUserById
 )
 
@@ -42,7 +41,6 @@ routes.route("/user/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserController().updateUser
 )
 
@@ -53,7 +51,6 @@ routes.route("/user/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserController().deleteUser
 );
 

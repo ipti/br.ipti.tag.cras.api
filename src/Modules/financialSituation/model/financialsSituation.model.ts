@@ -87,12 +87,12 @@ export class situacao_financeira extends Model<situacao_financeiraAttributes, si
       ]
     });
 
-    situacao_financeira.initModel(sequelize)
-    situacao_financeira.hasMany(identificacao_usuario, {
-      as: "identificacao_usuario",
-      foreignKey: "id_situacao_financeira",
-      sourceKey: "id"
-    });
+    // situacao_financeira.initModel(sequelize)
+    // situacao_financeira.hasMany(identificacao_usuario, {
+    //   as: "identificacao_usuario",
+    //   foreignKey: "id_situacao_financeira",
+    //   sourceKey: "id"
+    // });
 
     return model
   }
