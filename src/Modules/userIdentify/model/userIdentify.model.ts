@@ -14,6 +14,9 @@ export interface identificacao_usuarioAttributes {
   id_vulnerabilidade: number;
   nome: string;
   apelido: string;
+  pasta?: string;
+  arquivo?: string;
+  nº?: string;
   data_nascimento?: string;
   certidao_nascimento?: number;
   NIS?: number;
@@ -47,6 +50,9 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
   data_nascimento?: string;
   certidao_nascimento?: number;
   NIS?: number;
+  pasta?: string;
+  arquivo?: string;
+  nº?: string;
   numero_rg?: string;
   data_emissao_rg?: string;
   uf_rg?: string;
@@ -154,6 +160,18 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
         allowNull: false
       },
       apelido: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      pasta: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      arquivo: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      nº: {
         type: DataTypes.STRING(255),
         allowNull: false
       },

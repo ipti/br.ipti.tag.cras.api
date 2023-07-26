@@ -14,6 +14,9 @@ interface IdendifyAttributs {
     nome: string;
     apelido: string;
     data_nascimento?: string;
+    pasta?: string;
+    arquivo?: string;
+    nº?: string;
     certidao_nascimento?: number;
     NIS?: number;
     numero_rg?: string;
@@ -114,6 +117,9 @@ export const UserIdentifyServices = () => {
                     id_endereco: address.id,
                     id_situacao_financeira: financialSituation.id,
                     id_vulnerabilidade: vulnerability.id,
+                    pasta: body.pasta,
+                    arquivo: body.arquivo,
+                    nº: body.nº,
                     nome: body.nome,
                     apelido: body.apelido,
                     data_nascimento: body.data_nascimento,
