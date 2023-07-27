@@ -25,8 +25,8 @@ routes.route("/userIdentify").post(
             pai: Joi.string().required(),
             estado_civil: Joi.string().required(),
             escolaridade: Joi.string().required(),
-            data_inicial: Joi.string().required(),
-            data_final: Joi.string().required(),
+            data_inicial: Joi.string(),
+            data_final: Joi.string(),
             ocupacao_irregular: Joi.number(),
             crianca_sozinha: Joi.number().required(),
             idosos_dependentes: Joi.number().required(),
@@ -50,19 +50,18 @@ routes.route("/userIdentify").post(
             bolsaFamilia: Joi.number(),
             endereco: Joi.string().required(),
             telefone: Joi.string().required(),
-            ponto_referencia: Joi.string().required(),
-            condicoes_moradia: Joi.string().required(),
-            tipo_construcao: Joi.string().required(),
+            ponto_referencia: Joi.string(),
+            condicoes_moradia: Joi.string(),
+            tipo_construcao: Joi.string(),
             comodos: Joi.string().required(),
             valor_aluguel: Joi.number(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserIdentifyController().CreateUserIdentify
 );
 
-routes.route("/userIdentify").get(ChangeDatabaseConnection.changeDatabase, verifyToken, UserIdentifyController().getAllUserIdentify);
+routes.route("/userIdentify").get(ChangeDatabaseConnection.changeDatabase, UserIdentifyController().getAllUserIdentify);
 
 routes.route("/userIdentify/:id").get(
     celebrate({
@@ -71,7 +70,6 @@ routes.route("/userIdentify/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserIdentifyController().getUserIdentifyById
 )
 
@@ -127,7 +125,6 @@ routes.route("/userIdentify/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserIdentifyController().updateUserIdentify
 )
 
@@ -138,7 +135,6 @@ routes.route("/userIdentify/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
-    verifyToken,
     UserIdentifyController().deleteUserIdentify
 );
 

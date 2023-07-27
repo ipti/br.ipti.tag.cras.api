@@ -166,10 +166,7 @@ export const UserIdentifyServices = () => {
 
 
     const getUserIdentifyById = async (id: string) => {
-        const user: any = await identificacao_usuario.findByPk(id, {
-            include:
-                [vulnerabilidade, endereco, situacao_financeira]
-        });
+        const user: any = await identificacao_usuario.findByPk(id);
         if (!user) {
             const error: ErrorType = makeErrorMessage(
                 "User not found",
@@ -183,10 +180,7 @@ export const UserIdentifyServices = () => {
     };
 
     const getAllUserIdentify = async () => {
-        const allUsers: any[] = await identificacao_usuario.findAll({
-            include:
-                [vulnerabilidade, endereco, situacao_financeira]
-        });
+        const allUsers: any[] = await identificacao_usuario.findAll();
         if (allUsers.length === 0) {
             const error: ErrorType = makeErrorMessage(
                 "No users found",
