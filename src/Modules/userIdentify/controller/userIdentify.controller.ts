@@ -12,7 +12,8 @@ export const UserIdentifyController = () => {
                 .status(200)
                 .json({ message: "User created successfully", data: user });
         } catch (err: any) {
-            return res.status(500).json({ message: "euu" });
+            console.log(err.code)
+            return res.status(err.code).json({ message: err.message });
         }
     }
 
