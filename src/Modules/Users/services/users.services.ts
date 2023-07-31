@@ -34,11 +34,12 @@ export const UserServices = () => {
     const getUserById = async (id: string) => {
         const user: UserAttributes | null = await User.findByPk(id);
         if (!user) {
-            const error: ErrorType = makeErrorMessage(
-                "User not found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "User not found",
+            //     404
+            // );
+            // throw error;
+            return [];
         }
         return user;
     };
@@ -46,11 +47,12 @@ export const UserServices = () => {
     const getAllUsers = async () => {
         const allUsers: UserAttributes[] = await User.findAll();
         if (allUsers.length === 0) {
-            const error: ErrorType = makeErrorMessage(
-                "No users found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "No users found",
+            //     404
+            // );
+            // throw error;
+            return []
         }
         return allUsers;
     };
@@ -58,7 +60,7 @@ export const UserServices = () => {
     const updateUser = async (id: string, body: UserAttributes) => {
         await getUserById(id);
         await User.update({ ...body }, { where: { id } });
-        const updatedUser: UserAttributes | null = await getUserById(id);
+        const updatedUser: UserAttributes | never[] = await getUserById(id);
         return updatedUser;
     };
 

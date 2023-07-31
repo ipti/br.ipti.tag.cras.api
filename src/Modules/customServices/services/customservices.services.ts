@@ -24,11 +24,12 @@ export const AtendimentosServices = () => {
     const getCustomSevicesById = async (id: string) => {
         const user: atendimentosAttributes | null = await atendimentos.findByPk(id);
         if (!user) {
-            const error: ErrorType = makeErrorMessage(
-                "User not found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "User not found",
+            //     404
+            // );
+            // throw error;
+            return [];
         }
         return user;
     };
@@ -36,10 +37,10 @@ export const AtendimentosServices = () => {
     const getAllCustomSevices = async () => {
         const allServices: atendimentosAttributes[] = await atendimentos.findAll();
         if (allServices.length === 0) {
-            const error: ErrorType = makeErrorMessage(
-                "No users found",
-                404
-            );
+            // const error: ErrorType = makeErrorMessage(
+            //     "No users found",
+            //     404
+            // );
             return []
         }
         return allServices;
@@ -48,7 +49,7 @@ export const AtendimentosServices = () => {
     const updateCustomServices = async (id: string, body: atendimentosAttributes) => {
         await getCustomSevicesById(id);
         await atendimentos.update({ ...body }, { where: { id } });
-        const updatedUser: atendimentosAttributes | null = await getCustomSevicesById(id);
+        const updatedUser: atendimentosAttributes | never[] = await getCustomSevicesById(id);
         return updatedUser;
     };
 

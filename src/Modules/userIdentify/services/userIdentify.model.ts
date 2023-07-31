@@ -168,11 +168,12 @@ export const UserIdentifyServices = () => {
     const getUserIdentifyById = async (id: string) => {
         const user: any = await identificacao_usuario.findByPk(id);
         if (!user) {
-            const error: ErrorType = makeErrorMessage(
-                "User not found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "User not found",
+            //     404
+            // );
+            // throw error;
+            return []
         }
 
 
@@ -182,11 +183,12 @@ export const UserIdentifyServices = () => {
     const getAllUserIdentify = async () => {
         const allUsers: any[] = await identificacao_usuario.findAll();
         if (allUsers.length === 0) {
-            const error: ErrorType = makeErrorMessage(
-                "No users found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "No users found",
+            //     404
+            // );
+            // throw error;
+            return []
         }
         return allUsers;
     };

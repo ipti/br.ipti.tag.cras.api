@@ -33,11 +33,12 @@ export const TechnicianServices = () => {
     const getTechnicianById = async (id: string) => {
         const user: tecnicoAttributes | null = await tecnico.findByPk(id);
         if (!user) {
-            const error: ErrorType = makeErrorMessage(
-                "User not found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "User not found",
+            //     404
+            // );
+            // throw error; 
+            return [];
         }
         return user;
     };
@@ -45,11 +46,13 @@ export const TechnicianServices = () => {
     const getAllTechnician = async () => {
         const allUsers: tecnicoAttributes[] = await tecnico.findAll();
         if (allUsers.length === 0) {
-            const error: ErrorType = makeErrorMessage(
-                "No users found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "No users found",
+            //     404
+            // );
+            // throw error;
+
+            return []
         }
         return allUsers;
     };
@@ -57,7 +60,7 @@ export const TechnicianServices = () => {
     const updateTechnician = async (id: string, body: tecnicoAttributes) => {
         await getTechnicianById(id);
         await tecnico.update({ ...body }, { where: { id } });
-        const updatedUser: tecnicoAttributes | null = await getTechnicianById(id);
+        const updatedUser: tecnicoAttributes | never[] = await getTechnicianById(id);
         return updatedUser;
     };
 

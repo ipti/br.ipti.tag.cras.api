@@ -26,11 +26,12 @@ export const TypeServicesServices = () => {
     const getTypeServicesById = async (id: string) => {
         const user: servicoAttributes | null = await servico.findByPk(id);
         if (!user) {
-            const error: ErrorType = makeErrorMessage(
-                "User not found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "User not found",
+            //     404
+            // );
+            // throw error;
+            return []
         }
         return user;
     };
@@ -38,11 +39,12 @@ export const TypeServicesServices = () => {
     const getAllTypeServices = async () => {
         const allUsers: servicoAttributes[] = await servico.findAll();
         if (allUsers.length === 0) {
-            const error: ErrorType = makeErrorMessage(
-                "No users found",
-                404
-            );
-            throw error;
+            // const error: ErrorType = makeErrorMessage(
+            //     "No users found",
+            //     404
+            // );
+            // throw error;
+            return [];
         }
         return allUsers;
     };
@@ -50,7 +52,7 @@ export const TypeServicesServices = () => {
     const updateTypeServices = async (id: string, body: servicoAttributes) => {
         await getTypeServicesById(id);
         await servico.update({ ...body }, { where: { id } });
-        const updatedUser: servicoAttributes | null = await getTypeServicesById(id);
+        const updatedUser: servicoAttributes | never[] = await getTypeServicesById(id);
         return updatedUser;
     };
 
