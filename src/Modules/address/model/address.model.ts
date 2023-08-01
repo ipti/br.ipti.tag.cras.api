@@ -53,7 +53,7 @@ export class endereco extends Model<enderecoAttributes, enderecoCreationAttribut
       },
       ponto_referencia: {
         type: DataTypes.STRING(200),
-        allowNull: false
+        allowNull: true
       },
       condicoes_moradia: {
         type: DataTypes.STRING(200),

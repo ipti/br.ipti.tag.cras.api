@@ -69,7 +69,7 @@ export class membro_familiar extends Model<membro_familiarAttributes, membro_fam
       allowNull: false
     },
     sexo: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.STRING(10),
       allowNull: false
     },
     nis: {

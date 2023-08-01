@@ -154,6 +154,12 @@ export const UserIdentifyServices = () => {
             // If the execution reaches this line, an error occurred.
             // The transaction has already been rolled back automatically by Sequelize!
 
+            const err: ErrorType = makeErrorMessage(
+                `${error}`,
+                404
+            );
+            throw err;
+            console.log(error)
         }
         // return result;
     }

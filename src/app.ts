@@ -9,6 +9,7 @@ import customServices from "./Modules/customServices/routes/customservices.route
 import userIdentify from "./Modules/userIdentify/routes/userIdentify.routes";
 import technician from "./Modules/technician/routes/technician.routes";
 import typesServices from "./Modules/typeServices/routes/typesServices.routes";
+import familyMemberRoutes from "./Modules/familyMember/routes/familyMember.routes";
 
 
 import { servico } from "./Modules/typeServices/model/typeServices.model";
@@ -37,6 +38,7 @@ app.use(customServices);
 app.use(userIdentify);
 app.use(technician);
 app.use(typesServices);
+app.use(familyMemberRoutes)
 
 const connection = DbConnection.getInstance().getConnection();
 

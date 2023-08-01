@@ -208,12 +208,12 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
         allowNull: false
       },
       deficiente: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(3),
         allowNull: false
       },
       deficiencia: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
       },
       mae: {
         type: DataTypes.STRING(255),
@@ -228,7 +228,7 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
         allowNull: false
       },
       escolaridade: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(20),
         allowNull: false
       },
       data_inicial: {
