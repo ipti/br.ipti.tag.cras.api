@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface servicoAttributes {
   id: number;
-  name: string;
+  nome: string;
 }
 
 export type servicoPk = "id";
@@ -13,7 +13,7 @@ export type servicoCreationAttributes = Optional<servicoAttributes, servicoOptio
 
 export class servico extends Model<servicoAttributes, servicoCreationAttributes> implements servicoAttributes {
   id!: number;
-  name!: string;
+  nome!: string;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof servico {
@@ -24,7 +24,7 @@ export class servico extends Model<servicoAttributes, servicoCreationAttributes>
       allowNull: false,
       primaryKey: true
     },
-    name: {
+    nome: {
       type: DataTypes.STRING(200),
       allowNull: false
     }

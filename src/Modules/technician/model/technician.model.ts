@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface tecnicoAttributes {
   id: number;
-  name: string;
+  nome: string;
 }
 
 export type tecnicoPk = "id";
@@ -13,7 +13,7 @@ export type tecnicoCreationAttributes = Optional<tecnicoAttributes, tecnicoOptio
 
 export class tecnico extends Model<tecnicoAttributes, tecnicoCreationAttributes> implements tecnicoAttributes {
   id!: number;
-  name!: string;
+  nome!: string;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tecnico {
@@ -24,7 +24,7 @@ export class tecnico extends Model<tecnicoAttributes, tecnicoCreationAttributes>
       allowNull: false,
       primaryKey: true
     },
-    name: {
+    nome: {
       type: DataTypes.STRING(200),
       allowNull: false
     }

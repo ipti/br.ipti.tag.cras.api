@@ -9,14 +9,15 @@ import { verifyToken } from "../../auth/controller/auth.controller";
 routes.route("/typesServices").post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            name: Joi.string().required(),
+            nome: Joi.string().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     TypeServicesController().CreateTypeServices
 );
 
-routes.route("/typesServices").get(ChangeDatabaseConnection.changeDatabase, TypeServicesController().getAllTypeServices);
+routes.route("/typesServices").get(ChangeDatabaseConnection.changeDatabase, verifyToken, TypeServicesController().getAllTypeServices);
 
 routes.route("/typesServices/:id").get(
     celebrate({
@@ -25,16 +26,18 @@ routes.route("/typesServices/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     TypeServicesController().getTypeServicesById
 )
 
 routes.route("/typesServices/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            name: Joi.string().required(),
+            nome: Joi.string().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     TypeServicesController().updateTypeServices
 )
 
@@ -45,6 +48,7 @@ routes.route("/typesServices/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     TypeServicesController().deleteTypeServices
 );
 

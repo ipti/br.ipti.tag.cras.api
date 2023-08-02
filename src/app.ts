@@ -21,7 +21,14 @@ import { situacao_financeira } from "./Modules/financialSituation/model/financia
 import { vulnerabilidade } from "./Modules/vulnerability/model/vulnerability.model";
 import { identificacao_usuario } from "./Modules/userIdentify/model/userIdentify.model";
 import { endereco } from "./Modules/address/model/address.model";
+import { exit } from "process";
 // import { errors } from 'celebrate';
+
+console.error(process.env.dbName);
+
+
+
+const connection = DbConnection.getInstance().getConnection();
 
 const app = express();
 app.use(cors());
@@ -40,7 +47,6 @@ app.use(technician);
 app.use(typesServices);
 app.use(familyMemberRoutes)
 
-const connection = DbConnection.getInstance().getConnection();
 
 servico.initModel(connection);
 tecnico.initModel(connection);

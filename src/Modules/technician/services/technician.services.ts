@@ -11,7 +11,7 @@ export const TechnicianServices = () => {
 
     const validTechnicianToCreate = async (body: tecnicoAttributes) => {
 
-        const validUser = await getTechnicianByName(body.name);
+        const validUser = await getTechnicianByName(body.nome);
         if (validUser) {
             const error: ErrorType = makeErrorMessage(
                 "Username already exists",
@@ -23,8 +23,8 @@ export const TechnicianServices = () => {
         return user;
     }
 
-    const getTechnicianByName = async (name: string) => {
-        const user: tecnicoAttributes | null = await tecnico.findOne({ where: { name } });
+    const getTechnicianByName = async (nome: string) => {
+        const user: tecnicoAttributes | null = await tecnico.findOne({ where: { nome } });
         return user;
     };
 

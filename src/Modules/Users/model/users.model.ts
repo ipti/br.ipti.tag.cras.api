@@ -6,7 +6,7 @@ import { sequelize } from '../../../db/config';
 export interface UserAttributes {
     id: number;
     email: string
-    name: string;
+    nome: string;
     password: string;
     type_user: number;
 }
@@ -16,7 +16,7 @@ export interface UserOuput extends Required<UserAttributes> { }
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
     id!: number;
-    name!: string;
+    nome!: string;
     email!: string;
     password!: string;
     type_user!: number;
@@ -39,7 +39,7 @@ User.init(
             allowNull: false,
             unique: true,
         },
-        name: {
+        nome: {
             type: DataTypes.STRING,
             allowNull: false,
         },

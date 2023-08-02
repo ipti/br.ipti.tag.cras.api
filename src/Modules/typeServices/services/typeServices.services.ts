@@ -16,8 +16,8 @@ export const TypeServicesServices = () => {
         return user;
     }
 
-    const getTypeServicesByName = async (name: string) => {
-        const user: servicoAttributes | null = await servico.findOne({ where: { name } });
+    const getTypeServicesByName = async (nome: string) => {
+        const user: servicoAttributes | null = await servico.findOne({ where: { nome } });
         return user;
     };
 

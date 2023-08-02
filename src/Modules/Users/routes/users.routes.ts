@@ -9,7 +9,7 @@ import { verifyToken } from "../../auth/controller/auth.controller";
 routes.route("/user").post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            name: Joi.string().required(),
+            nome: Joi.string().required(),
             email: Joi.string().required().email(),
             password: Joi.string().required(),
             type_user: Joi.number().required(),
@@ -19,7 +19,8 @@ routes.route("/user").post(
     UserController().CreateUser
 );
 
-routes.route("/user").get(ChangeDatabaseConnection.changeDatabase,UserController().getAllUsers);
+routes.route("/user").get(ChangeDatabaseConnection.changeDatabase, verifyToken,
+    UserController().getAllUsers);
 
 routes.route("/user/:id").get(
     celebrate({
@@ -28,19 +29,21 @@ routes.route("/user/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserController().getUserById
 )
 
 routes.route("/user/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            name: Joi.string().required(),
+            nome: Joi.string().required(),
             email: Joi.string().required().email(),
             password: Joi.string().required(),
             type_user: Joi.number().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserController().updateUser
 )
 
@@ -51,6 +54,7 @@ routes.route("/user/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserController().deleteUser
 );
 

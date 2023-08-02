@@ -22,10 +22,11 @@ routes.route("/familymember").post(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     FamilyMemberController().CreateFamilyMember
 );
 
-routes.route("/familymember").get(ChangeDatabaseConnection.changeDatabase, FamilyMemberController().getAllFamilyMember);
+routes.route("/familymember").get(ChangeDatabaseConnection.changeDatabase, verifyToken, FamilyMemberController().getAllFamilyMember);
 
 routes.route("/familymember/:id").get(
     celebrate({
@@ -43,16 +44,18 @@ routes.route("/familymember/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     FamilyMemberController().getFamilyMemberById
 )
 
 routes.route("/familymember/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            name: Joi.string().required(),
+            nome: Joi.string().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     FamilyMemberController().updateFamilyMember
 )
 
@@ -63,6 +66,7 @@ routes.route("/familymember/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     FamilyMemberController().deleteFamilyMember
 );
 

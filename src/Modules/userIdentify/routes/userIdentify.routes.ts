@@ -54,10 +54,12 @@ routes.route("/userIdentify").post(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserIdentifyController().CreateUserIdentify
 );
 
-routes.route("/userIdentify").get(ChangeDatabaseConnection.changeDatabase, UserIdentifyController().getAllUserIdentify);
+routes.route("/userIdentify").get(ChangeDatabaseConnection.changeDatabase, verifyToken,
+    UserIdentifyController().getAllUserIdentify);
 
 routes.route("/userIdentify/:id").get(
     celebrate({
@@ -66,6 +68,7 @@ routes.route("/userIdentify/:id").get(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserIdentifyController().getUserIdentifyById
 )
 
@@ -121,6 +124,7 @@ routes.route("/userIdentify/:id").put(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserIdentifyController().updateUserIdentify
 )
 
@@ -131,6 +135,7 @@ routes.route("/userIdentify/:id").delete(
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
+    verifyToken,
     UserIdentifyController().deleteUserIdentify
 );
 
