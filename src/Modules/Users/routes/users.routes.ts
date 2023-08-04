@@ -36,10 +36,10 @@ routes.route("/user/:id").get(
 routes.route("/user/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            nome: Joi.string().required(),
-            email: Joi.string().required().email(),
-            password: Joi.string().required(),
-            type_user: Joi.number().required(),
+            nome: Joi.string(),
+            email: Joi.string().email(),
+            password: Joi.string(),
+            type_user: Joi.number(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
