@@ -279,7 +279,21 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
       ]
     });
 
-   
+    model.belongsTo(vulnerabilidade, {
+      foreignKey: 'id_vulnerabilidade',
+      as: 'id_vulnerabilidade_vulnerabilidade',
+    });
+
+    // identificacao_usuario.belongsTo(endereco, {
+    //   foreignKey: 'id_endereco',
+    //   as: 'id_endereco_endereco',
+    // });
+
+    model.belongsTo(situacao_financeira, {
+      foreignKey: 'id_situacao_financeira',
+      as: 'id_situacao_financeira_situacao_financeira',
+    });
+
 
     return model;
   }

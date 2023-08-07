@@ -172,18 +172,39 @@ export const UserIdentifyServices = () => {
 
 
     const getUserIdentifyById = async (id: string) => {
-        const user: any = await identificacao_usuario.findByPk(id);
-        if (!user) {
-            // const error: ErrorType = makeErrorMessage(
-            //     "User not found",
-            //     404
-            // );
-            // throw error;
-            return []
+        try {
+            const user: any = await identificacao_usuario.findOne({
+                where: { id: id },
+                include: [
+                    {
+                        model: vulnerabilidade,
+                        as: "id_vulnerabilidade_vulnerabilidade"
+                    },
+                    {
+                        model: situacao_financeira,
+                        as: 'id_situacao_financeira_situacao_financeira',
+                    },
+                    // {
+                    //     model: endereco, // Tabela relacionada
+                    //     as: 'id_endereco_endereco', // Nome da associação definida no modelo identificacao_usuario
+                    // },
+                ]
+
+            });
+
+            if (!user) {
+                return []
+            }
+
+
+            return user;
+        } catch (error) {
+            const err: ErrorType = makeErrorMessage(
+                `${error}`,
+                500
+            );
+            throw err;
         }
-
-
-        return user;
     };
 
     const getAllUserIdentify = async () => {

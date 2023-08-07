@@ -12,7 +12,7 @@ export const UserServices = () => {
     const validUserToCreate = async (body: UserAttributes) => {
 
         // console.log(connection)
-        const validUser = await getUserByUserEmail(body.email);
+       try{ const validUser = await getUserByUserEmail(body.email);
         if (validUser) {
             const error: ErrorType = makeErrorMessage(
                 "Username already exists",
@@ -22,6 +22,13 @@ export const UserServices = () => {
         }
         const user = await User.create({ ...body });
         return user;
+    }catch(error){
+        const err: ErrorType = makeErrorMessage(
+            `${error}`,
+            500
+          );
+          throw err;
+    }
     }
 
     const getUserByUserEmail = async (email: string) => {
