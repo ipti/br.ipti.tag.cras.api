@@ -31,16 +31,7 @@ routes.route("/familymember").get(ChangeDatabaseConnection.changeDatabase, verif
 routes.route("/familymember/:id").get(
     celebrate({
         [Segments.PARAMS]: Joi.object().keys({
-            id_identificacao_usuario: Joi.number().integer().positive(),
-            nome: Joi.string(),
-            parentesco: Joi.string(),
-            idade: Joi.number().integer().positive(),
-            sexo: Joi.string(),
-            nis: Joi.number().integer().positive(),
-            loas: Joi.number().integer().positive(),
-            bolsaFamilia: Joi.number().integer().positive(),
-            previdencia: Joi.number().integer().positive(),
-            renda: Joi.number().positive(),
+            id: Joi.number().required(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
@@ -51,7 +42,15 @@ routes.route("/familymember/:id").get(
 routes.route("/familymember/:id").put(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
-            nome: Joi.string().required(),
+            nome: Joi.string(),
+            parentesco: Joi.string(),
+            idade: Joi.number(),
+            sexo: Joi.string(),
+            nis: Joi.number().integer(),
+            loas: Joi.number().integer(),
+            bolsaFamilia: Joi.number().integer(),
+            previdencia: Joi.number().integer(),
+            renda: Joi.number(),
         }),
     }),
     ChangeDatabaseConnection.changeDatabase,
