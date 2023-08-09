@@ -13,8 +13,8 @@ routes.route("/service").post(
             solicitacao: Joi.string().required(),
             resultado: Joi.string().required(),
             encaminhamento: Joi.string().required(),
-            servico: Joi.string().required(),
-            tecnico: Joi.string().required(),
+            servico: Joi.number().required(),
+            tecnico: Joi.number().required(),
             id_identificacao_usuario: Joi.number(),
             id_membro_familiar: Joi.number(),
             data: Joi.string().required()
@@ -44,8 +44,8 @@ routes.route("/service/:id").put(
             solicitacao: Joi.string().required(),
             resultado: Joi.string().required(),
             encaminhamento: Joi.string().required(),
-            servico: Joi.string().required(),
-            tecnico: Joi.string().required(),
+            servico: Joi.number().required(),
+            tecnico: Joi.number().required(),
             id_identificacao_usuario: Joi.number(),
             id_membro_familiar: Joi.number(),
             data: Joi.string().required()

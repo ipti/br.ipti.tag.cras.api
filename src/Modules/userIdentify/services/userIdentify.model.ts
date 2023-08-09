@@ -177,6 +177,10 @@ export const UserIdentifyServices = () => {
                 where: { id: id },
                 include: [
                     {
+                        model: endereco,
+                        as: 'id_endereco_endereco',
+                    },
+                    {
                         model: vulnerabilidade,
                         as: "id_vulnerabilidade_vulnerabilidade"
                     },
@@ -184,10 +188,7 @@ export const UserIdentifyServices = () => {
                         model: situacao_financeira,
                         as: 'id_situacao_financeira_situacao_financeira',
                     },
-                    // {
-                    //     model: endereco, // Tabela relacionada
-                    //     as: 'id_endereco_endereco', // Nome da associação definida no modelo identificacao_usuario
-                    // },
+
                 ]
 
             });
@@ -210,11 +211,6 @@ export const UserIdentifyServices = () => {
     const getAllUserIdentify = async () => {
         const allUsers: any[] = await identificacao_usuario.findAll();
         if (allUsers.length === 0) {
-            // const error: ErrorType = makeErrorMessage(
-            //     "No users found",
-            //     404
-            // );
-            // throw error;
             return []
         }
         return allUsers;
@@ -223,6 +219,76 @@ export const UserIdentifyServices = () => {
     const updateUserIdentify = async (id: string, body: IdendifyAttributs) => {
         await getUserIdentifyById(id);
         await identificacao_usuario.update({ ...body }, { where: { id } });
+
+        try {
+
+            const result = await sequelize.transaction(async (t) => {
+
+                const address = await endereco.update({
+                    endereco: body.endereco,
+                    telefone: body.telefone,
+                    ponto_referencia: body.ponto_referencia,
+                    condicoes_moradia: body.condicoes_moradia,
+                    tipo_construcao: body.tipo_construcao,
+                    comodos: body.comodos,
+                    valor_aluguel: body.valor_aluguel,
+                }, { where: { id } })
+
+                const financialSituation = await situacao_financeira.update({
+                    profissao: body.profissao,
+                    renda: body.renda,
+                    reside_familia: body.reside_familia,
+                    bolsa_familia: body.bolsa_familia,
+                    loasbpc: body.loasbpc,
+                    previdencia: body.previdencia,
+                    carteira_assinada: body.carteira_assinada,
+                }, { where: { id } })
+
+                const vulnerability = await vulnerabilidade.update({
+                    ocupacao_irregular: body.ocupacao_irregular,
+                    crianca_sozinha: body.crianca_sozinha,
+                    idosos_dependentes: body.idosos_dependentes,
+                    desempregados: body.desempregados,
+                    deficientes: body.deficientes,
+                    baixa_renda: body.baixa_renda,
+                    outros: body.outros,
+                }, { where: { id } })
+
+                const userIdentify = await identificacao_usuario.update({
+                    pasta: body.pasta,
+                    arquivo: body.arquivo,
+                    nº: body.nº,
+                    nome: body.nome,
+                    apelido: body.apelido,
+                    data_nascimento: body.data_nascimento,
+                    certidao_nascimento: body.certidao_nascimento,
+                    NIS: body.NIS,
+                    numero_rg: body.numero_rg,
+                    data_emissao_rg: body.data_emissao_rg,
+                    uf_rg: body.uf_rg,
+                    emissao_rg: body.emissao_rg,
+                    cpf: body.cpf,
+                    deficiente: body.deficiente,
+                    deficiencia: body.deficiencia,
+                    mae: body.mae,
+                    pai: body.pai,
+                    estado_civil: body.estado_civil,
+                    escolaridade: body.escolaridade,
+                    data_inicial: body.data_inicial,
+                    data_final: body.data_final,
+                }, { where: { id } });
+
+                return { userIdentify, vulnerability, financialSituation, address };
+            });
+        } catch (error) {
+
+            const err: ErrorType = makeErrorMessage(
+                `${error}`,
+                404
+            );
+            throw err;
+        }
+        
         const updatedUser: IdendifyAttributs | null = await getUserIdentifyById(id);
         return updatedUser;
     };

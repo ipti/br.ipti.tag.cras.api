@@ -12,7 +12,7 @@ routes.route("/familymember").post(
             id_identificacao_usuario: Joi.number().required(),
             nome: Joi.string().required(),
             parentesco: Joi.string().required(),
-            idade: Joi.number().required(),
+            date_nascimento: Joi.string().required(),
             sexo: Joi.string().required(),
             nis: Joi.number().integer(),
             loas: Joi.number().integer(),
@@ -44,7 +44,7 @@ routes.route("/familymember/:id").put(
         [Segments.BODY]: Joi.object().keys({
             nome: Joi.string(),
             parentesco: Joi.string(),
-            idade: Joi.number(),
+            date_nascimento: Joi.string(),
             sexo: Joi.string(),
             nis: Joi.number().integer(),
             loas: Joi.number().integer(),

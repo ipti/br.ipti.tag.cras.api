@@ -7,7 +7,7 @@ export interface membro_familiarAttributes {
   id_identificacao_usuario: number;
   nome: string;
   parentesco: string;
-  idade: number;
+  date_nascimento: string;
   sexo: string;
   nis: number;
   loas: number;
@@ -26,7 +26,7 @@ export class membro_familiar extends Model<membro_familiarAttributes, membro_fam
   id_identificacao_usuario!: number;
   nome!: string;
   parentesco!: string;
-  idade!: number;
+  date_nascimento!: string;
   sexo!: string;
   nis!: number;
   loas!: number;
@@ -64,8 +64,8 @@ export class membro_familiar extends Model<membro_familiarAttributes, membro_fam
       type: DataTypes.STRING(150),
       allowNull: false
     },
-    idade: {
-      type: DataTypes.INTEGER,
+    date_nascimento: {
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
     sexo: {

@@ -4,11 +4,11 @@ import { identificacao_usuario, identificacao_usuarioId } from '../../userIdenti
 
 export interface atendimentosAttributes {
   id: number;
-  servico: string;
+  servico: number;
   solicitacao: string;
   encaminhamento: string;
   resultado: string;
-  tecnico: string;
+  tecnico: number;
   id_identificacao_usuario: number;
   id_membro_familiar: number;
   data: string;
@@ -21,11 +21,11 @@ export type atendimentosCreationAttributes = Optional<atendimentosAttributes, at
 
 export class atendimentos extends Model<atendimentosAttributes, atendimentosCreationAttributes> implements atendimentosAttributes {
   id!: number;
-  servico!: string;
+  servico!: number;
   solicitacao!: string;
   encaminhamento!: string;
   resultado!: string;
-  tecnico!: string;
+  tecnico!: number;
   id_identificacao_usuario!: number;
   id_membro_familiar!: number;
   data!: string;
@@ -46,7 +46,7 @@ export class atendimentos extends Model<atendimentosAttributes, atendimentosCrea
         primaryKey: true
       },
       servico: {
-        type: DataTypes.STRING(200),
+        type: DataTypes.INTEGER,
         allowNull: false
       },
       solicitacao: {
@@ -62,7 +62,7 @@ export class atendimentos extends Model<atendimentosAttributes, atendimentosCrea
         allowNull: false
       },
       tecnico: {
-        type: DataTypes.STRING(200),
+        type: DataTypes.INTEGER,
         allowNull: false
       },
       id_identificacao_usuario: {

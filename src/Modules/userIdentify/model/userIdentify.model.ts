@@ -6,6 +6,7 @@ import { control_attendance, control_attendanceId } from '../../controlAttendanc
 import { membro_familiar, membro_familiarId } from '../../familyMember/model/familyMember.model';
 import { situacao_financeira, situacao_financeiraId } from '../../financialSituation/model/financialsSituation.model';
 import { vulnerabilidade, vulnerabilidadeId } from '../../vulnerability/model/vulnerability.model';
+import DbConnection from '../../../db/config';
 
 export interface identificacao_usuarioAttributes {
   id: number;
@@ -284,10 +285,15 @@ export class identificacao_usuario extends Model<identificacao_usuarioAttributes
       as: 'id_vulnerabilidade_vulnerabilidade',
     });
 
-    // identificacao_usuario.belongsTo(endereco, {
-    //   foreignKey: 'id_endereco',
-    //   as: 'id_endereco_endereco',
-    // });
+    const connection = DbConnection.getInstance().getConnection();
+
+    endereco.initModel(connection);
+    model.belongsTo(endereco, {
+      foreignKey: 'id_endereco',
+      as: 'id_endereco_endereco',
+    });
+
+    // model.belongsTo(endereco, { foreignKey: 'id_endereco' });
 
     model.belongsTo(situacao_financeira, {
       foreignKey: 'id_situacao_financeira',

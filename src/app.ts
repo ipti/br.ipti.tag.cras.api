@@ -62,7 +62,6 @@ sequelize
   .sync()
   .then(() => {
     console.log("Database successfully connected");
-    
   })
   .catch((err: any) => {
     console.log("Error", err);
