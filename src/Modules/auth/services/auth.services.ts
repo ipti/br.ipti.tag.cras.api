@@ -76,13 +76,24 @@ export const AuthService = () => {
         throw error;
       }
 
+
+
       return decoded.id;
     } catch (error) {
-      const err: ErrorType = makeErrorMessage(
-        `${error}`,
-        500
-      );
-      throw err;
+      if (`${error}` === "TokenExpiredError: jwt expired") {
+        const err: ErrorType = makeErrorMessage(
+          `${error}`,
+          403
+        );
+        throw err
+      } else {
+
+        const err: ErrorType = makeErrorMessage(
+          `${error}`,
+          500
+        );
+        throw err;
+      }
     }
   }
 

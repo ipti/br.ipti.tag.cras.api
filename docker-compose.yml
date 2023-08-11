@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+  apicras:
+    container_name: cras-api
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    env_file:
+      - .env
+    ports: 
+      - 3000:3000
+    networks:
+      - tag-v3-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+
   mysql:
     image: mysql:5.7
     container_name: mysql
@@ -11,13 +27,13 @@ services:
     expose:
       - 3306
     deploy:
-        resources:
-            limits:
-              cpus: '2'
-              memory: 1024M
-            reservations:
-              cpus: '1'
-              memory: 1GB
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 1GB
     environment:
       MYSQL_ROOT_PASSWORD: root
       # MYSQL_DATABASE: tag
@@ -36,11 +52,11 @@ services:
     ports:
       - 8088:8080
     networks:
-      - tag-v3-network    
+      - tag-v3-network
 
 networks:
   tag-v3-network:
- 
+
+
 volumes:
   db-volume:
-  

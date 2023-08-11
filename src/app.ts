@@ -22,7 +22,6 @@ import { vulnerabilidade } from "./Modules/vulnerability/model/vulnerability.mod
 import { identificacao_usuario } from "./Modules/userIdentify/model/userIdentify.model";
 import { endereco } from "./Modules/address/model/address.model";
 import { exit } from "process";
-// import { errors } from 'celebrate';
 
 console.error(process.env.dbName);
 
@@ -33,8 +32,17 @@ const connection = DbConnection.getInstance().getConnection();
 const app = express();
 app.use(cors());
 
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+
 
 // app.use(errors());
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
