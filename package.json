@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && node dist/app.js",
-    "start": "node dist/app.js"
+    "build": "tsc -p .",
+    "start": "node dist/app.js",
+    "start:prod": "node dist/app.js --max-old-space-size=256"
   },
   "keywords": [],
   "author": "",
