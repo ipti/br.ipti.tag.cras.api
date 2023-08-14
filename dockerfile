@@ -6,10 +6,12 @@ COPY package*.json ./
 
 RUN npm install
 
-# RUN npm run build
-
 COPY . .
 
-# RUN npm start
+ARG dbName
+ARG dbUser
+ARG dbHost
+ARG dbPassword
 
-# CMD [ "npm", "start" ]
+EXPOSE 3000
+CMD [ "npm", "start" ]
