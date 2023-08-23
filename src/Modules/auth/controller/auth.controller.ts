@@ -9,7 +9,10 @@ export const login: RequestHandler = async (req, res, next) => {
     const token = await AuthService().validLogin(email, password);
     return res.status(200).json({ message: "Login successfully", data: token });
   } catch (err: any) {
-    return res.status(500).json({ message:"ERRO" });
+    if (err.code) {
+      return res.status(err.code).json({ message: err.message });
+    }
+    return res.status(500).json({ message: err })
   }
 };
 
@@ -18,7 +21,7 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
     const authService = AuthService();
     const authorization = req.headers.authorization;
     const token = authorization?.split(" ");
-    if(token === undefined){
+    if (token === undefined) {
       const error: ErrorType = makeErrorMessage("Token não encontrado", 401);
       throw error;
     }

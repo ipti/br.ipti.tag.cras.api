@@ -22,6 +22,7 @@ import { vulnerabilidade } from "./Modules/vulnerability/model/vulnerability.mod
 import { identificacao_usuario } from "./Modules/userIdentify/model/userIdentify.model";
 import { endereco } from "./Modules/address/model/address.model";
 import { exit } from "process";
+import { errors } from "celebrate";
 
 console.error(process.env.dbName);
 
@@ -53,7 +54,8 @@ app.use(customServices);
 app.use(userIdentify);
 app.use(technician);
 app.use(typesServices);
-app.use(familyMemberRoutes)
+app.use(familyMemberRoutes);
+app.use(errors());
 
 
 servico.initModel(connection);

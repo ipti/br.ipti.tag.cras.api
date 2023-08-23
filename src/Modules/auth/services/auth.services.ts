@@ -9,40 +9,41 @@ import { UserServices } from "../../Users/services/users.services";
 export const AuthService = () => {
 
   const validLogin = async (email: string, password: string) => {
-    const user = await UserServices().getUserByUserEmail(email);
-    if (!user) {
-      const error: ErrorType = makeErrorMessage("Username not found", 404);
-      throw error;
-    }
-    async function match(plainTextPassword: string, hashedPassword: string) {
-      if (!plainTextPassword || !hashedPassword) {
-        return false;
+      const user = await UserServices().getUserByUserEmail(email);
+      if (!user) {
+        const error: ErrorType = makeErrorMessage("Usuário não encontrado", 404);
+        throw error;
+      }
+      async function match(plainTextPassword: string, hashedPassword: string) {
+        if (!plainTextPassword || !hashedPassword) {
+          return false;
+        }
+
+        const isMatch = bcrypt.compareSync(plainTextPassword, hashedPassword);
+
+        if (isMatch) {
+          return true;
+        } else {
+          return false;
+        }
       }
 
-      const isMatch = bcrypt.compareSync(plainTextPassword, hashedPassword);
+      const passwordMatch = await match(password, user?.password);
 
-      if (isMatch) {
-        return true;
-      } else {
-        return false;
+      if (!passwordMatch) {
+        const error: ErrorType = makeErrorMessage(
+          "Senha incorreta",
+          401
+        );
+        throw error;
       }
-    }
 
-    const passwordMatch = await match(password, user?.password);
+      // user.password = "undefined";
+      const id = user.id;
+      const token = jwt.sign({ id }, "sercretkeyfortagapi", { expiresIn: "3h" });
 
-    if (!passwordMatch) {
-      const error: ErrorType = makeErrorMessage(
-        "Password is incorrect",
-        401
-      );
-      throw error;
-    }
-
-    user.password = "undefined";
-    const id = user.id;
-    const token = jwt.sign({ id }, "sercretkeyfortagapi", { expiresIn: "3h" });
-
-    return { token, id: id, auth: true };
+      return { token, id: id, auth: true };
+    
   };
 
   const verifyToken = async (authorization: Array<string>) => {
@@ -58,7 +59,6 @@ export const AuthService = () => {
         if (!type || !token) {
           return true;
         }
-
         return false;
       }
 
