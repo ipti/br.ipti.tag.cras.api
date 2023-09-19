@@ -2,9 +2,9 @@
 import DbConnection, { sequelize } from "../../../db/config";
 import { makeErrorMessage } from "../../../util/error.services";
 import { ErrorType } from "../../../util/error.type";
-import { endereco } from "../../address/model/address.model";
-import { situacao_financeira } from "../../financialSituation/model/financialsSituation.model";
-import { vulnerabilidade } from "../../vulnerability/model/vulnerability.model";
+import { endereco } from "../model/address.model";
+import { situacao_financeira } from "../model/financialsSituation.model";
+import { vulnerabilidade } from "../model/vulnerability.model";
 import { identificacao_usuario } from "../model/userIdentify.model";
 
 interface IdendifyAttributs {

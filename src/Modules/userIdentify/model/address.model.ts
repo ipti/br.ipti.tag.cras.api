@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import { identificacao_usuario, identificacao_usuarioId } from '../../userIdentify/model/userIdentify.model';
+import { identificacao_usuario, identificacao_usuarioId } from './userIdentify.model';
 
 export interface enderecoAttributes {
   id: number;

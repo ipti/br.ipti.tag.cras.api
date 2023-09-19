@@ -1,22 +1,21 @@
 version: "3.8"
 
 services:
-  apicras:
-    container_name: cras-api
-    build:
-      context: .
-      dockerfile: ./dockerfile    
-    ports: 
-      - 3000:3000
-    networks:
-      - tag-v3-network
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: unless-stopped
-    environment:
-      - dbHost=mysql-api-cras
-      - 
+  # apicras:
+  #   container_name: cras-api
+  #   build:
+  #     context: .
+  #     dockerfile: ./dockerfile    
+  #   ports: 
+  #     - 3000:3000
+  #   networks:
+  #     - tag-v3-network
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   restart: unless-stopped
+  #   environment:
+  #     - dbHost=mysql-api-cras
 
   mysql:
     image: mysql:5.7

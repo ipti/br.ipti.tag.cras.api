@@ -14,13 +14,13 @@ import familyMemberRoutes from "./Modules/familyMember/routes/familyMember.route
 
 import { servico } from "./Modules/typeServices/model/typeServices.model";
 import { tecnico } from "./Modules/technician/model/technician.model";
-import { control_attendance } from "./Modules/controlAttendance/model/controlAttendance.model";
+import { control_attendance } from "./Modules/userIdentify/model/controlAttendance.model";
 import { atendimentos } from "./Modules/customServices/model/customservices.model";
 import { membro_familiar } from "./Modules/familyMember/model/familyMember.model";
-import { situacao_financeira } from "./Modules/financialSituation/model/financialsSituation.model";
-import { vulnerabilidade } from "./Modules/vulnerability/model/vulnerability.model";
+import { situacao_financeira } from "./Modules/userIdentify/model/financialsSituation.model";
+import { vulnerabilidade } from "./Modules/userIdentify/model/vulnerability.model";
 import { identificacao_usuario } from "./Modules/userIdentify/model/userIdentify.model";
-import { endereco } from "./Modules/address/model/address.model";
+import { endereco } from "./Modules/userIdentify/model/address.model";
 import { exit } from "process";
 import { errors } from "celebrate";
 
