@@ -10,6 +10,7 @@ import userIdentify from "./Modules/userIdentify/routes/userIdentify.routes";
 import technician from "./Modules/technician/routes/technician.routes";
 import typesServices from "./Modules/typeServices/routes/typesServices.routes";
 import familyMemberRoutes from "./Modules/familyMember/routes/familyMember.routes";
+import homeCrasRoutes from "./Modules/homeCras/routes/homeCras.routes";
 
 
 import { servico } from "./Modules/typeServices/model/typeServices.model";
@@ -55,6 +56,7 @@ app.use(userIdentify);
 app.use(technician);
 app.use(typesServices);
 app.use(familyMemberRoutes);
+app.use(homeCrasRoutes);
 app.use(errors());
 
 
@@ -77,6 +79,6 @@ sequelize
     console.log("Error", err);
   });
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.listen(3001, () => {
+  console.log("Server started on port 3001");
 });
