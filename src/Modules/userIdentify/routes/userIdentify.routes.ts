@@ -10,7 +10,7 @@ routes.route("/userIdentify").post(
     celebrate({
         [Segments.BODY]: Joi.object().keys({
             nome: Joi.string().required(),
-            apelido: Joi.string().required(),
+            apelido: Joi.string(),
             data_nascimento: Joi.string().required(),
             certidao_nascimento: Joi.number().allow(null, ""),
             pasta: Joi.string().allow(null, ""),
