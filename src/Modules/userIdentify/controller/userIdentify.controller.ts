@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { UserIdentifyServices } from "../services/userIdentify.model";
+import { UserIdentifyServices } from "../services/userIdentify.service";
 
 
 export const UserIdentifyController = () => {

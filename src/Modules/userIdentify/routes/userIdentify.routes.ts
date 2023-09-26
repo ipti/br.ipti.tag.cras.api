@@ -74,6 +74,9 @@ routes.route("/userIdentify/:id").get(
 
 routes.route("/userIdentify/:id").put(
     celebrate({
+        [Segments.PARAMS]: Joi.object().keys({
+            id: Joi.number().required(),
+        }),
         [Segments.BODY]: Joi.object().keys({
             nome: Joi.string(),
             apelido: Joi.string(),
