@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user_identify {
+  id                     Int                 @id @default(autoincrement())
+  id_address             Int
+  id_financial_situation Int
+  id_vulnerability       Int
+  name                   String
+  surname                String
+  folder                 String?
+  archive                String?
+  number                 String?
+  birthday               String?
+  birth_certificate      Int?
+  NIS                    Int?
+  rg_number              String?
+  rg_date_emission       String?
+  uf_rg                  String?
+  emission_rg            String?
+  cpf                    String
+  is_deficiency          Boolean
+  deficiency             String
+  mother                 String
+  father                 String
+  marital_status         String
+  escolarity             String
+  initial_date           String
+  final_date             String?
+  address                address             @relation(fields: [id_address], references: [id])
+  financial_situation    financial_situation @relation(fields: [id_financial_situation], references: [id])
+  vulnerability          vulnerability       @relation(fields: [id_vulnerability], references: [id])
+}
+
+model address {
+  id                Int             @id @default(autoincrement())
+  address           String
+  telephone         String
+  reference         String
+  conditions        String
+  construction_type String
+  rooms             String
+  rent_value        String
+  users_identify    user_identify[]
+}
+
+model financial_situation {
+  id             Int             @id @default(autoincrement())
+  profission     String
+  income         Int
+  users_identify user_identify[]
+}
+
+model vulnerability {
+  id             Int             @id @default(autoincrement())
+  users_identify user_identify[]
+}
+
+model controll_attendance {
+  id Int @id @default(autoincrement())
+}
+
+model attendance {
+  id Int @id @default(autoincrement())
+
+  tasks task[]
+}
+
+model user {
+  id         Int          @id @default(autoincrement())
+  name       String
+  email      String       @unique
+  password   String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  technician technician[]
+}
+
+model technician {
+  id      Int    @id @default(autoincrement())
+  name    String
+  user_fk Int
+  user    user   @relation(fields: [user_fk], references: [id])
+}
+
+model task {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  deletedAt     DateTime?
+  attendance_fk Int
+  attendance    attendance @relation(fields: [attendance_fk], references: [id])
+}
+
+model benefits {
+  id            Int     @id @default(autoincrement())
+  bolsa_familia Boolean @default(false)
+}
