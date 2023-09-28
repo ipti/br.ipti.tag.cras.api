@@ -60,7 +60,7 @@ model address {
   conditions        String
   construction_type String
   rooms             String
-  rent_value        String
+  rent_value        Int
   family            family[]
 }
 

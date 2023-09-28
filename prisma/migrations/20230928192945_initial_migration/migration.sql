@@ -49,7 +49,7 @@ CREATE TABLE `address` (
     `conditions` VARCHAR(191) NOT NULL,
     `construction_type` VARCHAR(191) NOT NULL,
     `rooms` VARCHAR(191) NOT NULL,
-    `rent_value` VARCHAR(191) NOT NULL,
+    `rent_value` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
