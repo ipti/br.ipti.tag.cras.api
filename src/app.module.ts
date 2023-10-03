@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -13,6 +13,7 @@ import { TechnicianModule } from './technician/technician.module';
 import { UserModule } from './user/user.module';
 import { UserIdentifyModule } from './user-identify/user_identify.module';
 import { VulnerabilityModule } from './vulnerability/vulnerability.module';
+import { DbNameMiddleware } from './utils/middleware/db-name';
 
 @Module({
   imports: [
@@ -32,4 +33,8 @@ import { VulnerabilityModule } from './vulnerability/vulnerability.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DbNameMiddleware).forRoutes('*');
+  }
+}

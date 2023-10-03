@@ -22,12 +22,15 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const cryptoPassword = this.encryptedMd5Password(createUser.password);
 
     const createdUser = await User.withSchema(dbName).create({
       ...createUser,
       password: cryptoPassword,
     });
+
+    delete createdUser.password;
 
     return createdUser;
   }

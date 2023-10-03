@@ -23,8 +23,6 @@ import {
   import { UserService } from './service/user.service';
   
   @ApiTags('User')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('access-token')
   @Controller('user')
   export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -36,18 +34,24 @@ import {
     }
   
     @Get()
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
     @ApiOkResponse({ isArray: true })
     findAll(@Req() request) {
       return this.userService.findAll(request);
     }
   
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
     @ApiOkResponse({})
     findOne(@Req() request, @Param('id') id: string) {
       return this.userService.findOne(request, id);
     }
   
     @Put(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
     @ApiCreatedResponse({})
     update(
       @Req() request,
@@ -58,6 +62,8 @@ import {
     }
   
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
     @ApiCreatedResponse({})
     remove(@Req() request, @Param('id') id: string) {
       return this.userService.remove(request, id);
