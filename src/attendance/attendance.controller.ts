@@ -21,6 +21,7 @@ import {
   import { CreateAttendanceDto } from './dto/create-attendance.dto';
   import { UpdateAttendanceDto } from './dto/update-attendance.dto';
   import { AttendanceService } from './service/attendance.service';
+import { AttendanceDocument } from './doc/attendance.doc';
   
   @ApiTags('Attendance')
   @UseGuards(JwtAuthGuard)
@@ -30,25 +31,25 @@ import {
     constructor(private readonly attendanceService: AttendanceService) {}
   
     @Post()
-    @ApiCreatedResponse({})
+    @ApiCreatedResponse({ type: AttendanceDocument })
     create(@Req() request, @Body() createAttendance: CreateAttendanceDto) {
       return this.attendanceService.create(request, createAttendance);
     }
   
     @Get()
-    @ApiOkResponse({ isArray: true })
+    @ApiOkResponse({ type: AttendanceDocument, isArray: true })
     findAll(@Req() request) {
       return this.attendanceService.findAll(request);
     }
   
     @Get(':id')
-    @ApiOkResponse({})
+    @ApiOkResponse({ type: AttendanceDocument })
     findOne(@Req() request, @Param('id') id: string) {
       return this.attendanceService.findOne(request, id);
     }
   
     @Put(':id')
-    @ApiCreatedResponse({})
+    @ApiCreatedResponse({ type: AttendanceDocument })
     update(
       @Req() request,
       @Param('id') id: string,
@@ -58,7 +59,7 @@ import {
     }
   
     @Delete(':id')
-    @ApiCreatedResponse({})
+    @ApiCreatedResponse({ type: AttendanceDocument })
     remove(@Req() request, @Param('id') id: string) {
       return this.attendanceService.remove(request, id);
     }

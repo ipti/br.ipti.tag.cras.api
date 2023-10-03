@@ -39,9 +39,9 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .setTitle('Tecnologia de Apoio à Gestão: TAG API 3.0')
+    .setTitle('CRAS API')
     .setDescription(
-      'API do sistema de gestão escolar TAG(Tecnologia de Apoio à Gestão) desenvolvido pelo IPTI.',
+      'API do sistema de Centro de Referência da Assistência Social (CRAS) desenvolvido pelo IPTI.',
     )
     .setVersion(process.env.npm_package_version)
     .addBearerAuth(
