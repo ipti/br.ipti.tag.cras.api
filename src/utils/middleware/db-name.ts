@@ -1,19 +1,23 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Injectable()
 export class DbNameMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: Function) {
-    const match = req.hostname.match(/api-(\w+)\.tag\.ong\.br/);
 
-    if (match) {
-      req['dbName'] = match[1];
-    } else if (req.query['dbName']) {
+    if (req.query['dbName']) {
       req['dbName'] = req.query['dbName'];
     } else {
-      req['dbName'] = 'crasDb';
+      req['dbName'] = 'cras-db';
     }
-    
+
+    if(req.user.dbName !== req['dbName']){
+      throw new HttpException(
+        'USER NOT ALLOWED!',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     next();
   }
 }

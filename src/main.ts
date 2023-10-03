@@ -32,7 +32,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'my-secret',
+      secret: process.env.SECRET,
       resave: false,
       saveUninitialized: false,
     }),

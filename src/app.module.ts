@@ -14,6 +14,7 @@ import { UserModule } from './user/user.module';
 import { UserIdentifyModule } from './user-identify/user_identify.module';
 import { VulnerabilityModule } from './vulnerability/vulnerability.module';
 import { DbNameMiddleware } from './utils/middleware/db-name';
+import { JwtMiddleware } from './utils/middleware/jwt.middleware';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DbNameMiddleware } from './utils/middleware/db-name';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes('*');
     consumer.apply(DbNameMiddleware).forRoutes('*');
   }
 }

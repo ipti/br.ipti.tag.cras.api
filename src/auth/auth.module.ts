@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './shared/auth.service';
 import { JwtStrategy } from './shared/jwt.strategy';
 import { LocalStrategy } from './shared/local.strategy';
+require('dotenv').config();
 
 @Module({
   imports: [

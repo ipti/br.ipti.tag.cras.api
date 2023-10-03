@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb
+    container_name: cras-db
+    restart: always
+    command: --max_allowed_packet=32505856 --memlock=1
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_USER: root
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: admin
+    volumes:
+      - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    networks:
+      - cras-net
+
+  cras-adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8088:8080
+    networks:
+      - cras-net
+
+  # cras-api-dev:
+  #   container_name: cras-api_dev
+  #   image: cras-api_dev
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   command: npm run start:dev
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - cras-net
+  #   volumes:
+  #     - .:/home/api
+  #     - /home/api/node_modules
+  #   restart: unless-stopped
+
+  cras-api-prod:
+    container_name: cras-api_prod
+    image: cras-api_prod
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    expose:
+      - 587
+    env_file:
+      - .env
+    ports:
+      - 3001:3000
+    networks:
+      - cras-net
+    volumes:
+      - .:/home/api
+      - /home/api/node_modules
+    restart: unless-stopped
+
+networks:
+  cras-net:
+    driver: bridge
+
+volumes:
+  db-volume:
+  mariadb_data:
+    driver: local

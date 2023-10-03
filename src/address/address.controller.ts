@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressService } from './service/address.service';
+import { AddressDocument } from './doc/address.doc';
 
 @ApiTags('Address')
 @UseGuards(JwtAuthGuard)
@@ -30,25 +31,25 @@ export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  @ApiCreatedResponse({})
+  @ApiCreatedResponse({type: AddressDocument})
   create(@Req() request, @Body() createAddress: CreateAddressDto) {
     return this.addressService.create(request, createAddress);
   }
 
   @Get()
-  @ApiOkResponse({ isArray: true })
+  @ApiOkResponse({type: AddressDocument})
   findAll(@Req() request) {
     return this.addressService.findAll(request);
   }
 
   @Get(':id')
-  @ApiOkResponse({})
+  @ApiOkResponse({type: AddressDocument})
   findOne(@Req() request, @Param('id') id: string) {
     return this.addressService.findOne(request, id);
   }
 
   @Put(':id')
-  @ApiCreatedResponse({})
+  @ApiCreatedResponse({type: AddressDocument})
   update(
     @Req() request,
     @Param('id') id: string,
@@ -58,7 +59,7 @@ export class AddressController {
   }
 
   @Delete(':id')
-  @ApiCreatedResponse({})
+  @ApiCreatedResponse({type: AddressDocument})
   remove(@Req() request, @Param('id') id: string) {
     return this.addressService.remove(request, id);
   }

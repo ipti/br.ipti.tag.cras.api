@@ -26,17 +26,17 @@ export class AuthService {
     };
 
     if (
-      userFound
+      userFound.dataValues
     ) {
-      const { name, username, id, role } = userFound;
+      const { name, username, id, role } = userFound.dataValues;
 
-      return { name, username, id, role };
+      return { name, username, id, role, dbName: dbName };
     }
     return null;
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    const payload = { username: user.username, sub: user.id, role: user.role, dbName: user.dbName };
     return {
       access_token: this.jwtService.sign(payload),
       user,

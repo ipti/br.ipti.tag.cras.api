@@ -3,11 +3,8 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateAuthDto {
   @IsNotEmpty()
-  @MinLength(5)
   @IsString()
   @ApiProperty({
-    minLength: 4,
-
     required: true,
     description: "User's username",
   })
