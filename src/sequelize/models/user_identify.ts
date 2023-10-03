@@ -19,7 +19,7 @@ export interface user_identifyAttributes {
   uf_rg?: string;
   emission_rg?: string;
   cpf: string;
-  is_deficiency: number;
+  is_deficiency: boolean;
   deficiency: string;
   mother: string;
   father: string;
@@ -53,7 +53,7 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
   uf_rg?: string;
   emission_rg?: string;
   cpf!: string;
-  is_deficiency!: number;
+  is_deficiency!: boolean;
   deficiency!: string;
   mother!: string;
   father!: string;
