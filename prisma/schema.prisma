@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user_identify {
+  id                Int           @id @default(autoincrement())
+  vulnerability_fk  Int
+  family_fk         Int
+  name              String
+  surname           String
+  folder            String?
+  archive           String?
+  number            String?
+  birthday          String?
+  birth_certificate Int?
+  nis               Int?
+  rg_number         String?
+  rg_date_emission  String?
+  uf_rg             String?
+  emission_rg       String?
+  cpf               String
+  is_deficiency     Boolean
+  deficiency        String
+  mother            String
+  father            String
+  marital_status    String
+  escolarity        String
+  initial_date      String
+  final_date        String?
+  profission        String?
+  income            Int           @default(0)
+  vulnerability     vulnerability @relation(fields: [vulnerability_fk], references: [id])
+  family            family        @relation(fields: [family_fk], references: [id])
+  attendances       attendance[]
+}
+
+model family {
+  id                       Int             @id @default(autoincrement())
+  family_representative_fk Int
+  address_fk               Int
+  benefit_fk               Int
+  address                  address         @relation(fields: [address_fk], references: [id])
+  benefits                 benefits        @relation(fields: [benefit_fk], references: [id])
+  user_identify            user_identify[]
+}
+
+model address {
+  id                Int      @id @default(autoincrement())
+  address           String
+  telephone         String
+  reference         String
+  conditions        String
+  construction_type String
+  rooms             String
+  rent_value        Int
+  family            family[]
+}
+
+model vulnerability {
+  id                  Int             @id @default(autoincrement())
+  irregular_ocupation Boolean         @default(false)
+  alone_child         Boolean         @default(false)
+  dependent_elderly   Boolean         @default(false)
+  unemployed          Boolean         @default(false)
+  deficient           Boolean         @default(false)
+  low_income          Boolean         @default(false)
+  others              Boolean         @default(false)
+  users_identify      user_identify[]
+}
+
+model attendance {
+  id               Int           @id @default(autoincrement())
+  user_identify_fk Int
+  technician_fk    Int
+  solicitation     String
+  providence       String
+  result           String
+  description      String
+  user_identify    user_identify @relation(fields: [user_identify_fk], references: [id])
+  technician       technician    @relation(fields: [technician_fk], references: [id])
+  tasks            task[]
+}
+
+model user {
+  id         Int         @id @default(autoincrement())
+  name       String
+  username   String
+  email      String      @unique
+  password   String
+  role       Role        @default(TECHNICIAN)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  technician technician?
+}
+
+model technician {
+  id          Int          @id @default(autoincrement())
+  name        String
+  user_fk     Int          @unique
+  user        user         @relation(fields: [user_fk], references: [id])
+  attendances attendance[]
+}
+
+model task {
+  id            Int        @id @default(autoincrement())
+  attendance_fk Int
+  name          String
+  description   String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  attendance    attendance @relation(fields: [attendance_fk], references: [id])
+}
+
+model benefits {
+  id          Int      @id @default(autoincrement())
+  description String
+  value       Int
+  family      family[]
+  type        Benefits
+}
+
+enum Benefits {
+  PERIODICO
+  EVENTUAL
+}
+
+enum Role {
+  SECRETARY
+  TECHNICIAN
+}
