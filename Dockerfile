@@ -11,6 +11,7 @@ FROM node:latest AS builder
 WORKDIR /home/api
 
 COPY package*.json ./
+COPY prisma ./prisma
 
 RUN npm ci
 
@@ -26,4 +27,4 @@ COPY --from=builder /home/api ./
 
 EXPOSE 3000
 
-CMD [  "npm", "run", "start:prod" ]
+CMD [  "npm", "run", "start:migrate:prod" ]
