@@ -53,7 +53,9 @@ model family {
 }
 
 model address {
-  id                Int      @id @default(autoincrement())
+  id                Int          @id @default(autoincrement())
+  edcenso_uf_fk     Int
+  edcenso_city_fk   Int
   address           String
   telephone         String
   reference         String
@@ -61,6 +63,8 @@ model address {
   construction_type String
   rooms             String
   rent_value        Int
+  edcenso_uf        edcenso_uf   @relation(fields: [edcenso_uf_fk], references: [id])
+  edcenso_city      edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
   family            family[]
 }
 
@@ -80,13 +84,15 @@ model attendance {
   id               Int           @id @default(autoincrement())
   user_identify_fk Int
   technician_fk    Int
+  task_fk          Int           @unique
   solicitation     String
   providence       String
   result           String
   description      String
+  date             DateTime      @default(now())
   user_identify    user_identify @relation(fields: [user_identify_fk], references: [id])
   technician       technician    @relation(fields: [technician_fk], references: [id])
-  tasks            task[]
+  task             task          @relation(fields: [task_fk], references: [id])
 }
 
 model user {
@@ -95,7 +101,7 @@ model user {
   username   String
   email      String      @unique
   password   String
-  role       Role        @default(TECHNICIAN)
+  role       Role        @default(USER)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   technician technician?
@@ -110,13 +116,12 @@ model technician {
 }
 
 model task {
-  id            Int        @id @default(autoincrement())
-  attendance_fk Int
-  name          String
-  description   String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  attendance    attendance @relation(fields: [attendance_fk], references: [id])
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  attendances attendance?
 }
 
 model benefits {
@@ -127,6 +132,28 @@ model benefits {
   type        Benefits
 }
 
+model edcenso_uf {
+  id           Int            @id @unique(map: "id")
+  acronym      String         @db.VarChar(2)
+  name         String         @db.VarChar(20)
+  edcenso_city edcenso_city[]
+  address      address[]
+}
+
+model edcenso_city {
+  id            Int        @id @unique(map: "id")
+  edcenso_uf_fk Int
+  name          String     @db.VarChar(50)
+  cep_initial   String?    @db.VarChar(9)
+  cep_final     String?    @db.VarChar(9)
+  ddd1          Int?       @db.SmallInt
+  ddd2          Int?       @db.SmallInt
+  edcenso_uf    edcenso_uf @relation(fields: [edcenso_uf_fk], references: [id], onUpdate: Restrict, map: "edcenso_city_fk")
+  address       address[]
+
+  @@index([edcenso_uf_fk], map: "edcenso_uf_fk")
+}
+
 enum Benefits {
   PERIODICO
   EVENTUAL
@@ -135,4 +162,5 @@ enum Benefits {
 enum Role {
   SECRETARY
   TECHNICIAN
+  USER
 }

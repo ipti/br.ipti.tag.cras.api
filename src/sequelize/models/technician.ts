@@ -1,6 +1,7 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
 import type { attendance, attendanceId } from './attendance';
+import type { user, userId } from './user';
 
 export interface technicianAttributes {
   id: number;
@@ -30,6 +31,11 @@ export class technician extends Model<technicianAttributes, technicianCreationAt
   hasAttendance!: Sequelize.HasManyHasAssociationMixin<attendance, attendanceId>;
   hasAttendances!: Sequelize.HasManyHasAssociationsMixin<attendance, attendanceId>;
   countAttendances!: Sequelize.HasManyCountAssociationsMixin<attendance>;
+  // technician belongsTo user via user_fk
+  user_fk_user!: user;
+  getUser_fk_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUser_fk_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUser_fk_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof technician {
     return technician.init({

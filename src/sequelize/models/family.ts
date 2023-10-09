@@ -1,5 +1,7 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
+import type { address, addressId } from './address';
+import type { benefits, benefitsId } from './benefits';
 import type { user_identify, user_identifyId } from './user_identify';
 
 export interface familyAttributes {
@@ -20,6 +22,16 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   address_fk!: number;
   benefit_fk!: number;
 
+  // family belongsTo address via address_fk
+  address_fk_address!: address;
+  getAddress_fk_address!: Sequelize.BelongsToGetAssociationMixin<address>;
+  setAddress_fk_address!: Sequelize.BelongsToSetAssociationMixin<address, addressId>;
+  createAddress_fk_address!: Sequelize.BelongsToCreateAssociationMixin<address>;
+  // family belongsTo benefits via benefit_fk
+  benefit_fk_benefit!: benefits;
+  getBenefit_fk_benefit!: Sequelize.BelongsToGetAssociationMixin<benefits>;
+  setBenefit_fk_benefit!: Sequelize.BelongsToSetAssociationMixin<benefits, benefitsId>;
+  createBenefit_fk_benefit!: Sequelize.BelongsToCreateAssociationMixin<benefits>;
   // family hasMany user_identify via family_fk
   user_identifies!: user_identify[];
   getUser_identifies!: Sequelize.HasManyGetAssociationsMixin<user_identify>;

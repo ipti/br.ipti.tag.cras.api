@@ -1,9 +1,9 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
+import type { attendance, attendanceCreationAttributes, attendanceId } from './attendance';
 
 export interface taskAttributes {
   id: number;
-  attendance_fk: number;
   name: string;
   description?: string;
   createdAt: Date;
@@ -17,12 +17,16 @@ export type taskCreationAttributes = Sequelize.InferCreationAttributes<task>;
 
 export class task extends Model<taskAttributes, taskCreationAttributes> implements taskAttributes {
   id!: number;
-  attendance_fk!: number;
   name!: string;
   description?: string;
   createdAt!: Date;
   updatedAt!: Date;
 
+  // task hasOne attendance via task_fk
+  attendance!: attendance;
+  getAttendance!: Sequelize.HasOneGetAssociationMixin<attendance>;
+  setAttendance!: Sequelize.HasOneSetAssociationMixin<attendance, attendanceId>;
+  createAttendance!: Sequelize.HasOneCreateAssociationMixin<attendance>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof task {
     return task.init({
@@ -31,14 +35,6 @@ export class task extends Model<taskAttributes, taskCreationAttributes> implemen
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
-    },
-    attendance_fk: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        table: 'attendance',
-        key: 'id'
-      }
     },
     name: {
       type: DataTypes.STRING(191),
@@ -59,13 +55,6 @@ export class task extends Model<taskAttributes, taskCreationAttributes> implemen
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "task_attendance_fk_fkey",
-        using: "BTREE",
-        fields: [
-          { name: "attendance_fk" },
         ]
       },
     ]
