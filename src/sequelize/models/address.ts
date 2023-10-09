@@ -1,9 +1,13 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
+import type { edcenso_city, edcenso_cityId } from './edcenso_city';
+import type { edcenso_uf, edcenso_ufId } from './edcenso_uf';
 import type { family, familyId } from './family';
 
 export interface addressAttributes {
   id: number;
+  edcenso_uf_fk: number;
+  edcenso_city_fk: number;
   address: string;
   telephone: string;
   reference: string;
@@ -20,6 +24,8 @@ export type addressCreationAttributes = Sequelize.InferCreationAttributes<addres
 
 export class address extends Model<addressAttributes, addressCreationAttributes> implements addressAttributes {
   id!: number;
+  edcenso_uf_fk!: number;
+  edcenso_city_fk!: number;
   address!: string;
   telephone!: string;
   reference!: string;
@@ -40,6 +46,16 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
   hasFamily!: Sequelize.HasManyHasAssociationMixin<family, familyId>;
   hasFamilies!: Sequelize.HasManyHasAssociationsMixin<family, familyId>;
   countFamilies!: Sequelize.HasManyCountAssociationsMixin<family>;
+  // address belongsTo edcenso_city via edcenso_city_fk
+  edcenso_city_fk_edcenso_city!: edcenso_city;
+  getEdcenso_city_fk_edcenso_city!: Sequelize.BelongsToGetAssociationMixin<edcenso_city>;
+  setEdcenso_city_fk_edcenso_city!: Sequelize.BelongsToSetAssociationMixin<edcenso_city, edcenso_cityId>;
+  createEdcenso_city_fk_edcenso_city!: Sequelize.BelongsToCreateAssociationMixin<edcenso_city>;
+  // address belongsTo edcenso_uf via edcenso_uf_fk
+  edcenso_uf_fk_edcenso_uf!: edcenso_uf;
+  getEdcenso_uf_fk_edcenso_uf!: Sequelize.BelongsToGetAssociationMixin<edcenso_uf>;
+  setEdcenso_uf_fk_edcenso_uf!: Sequelize.BelongsToSetAssociationMixin<edcenso_uf, edcenso_ufId>;
+  createEdcenso_uf_fk_edcenso_uf!: Sequelize.BelongsToCreateAssociationMixin<edcenso_uf>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof address {
     return address.init({
@@ -48,6 +64,22 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
+    },
+    edcenso_uf_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'edcenso_uf',
+        key: 'id'
+      }
+    },
+    edcenso_city_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'edcenso_city',
+        key: 'id'
+      }
     },
     address: {
       type: DataTypes.STRING(191),
@@ -88,6 +120,20 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "address_edcenso_uf_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "edcenso_uf_fk" },
+        ]
+      },
+      {
+        name: "address_edcenso_city_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "edcenso_city_fk" },
         ]
       },
     ]

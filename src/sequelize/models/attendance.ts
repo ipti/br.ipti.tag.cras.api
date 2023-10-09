@@ -1,43 +1,52 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
 import type { task, taskId } from './task';
+import type { technician, technicianId } from './technician';
+import type { user_identify, user_identifyId } from './user_identify';
 
 export interface attendanceAttributes {
   id: number;
   user_identify_fk: number;
   technician_fk: number;
+  task_fk: number;
   solicitation: string;
   providence: string;
   result: string;
   description: string;
+  date: Date;
 }
 
 export type attendancePk = "id";
 export type attendanceId = attendance[attendancePk];
-export type attendanceOptionalAttributes = "id";
+export type attendanceOptionalAttributes = "id" | "date";
 export type attendanceCreationAttributes = Sequelize.InferCreationAttributes<attendance>;
 
 export class attendance extends Model<attendanceAttributes, attendanceCreationAttributes> implements attendanceAttributes {
   id!: number;
   user_identify_fk!: number;
   technician_fk!: number;
+  task_fk!: number;
   solicitation!: string;
   providence!: string;
   result!: string;
   description!: string;
+  date!: Date;
 
-  // attendance hasMany task via attendance_fk
-  tasks!: task[];
-  getTasks!: Sequelize.HasManyGetAssociationsMixin<task>;
-  setTasks!: Sequelize.HasManySetAssociationsMixin<task, taskId>;
-  addTask!: Sequelize.HasManyAddAssociationMixin<task, taskId>;
-  addTasks!: Sequelize.HasManyAddAssociationsMixin<task, taskId>;
-  createTask!: Sequelize.HasManyCreateAssociationMixin<task>;
-  removeTask!: Sequelize.HasManyRemoveAssociationMixin<task, taskId>;
-  removeTasks!: Sequelize.HasManyRemoveAssociationsMixin<task, taskId>;
-  hasTask!: Sequelize.HasManyHasAssociationMixin<task, taskId>;
-  hasTasks!: Sequelize.HasManyHasAssociationsMixin<task, taskId>;
-  countTasks!: Sequelize.HasManyCountAssociationsMixin<task>;
+  // attendance belongsTo task via task_fk
+  task_fk_task!: task;
+  getTask_fk_task!: Sequelize.BelongsToGetAssociationMixin<task>;
+  setTask_fk_task!: Sequelize.BelongsToSetAssociationMixin<task, taskId>;
+  createTask_fk_task!: Sequelize.BelongsToCreateAssociationMixin<task>;
+  // attendance belongsTo technician via technician_fk
+  technician_fk_technician!: technician;
+  getTechnician_fk_technician!: Sequelize.BelongsToGetAssociationMixin<technician>;
+  setTechnician_fk_technician!: Sequelize.BelongsToSetAssociationMixin<technician, technicianId>;
+  createTechnician_fk_technician!: Sequelize.BelongsToCreateAssociationMixin<technician>;
+  // attendance belongsTo user_identify via user_identify_fk
+  user_identify_fk_user_identify!: user_identify;
+  getUser_identify_fk_user_identify!: Sequelize.BelongsToGetAssociationMixin<user_identify>;
+  setUser_identify_fk_user_identify!: Sequelize.BelongsToSetAssociationMixin<user_identify, user_identifyId>;
+  createUser_identify_fk_user_identify!: Sequelize.BelongsToCreateAssociationMixin<user_identify>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof attendance {
     return attendance.init({
@@ -63,6 +72,15 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         key: 'id'
       }
     },
+    task_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'task',
+        key: 'id'
+      },
+      unique: "attendance_task_fk_fkey"
+    },
     solicitation: {
       type: DataTypes.STRING(191),
       allowNull: false
@@ -78,6 +96,11 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
     description: {
       type: DataTypes.STRING(191),
       allowNull: false
+    },
+    date: {
+      type: DataTypes.DATE(3),
+      allowNull: false,
+      defaultValue: "current_timestamp(3)"
     }
   }, {
     sequelize,
@@ -90,6 +113,14 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "attendance_task_fk_key",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "task_fk" },
         ]
       },
       {

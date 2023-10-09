@@ -15,6 +15,7 @@ import { UserIdentifyModule } from './user-identify/user_identify.module';
 import { VulnerabilityModule } from './vulnerability/vulnerability.module';
 import { DbNameMiddleware } from './utils/middleware/db-name';
 import { JwtMiddleware } from './utils/middleware/jwt.middleware';
+import { ChartsModule } from './charts/charts.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtMiddleware } from './utils/middleware/jwt.middleware';
     UserModule,
     UserIdentifyModule,
     VulnerabilityModule,
+    ChartsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

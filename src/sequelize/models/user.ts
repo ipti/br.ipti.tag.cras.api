@@ -8,7 +8,7 @@ export interface userAttributes {
   username: string;
   email: string;
   password: string;
-  role: 'SECRETARY' | 'TECHNICIAN';
+  role: 'SECRETARY' | 'TECHNICIAN' | 'USER';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,7 +24,7 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
   username!: string;
   email!: string;
   password!: string;
-  role!: 'SECRETARY' | 'TECHNICIAN';
+  role!: 'SECRETARY' | 'TECHNICIAN' | 'USER';
   createdAt!: Date;
   updatedAt!: Date;
 
@@ -60,9 +60,9 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
       allowNull: false
     },
     role: {
-      type: DataTypes.ENUM('SECRETARY','TECHNICIAN'),
+      type: DataTypes.ENUM('SECRETARY','TECHNICIAN','USER'),
       allowNull: false,
-      defaultValue: "TECHNICIAN"
+      defaultValue: "USER"
     }
   }, {
     sequelize,
