@@ -16,6 +16,7 @@ import { VulnerabilityModule } from './vulnerability/vulnerability.module';
 import { DbNameMiddleware } from './utils/middleware/db-name';
 import { JwtMiddleware } from './utils/middleware/jwt.middleware';
 import { ChartsModule } from './charts/charts.module';
+import { AttendanceUnityModule } from './attendance-unity/attendance_unity.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ChartsModule } from './charts/charts.module';
     AuthModule,
     AddressModule,
     AttendanceModule,
+    AttendanceUnityModule,
     BenefitsModule,
     FamilyModule,
     TaskModule,
