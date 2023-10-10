@@ -48,12 +48,12 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
     },
     username: {
       type: DataTypes.STRING(191),
-      allowNull: false
+      allowNull: false,
+      unique: "user_username_key"
     },
     email: {
       type: DataTypes.STRING(191),
       allowNull: false,
-      unique: "user_email_key"
     },
     password: {
       type: DataTypes.STRING(191),
@@ -78,11 +78,11 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
         ]
       },
       {
-        name: "user_email_key",
+        name: "user_username_key",
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "email" },
+          { name: "username" },
         ]
       },
     ]

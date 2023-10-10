@@ -12,11 +12,11 @@ export class UserService {
   ): Promise<User> {
     const dbName = request['dbName'];
 
-    const userRegistered = await User.withSchema(dbName).findAll({
+    const userRegistered = await User.withSchema(dbName).findOne({
       where: { username: createUser.username },
     });
 
-    if (userRegistered.length > 0) {
+    if (userRegistered) {
       throw new HttpException(
         'Username already exists',
         HttpStatus.BAD_REQUEST,
