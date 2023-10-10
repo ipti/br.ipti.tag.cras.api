@@ -3,6 +3,8 @@ import { address as _address } from "./address";
 import type { addressAttributes, addressCreationAttributes } from "./address";
 import { attendance as _attendance } from "./attendance";
 import type { attendanceAttributes, attendanceCreationAttributes } from "./attendance";
+import { attendance_unity as _attendance_unity } from "./attendance_unity";
+import type { attendance_unityAttributes, attendance_unityCreationAttributes } from "./attendance_unity";
 import { benefits as _benefits } from "./benefits";
 import type { benefitsAttributes, benefitsCreationAttributes } from "./benefits";
 import { edcenso_city as _edcenso_city } from "./edcenso_city";
@@ -25,6 +27,7 @@ import type { vulnerabilityAttributes, vulnerabilityCreationAttributes } from ".
 export {
   _address as address,
   _attendance as attendance,
+  _attendance_unity as attendance_unity,
   _benefits as benefits,
   _edcenso_city as edcenso_city,
   _edcenso_uf as edcenso_uf,
@@ -41,6 +44,8 @@ export type {
   addressCreationAttributes,
   attendanceAttributes,
   attendanceCreationAttributes,
+  attendance_unityAttributes,
+  attendance_unityCreationAttributes,
   benefitsAttributes,
   benefitsCreationAttributes,
   edcenso_cityAttributes,
@@ -64,6 +69,7 @@ export type {
 export function initModels(sequelize: Sequelize) {
   const address = _address.initModel(sequelize);
   const attendance = _attendance.initModel(sequelize);
+  const attendance_unity = _attendance_unity.initModel(sequelize);
   const benefits = _benefits.initModel(sequelize);
   const edcenso_city = _edcenso_city.initModel(sequelize);
   const edcenso_uf = _edcenso_uf.initModel(sequelize);
@@ -74,8 +80,14 @@ export function initModels(sequelize: Sequelize) {
   const user_identify = _user_identify.initModel(sequelize);
   const vulnerability = _vulnerability.initModel(sequelize);
 
+  attendance_unity.belongsTo(address, { as: "address_fk_address", foreignKey: "address_fk"});
+  address.hasOne(attendance_unity, { as: "attendance_unity", foreignKey: "address_fk"});
   family.belongsTo(address, { as: "address_fk_address", foreignKey: "address_fk"});
   address.hasMany(family, { as: "families", foreignKey: "address_fk"});
+  attendance.belongsTo(attendance_unity, { as: "attendance_unity_fk_attendance_unity", foreignKey: "attendance_unity_fk"});
+  attendance_unity.hasMany(attendance, { as: "attendances", foreignKey: "attendance_unity_fk"});
+  family.belongsTo(attendance_unity, { as: "attendance_unity_fk_attendance_unity", foreignKey: "attendance_unity_fk"});
+  attendance_unity.hasMany(family, { as: "families", foreignKey: "attendance_unity_fk"});
   family.belongsTo(benefits, { as: "benefit_fk_benefit", foreignKey: "benefit_fk"});
   benefits.hasMany(family, { as: "families", foreignKey: "benefit_fk"});
   address.belongsTo(edcenso_city, { as: "edcenso_city_fk_edcenso_city", foreignKey: "edcenso_city_fk"});
@@ -100,6 +112,7 @@ export function initModels(sequelize: Sequelize) {
   return {
     address: address,
     attendance: attendance,
+    attendance_unity: attendance_unity,
     benefits: benefits,
     edcenso_city: edcenso_city,
     edcenso_uf: edcenso_uf,

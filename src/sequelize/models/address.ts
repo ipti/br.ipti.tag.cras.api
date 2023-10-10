@@ -1,5 +1,6 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
+import type { attendance_unity, attendance_unityCreationAttributes, attendance_unityId } from './attendance_unity';
 import type { edcenso_city, edcenso_cityId } from './edcenso_city';
 import type { edcenso_uf, edcenso_ufId } from './edcenso_uf';
 import type { family, familyId } from './family';
@@ -34,6 +35,11 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
   rooms!: string;
   rent_value!: number;
 
+  // address hasOne attendance_unity via address_fk
+  attendance_unity!: attendance_unity;
+  getAttendance_unity!: Sequelize.HasOneGetAssociationMixin<attendance_unity>;
+  setAttendance_unity!: Sequelize.HasOneSetAssociationMixin<attendance_unity, attendance_unityId>;
+  createAttendance_unity!: Sequelize.HasOneCreateAssociationMixin<attendance_unity>;
   // address hasMany family via address_fk
   families!: family[];
   getFamilies!: Sequelize.HasManyGetAssociationsMixin<family>;

@@ -19,12 +19,6 @@ export class TaskService {
   ): Promise<Task> {
     const dbName = request['dbName'];
 
-    const attendance = await this.attendance.findOne(request, createTask.attendance_fk.toString());
-
-    if (!attendance) {
-      throw new HttpException('Attendance not found', HttpStatus.NOT_FOUND);
-    }
-
     const createdTask = await Task.withSchema(dbName).create({
       ...createTask,
     });

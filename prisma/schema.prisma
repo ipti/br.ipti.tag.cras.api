@@ -43,17 +43,19 @@ model user_identify {
 }
 
 model family {
-  id                       Int             @id @default(autoincrement())
+  id                       Int              @id @default(autoincrement())
   family_representative_fk Int
   address_fk               Int
   benefit_fk               Int
-  address                  address         @relation(fields: [address_fk], references: [id])
-  benefits                 benefits        @relation(fields: [benefit_fk], references: [id])
+  attendance_unity_fk      Int
+  address                  address          @relation(fields: [address_fk], references: [id])
+  benefits                 benefits         @relation(fields: [benefit_fk], references: [id])
+  attendance_unity         attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
   user_identify            user_identify[]
 }
 
 model address {
-  id                Int          @id @default(autoincrement())
+  id                Int                @id @default(autoincrement())
   edcenso_uf_fk     Int
   edcenso_city_fk   Int
   address           String
@@ -63,9 +65,10 @@ model address {
   construction_type String
   rooms             String
   rent_value        Int
-  edcenso_uf        edcenso_uf   @relation(fields: [edcenso_uf_fk], references: [id])
-  edcenso_city      edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
+  edcenso_uf        edcenso_uf         @relation(fields: [edcenso_uf_fk], references: [id])
+  edcenso_city      edcenso_city       @relation(fields: [edcenso_city_fk], references: [id])
   family            family[]
+  attendance_unity  attendance_unity?
 }
 
 model vulnerability {
@@ -81,18 +84,20 @@ model vulnerability {
 }
 
 model attendance {
-  id               Int           @id @default(autoincrement())
-  user_identify_fk Int
-  technician_fk    Int
-  task_fk          Int           @unique
-  solicitation     String
-  providence       String
-  result           String
-  description      String
-  date             DateTime      @default(now())
-  user_identify    user_identify @relation(fields: [user_identify_fk], references: [id])
-  technician       technician    @relation(fields: [technician_fk], references: [id])
-  task             task          @relation(fields: [task_fk], references: [id])
+  id                  Int              @id @default(autoincrement())
+  user_identify_fk    Int
+  technician_fk       Int
+  task_fk             Int              @unique
+  attendance_unity_fk Int
+  solicitation        String
+  providence          String
+  result              String
+  description         String
+  date                DateTime         @default(now())
+  user_identify       user_identify    @relation(fields: [user_identify_fk], references: [id])
+  technician          technician       @relation(fields: [technician_fk], references: [id])
+  task                task             @relation(fields: [task_fk], references: [id])
+  attendance_unity    attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
 }
 
 model user {
@@ -110,8 +115,8 @@ model user {
 model technician {
   id          Int          @id @default(autoincrement())
   name        String
-  user_fk     Int          @unique
-  user        user         @relation(fields: [user_fk], references: [id])
+  user_fk     Int?         @unique
+  user        user?        @relation(fields: [user_fk], references: [id])
   attendances attendance[]
 }
 
@@ -152,6 +157,15 @@ model edcenso_city {
   address       address[]
 
   @@index([edcenso_uf_fk], map: "edcenso_uf_fk")
+}
+
+model attendance_unity {
+  id         Int          @id @default(autoincrement())
+  name       String
+  address_fk Int          @unique
+  address    address      @relation(fields: [address_fk], references: [id])
+  family     family[]
+  attendance attendance[]
 }
 
 enum Benefits {

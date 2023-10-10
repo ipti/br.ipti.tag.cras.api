@@ -1,6 +1,7 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
 import type { address, addressId } from './address';
+import type { attendance_unity, attendance_unityId } from './attendance_unity';
 import type { benefits, benefitsId } from './benefits';
 import type { user_identify, user_identifyId } from './user_identify';
 
@@ -9,6 +10,7 @@ export interface familyAttributes {
   family_representative_fk: number;
   address_fk: number;
   benefit_fk: number;
+  attendance_unity_fk: number;
 }
 
 export type familyPk = "id";
@@ -21,12 +23,18 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   family_representative_fk!: number;
   address_fk!: number;
   benefit_fk!: number;
+  attendance_unity_fk!: number;
 
   // family belongsTo address via address_fk
   address_fk_address!: address;
   getAddress_fk_address!: Sequelize.BelongsToGetAssociationMixin<address>;
   setAddress_fk_address!: Sequelize.BelongsToSetAssociationMixin<address, addressId>;
   createAddress_fk_address!: Sequelize.BelongsToCreateAssociationMixin<address>;
+  // family belongsTo attendance_unity via attendance_unity_fk
+  attendance_unity_fk_attendance_unity!: attendance_unity;
+  getAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToGetAssociationMixin<attendance_unity>;
+  setAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToSetAssociationMixin<attendance_unity, attendance_unityId>;
+  createAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToCreateAssociationMixin<attendance_unity>;
   // family belongsTo benefits via benefit_fk
   benefit_fk_benefit!: benefits;
   getBenefit_fk_benefit!: Sequelize.BelongsToGetAssociationMixin<benefits>;
@@ -72,6 +80,14 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         table: 'benefits',
         key: 'id'
       }
+    },
+    attendance_unity_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'attendance_unity',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
@@ -98,6 +114,13 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         using: "BTREE",
         fields: [
           { name: "benefit_fk" },
+        ]
+      },
+      {
+        name: "family_attendance_unity_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "attendance_unity_fk" },
         ]
       },
     ]

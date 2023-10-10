@@ -36,6 +36,7 @@ CREATE TABLE `family` (
     `family_representative_fk` INTEGER NOT NULL,
     `address_fk` INTEGER NOT NULL,
     `benefit_fk` INTEGER NOT NULL,
+    `attendance_unity_fk` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -76,6 +77,7 @@ CREATE TABLE `attendance` (
     `user_identify_fk` INTEGER NOT NULL,
     `technician_fk` INTEGER NOT NULL,
     `task_fk` INTEGER NOT NULL,
+    `attendance_unity_fk` INTEGER NOT NULL,
     `solicitation` VARCHAR(191) NOT NULL,
     `providence` VARCHAR(191) NOT NULL,
     `result` VARCHAR(191) NOT NULL,
@@ -105,7 +107,7 @@ CREATE TABLE `user` (
 CREATE TABLE `technician` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `user_fk` INTEGER NOT NULL,
+    `user_fk` INTEGER NULL,
 
     UNIQUE INDEX `technician_user_fk_key`(`user_fk`),
     PRIMARY KEY (`id`)
@@ -157,6 +159,16 @@ CREATE TABLE `edcenso_city` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `attendance_unity` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `address_fk` INTEGER NOT NULL,
+
+    UNIQUE INDEX `attendance_unity_address_fk_key`(`address_fk`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_vulnerability_fk_fkey` FOREIGN KEY (`vulnerability_fk`) REFERENCES `vulnerability`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -168,6 +180,9 @@ ALTER TABLE `family` ADD CONSTRAINT `family_address_fk_fkey` FOREIGN KEY (`addre
 
 -- AddForeignKey
 ALTER TABLE `family` ADD CONSTRAINT `family_benefit_fk_fkey` FOREIGN KEY (`benefit_fk`) REFERENCES `benefits`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `family` ADD CONSTRAINT `family_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `address` ADD CONSTRAINT `address_edcenso_uf_fk_fkey` FOREIGN KEY (`edcenso_uf_fk`) REFERENCES `edcenso_uf`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -185,7 +200,13 @@ ALTER TABLE `attendance` ADD CONSTRAINT `attendance_technician_fk_fkey` FOREIGN 
 ALTER TABLE `attendance` ADD CONSTRAINT `attendance_task_fk_fkey` FOREIGN KEY (`task_fk`) REFERENCES `task`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `technician` ADD CONSTRAINT `technician_user_fk_fkey` FOREIGN KEY (`user_fk`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `attendance` ADD CONSTRAINT `attendance_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `technician` ADD CONSTRAINT `technician_user_fk_fkey` FOREIGN KEY (`user_fk`) REFERENCES `user`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `edcenso_city` ADD CONSTRAINT `edcenso_city_fk` FOREIGN KEY (`edcenso_uf_fk`) REFERENCES `edcenso_uf`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- AddForeignKey
+ALTER TABLE `attendance_unity` ADD CONSTRAINT `attendance_unity_address_fk_fkey` FOREIGN KEY (`address_fk`) REFERENCES `address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

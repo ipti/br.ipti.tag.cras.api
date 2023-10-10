@@ -1,5 +1,6 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
+import type { attendance_unity, attendance_unityId } from './attendance_unity';
 import type { task, taskId } from './task';
 import type { technician, technicianId } from './technician';
 import type { user_identify, user_identifyId } from './user_identify';
@@ -9,6 +10,7 @@ export interface attendanceAttributes {
   user_identify_fk: number;
   technician_fk: number;
   task_fk: number;
+  attendance_unity_fk: number;
   solicitation: string;
   providence: string;
   result: string;
@@ -26,12 +28,18 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
   user_identify_fk!: number;
   technician_fk!: number;
   task_fk!: number;
+  attendance_unity_fk!: number;
   solicitation!: string;
   providence!: string;
   result!: string;
   description!: string;
   date!: Date;
 
+  // attendance belongsTo attendance_unity via attendance_unity_fk
+  attendance_unity_fk_attendance_unity!: attendance_unity;
+  getAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToGetAssociationMixin<attendance_unity>;
+  setAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToSetAssociationMixin<attendance_unity, attendance_unityId>;
+  createAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToCreateAssociationMixin<attendance_unity>;
   // attendance belongsTo task via task_fk
   task_fk_task!: task;
   getTask_fk_task!: Sequelize.BelongsToGetAssociationMixin<task>;
@@ -80,6 +88,14 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         key: 'id'
       },
       unique: "attendance_task_fk_fkey"
+    },
+    attendance_unity_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'attendance_unity',
+        key: 'id'
+      }
     },
     solicitation: {
       type: DataTypes.STRING(191),
@@ -135,6 +151,13 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         using: "BTREE",
         fields: [
           { name: "technician_fk" },
+        ]
+      },
+      {
+        name: "attendance_attendance_unity_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "attendance_unity_fk" },
         ]
       },
     ]
