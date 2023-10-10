@@ -16,6 +16,10 @@ export class CreateAttendanceDto {
   technician_fk: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  task_fk: number;
+
+  @IsNotEmpty()
   @IsString()
   solicitation: string;
 

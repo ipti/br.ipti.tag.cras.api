@@ -6,18 +6,18 @@ import type { user, userId } from './user';
 export interface technicianAttributes {
   id: number;
   name: string;
-  user_fk: number;
+  user_fk?: number;
 }
 
 export type technicianPk = "id";
 export type technicianId = technician[technicianPk];
-export type technicianOptionalAttributes = "id";
+export type technicianOptionalAttributes = "id" | "user_fk";
 export type technicianCreationAttributes = Sequelize.InferCreationAttributes<technician>;
 
 export class technician extends Model<technicianAttributes, technicianCreationAttributes> implements technicianAttributes {
   id!: number;
   name!: string;
-  user_fk!: number;
+  user_fk?: number;
 
   // technician hasMany attendance via technician_fk
   attendances!: attendance[];
@@ -51,7 +51,7 @@ export class technician extends Model<technicianAttributes, technicianCreationAt
     },
     user_fk: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         table: 'user',
         key: 'id'

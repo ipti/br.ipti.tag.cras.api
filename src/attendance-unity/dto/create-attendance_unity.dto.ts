@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class CreateTechnicianDto {
+export class CreateAttendanceUnityDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  user_fk: number;
+  address_fk: number;
 }
