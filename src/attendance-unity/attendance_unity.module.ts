@@ -9,4 +9,4 @@ import { UserModule } from 'src/user/user.module';
   providers: [AttendanceUnityService],
   exports: [AttendanceUnityService],
 })
-export class TechnicianModule {}
+export class AttendanceUnityModule {}

@@ -43,26 +43,26 @@ services:
   #     - /home/api/node_modules
   #   restart: unless-stopped
 
-  # cras-api-prod:
-  #   container_name: cras-api_prod
-  #   image: cras-api_prod
-  #   build:
-  #     context: .
-  #     target: production
-  #     dockerfile: ./Dockerfile
-  #   command: npm run start:prod
-  #   expose:
-  #     - 587
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - 3001:3000
-  #   networks:
-  #     - cras-net
-  #   volumes:
-  #     - .:/home/api
-  #     - /home/api/node_modules
-  #   restart: unless-stopped
+  cras-api-prod:
+    container_name: cras-api_prod
+    image: cras-api_prod
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    expose:
+      - 587
+    env_file:
+      - .env
+    ports:
+      - 3001:3000
+    networks:
+      - cras-net
+    volumes:
+      - .:/home/api
+      - /home/api/node_modules
+    restart: unless-stopped
 
 networks:
   cras-net:
