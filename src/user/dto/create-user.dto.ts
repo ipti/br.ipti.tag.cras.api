@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Role } from '../../utils/enum';
 
 export class CreateUserDto {
@@ -19,6 +25,6 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @IsEnum(Role)
+  @IsEnum(Role, { message: 'Invalid role. Role must be SECRETARY, TECHNICIAN, USER.' })
   role: Role;
 }

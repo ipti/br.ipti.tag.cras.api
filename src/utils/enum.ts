@@ -1,10 +1,10 @@
 export enum Role {
-  'SECRETARY',
-  'TECHNICIAN',
-  'USER',
+  "SECRETARY" = "SECRETARY",
+  "TECHNICIAN" = "TECHNICIAN",
+  "USER" = "USER",
 }
 
 export enum Benefits {
-  'PERIODICO',
-  'EVENTUAL',
+  "PERIODICO" = "PERIODICO",
+  "EVENTUAL" = "EVENTUAL",
 }

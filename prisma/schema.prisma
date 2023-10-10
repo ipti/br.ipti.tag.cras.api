@@ -55,7 +55,7 @@ model family {
 }
 
 model address {
-  id                Int                @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
   edcenso_uf_fk     Int
   edcenso_city_fk   Int
   address           String
@@ -65,8 +65,8 @@ model address {
   construction_type String
   rooms             String
   rent_value        Int
-  edcenso_uf        edcenso_uf         @relation(fields: [edcenso_uf_fk], references: [id])
-  edcenso_city      edcenso_city       @relation(fields: [edcenso_city_fk], references: [id])
+  edcenso_uf        edcenso_uf        @relation(fields: [edcenso_uf_fk], references: [id])
+  edcenso_city      edcenso_city      @relation(fields: [edcenso_city_fk], references: [id])
   family            family[]
   attendance_unity  attendance_unity?
 }
@@ -103,8 +103,8 @@ model attendance {
 model user {
   id         Int         @id @default(autoincrement())
   name       String
-  username   String
-  email      String      @unique
+  username   String      @unique
+  email      String
   password   String
   role       Role        @default(USER)
   createdAt  DateTime    @default(now())

@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { user } from 'src/sequelize/models/user';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
     };
 
     if (
-      userFound.dataValues
+      userFound.dataValues && this.validateMd5Password(userPassword, userFound.dataValues.password)
     ) {
       const { name, username, id, role } = userFound.dataValues;
 
@@ -41,5 +42,17 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
       user,
     };
+  }
+
+  private validateMd5Password(password: string, encryptedPassword: string) {
+    const currentEncryptedPassword = this.encryptedMd5Password(password);
+    if (currentEncryptedPassword === encryptedPassword) {
+      return true;
+    }
+    return false;
+  }
+
+  private encryptedMd5Password(password: string) {
+    return crypto.createHash('md5').update(password).digest('hex');
   }
 }
