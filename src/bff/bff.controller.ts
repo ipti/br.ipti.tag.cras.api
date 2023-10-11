@@ -24,8 +24,8 @@ import {
   import { UserIdentifyWithoutFamily } from './doc/bff';
   
   @ApiTags('BFF')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Controller('bff')
   export class BffController {
     constructor(

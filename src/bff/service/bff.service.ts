@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserIdentifyWithoutFamilyDto } from '../dto/create-bff.dto';
-import { address as Address } from 'src/sequelize/models/address';
-import { user_identify as UserIdentify } from 'src/sequelize/models/user_identify';
-import { family as Family } from 'src/sequelize/models/family';
-import { family_benefits as FamilyBenefits } from 'src/sequelize/models/family_benefits';
-import { vulnerability as Vulnerability } from 'src/sequelize/models/vulnerability';
+import { address as Address } from '../../sequelize/models/address';
+import { user_identify as UserIdentify } from '../../sequelize/models/user_identify';
+import { family as Family } from '../../sequelize/models/family';
+import { family_benefits as FamilyBenefits } from '../../sequelize/models/family_benefits';
+import { vulnerability as Vulnerability } from '../../sequelize/models/vulnerability';
 import Sequelize from '@sequelize/core';
-import DbConnection from 'src/sequelize/sequelize';
+import DbConnection from '../../sequelize/sequelize';
 
 @Injectable()
 export class BffService {
