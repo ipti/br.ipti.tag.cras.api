@@ -2,7 +2,7 @@
 CREATE TABLE `user_identify` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `vulnerability_fk` INTEGER NOT NULL,
-    `family_fk` INTEGER NOT NULL,
+    `family_fk` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `surname` VARCHAR(191) NOT NULL,
     `folder` VARCHAR(191) NULL,
@@ -35,7 +35,6 @@ CREATE TABLE `family` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `family_representative_fk` INTEGER NOT NULL,
     `address_fk` INTEGER NOT NULL,
-    `benefit_fk` INTEGER NOT NULL,
     `attendance_unity_fk` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -51,7 +50,7 @@ CREATE TABLE `address` (
     `reference` VARCHAR(191) NOT NULL,
     `conditions` VARCHAR(191) NOT NULL,
     `construction_type` VARCHAR(191) NOT NULL,
-    `rooms` VARCHAR(191) NOT NULL,
+    `rooms` INTEGER NOT NULL,
     `rent_value` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -104,6 +103,16 @@ CREATE TABLE `user` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `family_benefits` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `family_fk` INTEGER NOT NULL,
+    `benefits_fk` INTEGER NOT NULL,
+    `value` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `technician` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
@@ -128,7 +137,6 @@ CREATE TABLE `task` (
 CREATE TABLE `benefits` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `description` VARCHAR(191) NOT NULL,
-    `value` INTEGER NOT NULL,
     `type` ENUM('PERIODICO', 'EVENTUAL') NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -173,13 +181,10 @@ CREATE TABLE `attendance_unity` (
 ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_vulnerability_fk_fkey` FOREIGN KEY (`vulnerability_fk`) REFERENCES `vulnerability`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `family` ADD CONSTRAINT `family_address_fk_fkey` FOREIGN KEY (`address_fk`) REFERENCES `address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `family` ADD CONSTRAINT `family_benefit_fk_fkey` FOREIGN KEY (`benefit_fk`) REFERENCES `benefits`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `family` ADD CONSTRAINT `family_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -201,6 +206,12 @@ ALTER TABLE `attendance` ADD CONSTRAINT `attendance_task_fk_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `attendance` ADD CONSTRAINT `attendance_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `family_benefits` ADD CONSTRAINT `family_benefits_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `family_benefits` ADD CONSTRAINT `family_benefits_benefits_fk_fkey` FOREIGN KEY (`benefits_fk`) REFERENCES `benefits`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `technician` ADD CONSTRAINT `technician_user_fk_fkey` FOREIGN KEY (`user_fk`) REFERENCES `user`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

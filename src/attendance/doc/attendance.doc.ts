@@ -16,6 +16,20 @@ export class AttendanceDocument {
   technician_fk: number;
 
   @ApiProperty({
+    type: Number,
+    description: 'Serviço',
+    required: true,
+  })
+  task_fk: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Identificador da unidade',
+    required: true,
+  })
+  attendance_unity_fk: number;
+
+  @ApiProperty({
     type: String,
     description: 'Solicitação',
     required: true,

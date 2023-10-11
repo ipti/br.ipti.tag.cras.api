@@ -14,7 +14,7 @@ export interface addressAttributes {
   reference: string;
   conditions: string;
   construction_type: string;
-  rooms: string;
+  rooms: number;
   rent_value: number;
 }
 
@@ -32,7 +32,7 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
   reference!: string;
   conditions!: string;
   construction_type!: string;
-  rooms!: string;
+  rooms!: number;
   rent_value!: number;
 
   // address hasOne attendance_unity via address_fk
@@ -108,7 +108,7 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
       allowNull: false
     },
     rooms: {
-      type: DataTypes.STRING(191),
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     rent_value: {

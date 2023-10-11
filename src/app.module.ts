@@ -17,6 +17,7 @@ import { DbNameMiddleware } from './utils/middleware/db-name';
 import { JwtMiddleware } from './utils/middleware/jwt.middleware';
 import { ChartsModule } from './charts/charts.module';
 import { AttendanceUnityModule } from './attendance-unity/attendance_unity.module';
+import { BffModule } from './bff/bff.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AttendanceUnityModule } from './attendance-unity/attendance_unity.modul
     UserIdentifyModule,
     VulnerabilityModule,
     ChartsModule,
+    BffModule,
   ],
   controllers: [AppController],
   providers: [AppService],

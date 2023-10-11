@@ -11,5 +11,5 @@ export class CreateFamilyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  benefit_fk: number;
+  attendance_unity_fk: number;
 }

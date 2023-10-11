@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Benefits } from '../../utils/enum';
 
 export class CreateBenefitsDto {
   @IsNotEmpty()
@@ -6,6 +7,6 @@ export class CreateBenefitsDto {
   description: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  value: number;
+  @IsEnum(Benefits, { message: 'Invalid type. Type must be PERIODICO, EVENTUAL.'})
+  type: Benefits;
 }
