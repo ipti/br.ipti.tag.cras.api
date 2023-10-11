@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserIdentifyWithoutFamily {
-  @ApiProperty()
-  vulnerability_fk: number;
 
   @ApiProperty()
   name: string;
@@ -129,4 +127,7 @@ export class UserIdentifyWithoutFamily {
 
   @ApiProperty()
   benefits_fk: number;
+
+  @ApiProperty()
+  value: number;
 }
