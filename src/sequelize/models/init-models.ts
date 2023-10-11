@@ -13,6 +13,8 @@ import { edcenso_uf as _edcenso_uf } from "./edcenso_uf";
 import type { edcenso_ufAttributes, edcenso_ufCreationAttributes } from "./edcenso_uf";
 import { family as _family } from "./family";
 import type { familyAttributes, familyCreationAttributes } from "./family";
+import { family_benefits as _family_benefits } from "./family_benefits";
+import type { family_benefitsAttributes, family_benefitsCreationAttributes } from "./family_benefits";
 import { task as _task } from "./task";
 import type { taskAttributes, taskCreationAttributes } from "./task";
 import { technician as _technician } from "./technician";
@@ -32,6 +34,7 @@ export {
   _edcenso_city as edcenso_city,
   _edcenso_uf as edcenso_uf,
   _family as family,
+  _family_benefits as family_benefits,
   _task as task,
   _technician as technician,
   _user as user,
@@ -54,6 +57,8 @@ export type {
   edcenso_ufCreationAttributes,
   familyAttributes,
   familyCreationAttributes,
+  family_benefitsAttributes,
+  family_benefitsCreationAttributes,
   taskAttributes,
   taskCreationAttributes,
   technicianAttributes,
@@ -74,6 +79,7 @@ export function initModels(sequelize: Sequelize) {
   const edcenso_city = _edcenso_city.initModel(sequelize);
   const edcenso_uf = _edcenso_uf.initModel(sequelize);
   const family = _family.initModel(sequelize);
+  const family_benefits = _family_benefits.initModel(sequelize);
   const task = _task.initModel(sequelize);
   const technician = _technician.initModel(sequelize);
   const user = _user.initModel(sequelize);
@@ -88,14 +94,16 @@ export function initModels(sequelize: Sequelize) {
   attendance_unity.hasMany(attendance, { as: "attendances", foreignKey: "attendance_unity_fk"});
   family.belongsTo(attendance_unity, { as: "attendance_unity_fk_attendance_unity", foreignKey: "attendance_unity_fk"});
   attendance_unity.hasMany(family, { as: "families", foreignKey: "attendance_unity_fk"});
-  family.belongsTo(benefits, { as: "benefit_fk_benefit", foreignKey: "benefit_fk"});
-  benefits.hasMany(family, { as: "families", foreignKey: "benefit_fk"});
+  family_benefits.belongsTo(benefits, { as: "benefits_fk_benefit", foreignKey: "benefits_fk"});
+  benefits.hasMany(family_benefits, { as: "family_benefits", foreignKey: "benefits_fk"});
   address.belongsTo(edcenso_city, { as: "edcenso_city_fk_edcenso_city", foreignKey: "edcenso_city_fk"});
   edcenso_city.hasMany(address, { as: "addresses", foreignKey: "edcenso_city_fk"});
   address.belongsTo(edcenso_uf, { as: "edcenso_uf_fk_edcenso_uf", foreignKey: "edcenso_uf_fk"});
   edcenso_uf.hasMany(address, { as: "addresses", foreignKey: "edcenso_uf_fk"});
   edcenso_city.belongsTo(edcenso_uf, { as: "edcenso_uf_fk_edcenso_uf", foreignKey: "edcenso_uf_fk"});
   edcenso_uf.hasMany(edcenso_city, { as: "edcenso_cities", foreignKey: "edcenso_uf_fk"});
+  family_benefits.belongsTo(family, { as: "family_fk_family", foreignKey: "family_fk"});
+  family.hasMany(family_benefits, { as: "family_benefits", foreignKey: "family_fk"});
   user_identify.belongsTo(family, { as: "family_fk_family", foreignKey: "family_fk"});
   family.hasMany(user_identify, { as: "user_identifies", foreignKey: "family_fk"});
   attendance.belongsTo(task, { as: "task_fk_task", foreignKey: "task_fk"});
@@ -117,6 +125,7 @@ export function initModels(sequelize: Sequelize) {
     edcenso_city: edcenso_city,
     edcenso_uf: edcenso_uf,
     family: family,
+    family_benefits: family_benefits,
     task: task,
     technician: technician,
     user: user,

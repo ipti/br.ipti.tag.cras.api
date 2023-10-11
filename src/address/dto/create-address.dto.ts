@@ -31,7 +31,7 @@ export class CreateAddressDto {
 
   @IsNotEmpty()
   @IsString()
-  rooms: string;
+  rooms: number;
 
   @IsNotEmpty()
   @IsNumber()

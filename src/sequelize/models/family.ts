@@ -2,14 +2,13 @@ import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
 import type { address, addressId } from './address';
 import type { attendance_unity, attendance_unityId } from './attendance_unity';
-import type { benefits, benefitsId } from './benefits';
+import type { family_benefits, family_benefitsId } from './family_benefits';
 import type { user_identify, user_identifyId } from './user_identify';
 
 export interface familyAttributes {
   id: number;
   family_representative_fk: number;
   address_fk: number;
-  benefit_fk: number;
   attendance_unity_fk: number;
 }
 
@@ -22,7 +21,6 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   id!: number;
   family_representative_fk!: number;
   address_fk!: number;
-  benefit_fk!: number;
   attendance_unity_fk!: number;
 
   // family belongsTo address via address_fk
@@ -35,11 +33,18 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   getAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToGetAssociationMixin<attendance_unity>;
   setAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToSetAssociationMixin<attendance_unity, attendance_unityId>;
   createAttendance_unity_fk_attendance_unity!: Sequelize.BelongsToCreateAssociationMixin<attendance_unity>;
-  // family belongsTo benefits via benefit_fk
-  benefit_fk_benefit!: benefits;
-  getBenefit_fk_benefit!: Sequelize.BelongsToGetAssociationMixin<benefits>;
-  setBenefit_fk_benefit!: Sequelize.BelongsToSetAssociationMixin<benefits, benefitsId>;
-  createBenefit_fk_benefit!: Sequelize.BelongsToCreateAssociationMixin<benefits>;
+  // family hasMany family_benefits via family_fk
+  family_benefits!: family_benefits[];
+  getFamily_benefits!: Sequelize.HasManyGetAssociationsMixin<family_benefits>;
+  setFamily_benefits!: Sequelize.HasManySetAssociationsMixin<family_benefits, family_benefitsId>;
+  addFamily_benefit!: Sequelize.HasManyAddAssociationMixin<family_benefits, family_benefitsId>;
+  addFamily_benefits!: Sequelize.HasManyAddAssociationsMixin<family_benefits, family_benefitsId>;
+  createFamily_benefit!: Sequelize.HasManyCreateAssociationMixin<family_benefits>;
+  removeFamily_benefit!: Sequelize.HasManyRemoveAssociationMixin<family_benefits, family_benefitsId>;
+  removeFamily_benefits!: Sequelize.HasManyRemoveAssociationsMixin<family_benefits, family_benefitsId>;
+  hasFamily_benefit!: Sequelize.HasManyHasAssociationMixin<family_benefits, family_benefitsId>;
+  hasFamily_benefits!: Sequelize.HasManyHasAssociationsMixin<family_benefits, family_benefitsId>;
+  countFamily_benefits!: Sequelize.HasManyCountAssociationsMixin<family_benefits>;
   // family hasMany user_identify via family_fk
   user_identifies!: user_identify[];
   getUser_identifies!: Sequelize.HasManyGetAssociationsMixin<user_identify>;
@@ -73,14 +78,6 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         key: 'id'
       }
     },
-    benefit_fk: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        table: 'benefits',
-        key: 'id'
-      }
-    },
     attendance_unity_fk: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -107,13 +104,6 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         using: "BTREE",
         fields: [
           { name: "address_fk" },
-        ]
-      },
-      {
-        name: "family_benefit_fk_fkey",
-        using: "BTREE",
-        fields: [
-          { name: "benefit_fk" },
         ]
       },
       {

@@ -20,6 +20,10 @@ export class CreateAttendanceDto {
   task_fk: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  attendance_unity_fk: number;
+
+  @IsNotEmpty()
   @IsString()
   solicitation: string;
 

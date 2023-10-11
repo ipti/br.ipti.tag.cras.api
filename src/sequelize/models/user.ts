@@ -53,7 +53,7 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
     },
     email: {
       type: DataTypes.STRING(191),
-      allowNull: false,
+      allowNull: false
     },
     password: {
       type: DataTypes.STRING(191),

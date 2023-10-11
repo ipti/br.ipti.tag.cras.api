@@ -1,11 +1,10 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
-import type { family, familyId } from './family';
+import type { family_benefits, family_benefitsId } from './family_benefits';
 
 export interface benefitsAttributes {
   id: number;
   description: string;
-  value: number;
   type: 'PERIODICO' | 'EVENTUAL';
 }
 
@@ -17,21 +16,20 @@ export type benefitsCreationAttributes = Sequelize.InferCreationAttributes<benef
 export class benefits extends Model<benefitsAttributes, benefitsCreationAttributes> implements benefitsAttributes {
   id!: number;
   description!: string;
-  value!: number;
   type!: 'PERIODICO' | 'EVENTUAL';
 
-  // benefits hasMany family via benefit_fk
-  families!: family[];
-  getFamilies!: Sequelize.HasManyGetAssociationsMixin<family>;
-  setFamilies!: Sequelize.HasManySetAssociationsMixin<family, familyId>;
-  addFamily!: Sequelize.HasManyAddAssociationMixin<family, familyId>;
-  addFamilies!: Sequelize.HasManyAddAssociationsMixin<family, familyId>;
-  createFamily!: Sequelize.HasManyCreateAssociationMixin<family>;
-  removeFamily!: Sequelize.HasManyRemoveAssociationMixin<family, familyId>;
-  removeFamilies!: Sequelize.HasManyRemoveAssociationsMixin<family, familyId>;
-  hasFamily!: Sequelize.HasManyHasAssociationMixin<family, familyId>;
-  hasFamilies!: Sequelize.HasManyHasAssociationsMixin<family, familyId>;
-  countFamilies!: Sequelize.HasManyCountAssociationsMixin<family>;
+  // benefits hasMany family_benefits via benefits_fk
+  family_benefits!: family_benefits[];
+  getFamily_benefits!: Sequelize.HasManyGetAssociationsMixin<family_benefits>;
+  setFamily_benefits!: Sequelize.HasManySetAssociationsMixin<family_benefits, family_benefitsId>;
+  addFamily_benefit!: Sequelize.HasManyAddAssociationMixin<family_benefits, family_benefitsId>;
+  addFamily_benefits!: Sequelize.HasManyAddAssociationsMixin<family_benefits, family_benefitsId>;
+  createFamily_benefit!: Sequelize.HasManyCreateAssociationMixin<family_benefits>;
+  removeFamily_benefit!: Sequelize.HasManyRemoveAssociationMixin<family_benefits, family_benefitsId>;
+  removeFamily_benefits!: Sequelize.HasManyRemoveAssociationsMixin<family_benefits, family_benefitsId>;
+  hasFamily_benefit!: Sequelize.HasManyHasAssociationMixin<family_benefits, family_benefitsId>;
+  hasFamily_benefits!: Sequelize.HasManyHasAssociationsMixin<family_benefits, family_benefitsId>;
+  countFamily_benefits!: Sequelize.HasManyCountAssociationsMixin<family_benefits>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof benefits {
     return benefits.init({
@@ -43,10 +41,6 @@ export class benefits extends Model<benefitsAttributes, benefitsCreationAttribut
     },
     description: {
       type: DataTypes.STRING(191),
-      allowNull: false
-    },
-    value: {
-      type: DataTypes.INTEGER,
       allowNull: false
     },
     type: {

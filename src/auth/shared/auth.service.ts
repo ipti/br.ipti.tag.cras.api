@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { user } from 'src/sequelize/models/user';
+import { user } from '../../sequelize/models/user';
 import * as crypto from 'crypto';
 
 @Injectable()

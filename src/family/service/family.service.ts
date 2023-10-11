@@ -42,12 +42,6 @@ export class FamilyService {
       throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
     }
 
-    const benefits = await this.benefits.findOne(request, createFamily.benefit_fk.toString());
-
-    if (!benefits) {
-      throw new HttpException('Benefits not found', HttpStatus.NOT_FOUND);
-    }
-
     const createdFamily = await Family.withSchema(dbName).create({
       ...createFamily,
     });

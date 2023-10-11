@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { FamilyController } from './family.controller';
 import { FamilyService } from './service/family.service';
-import { AddressModule } from 'src/address/address.module';
-import { UserIdentifyModule } from 'src/user-identify/user_identify.module';
-import { BenefitsModule } from 'src/benefits/benefits.module';
+import { AddressModule } from '../address/address.module';
+import { UserIdentifyModule } from '../user-identify/user_identify.module';
+import { BenefitsModule } from '../benefits/benefits.module';
 
 @Module({
   imports: [forwardRef(() => UserIdentifyModule), AddressModule, BenefitsModule],

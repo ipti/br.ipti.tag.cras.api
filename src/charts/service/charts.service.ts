@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sequelize } from '@sequelize/core';
-import DbConnection from 'src/sequelize/sequelize';
+import DbConnection from '../../sequelize/sequelize';
 
 @Injectable()
 export class ChartsService {

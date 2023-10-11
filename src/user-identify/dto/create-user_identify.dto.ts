@@ -11,7 +11,7 @@ export class CreateUserIdentifyDto {
   @IsNumber()
   vulnerability_fk: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   family_fk: number;
 

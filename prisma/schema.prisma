@@ -13,7 +13,7 @@ datasource db {
 model user_identify {
   id                Int           @id @default(autoincrement())
   vulnerability_fk  Int
-  family_fk         Int
+  family_fk         Int?
   name              String
   surname           String
   folder            String?
@@ -38,20 +38,19 @@ model user_identify {
   profission        String?
   income            Int           @default(0)
   vulnerability     vulnerability @relation(fields: [vulnerability_fk], references: [id])
-  family            family        @relation(fields: [family_fk], references: [id])
+  family            family?       @relation(fields: [family_fk], references: [id])
   attendances       attendance[]
 }
 
 model family {
-  id                       Int              @id @default(autoincrement())
+  id                       Int               @id @default(autoincrement())
   family_representative_fk Int
   address_fk               Int
-  benefit_fk               Int
   attendance_unity_fk      Int
-  address                  address          @relation(fields: [address_fk], references: [id])
-  benefits                 benefits         @relation(fields: [benefit_fk], references: [id])
-  attendance_unity         attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
+  address                  address           @relation(fields: [address_fk], references: [id])
+  attendance_unity         attendance_unity  @relation(fields: [attendance_unity_fk], references: [id])
   user_identify            user_identify[]
+  benefits                 family_benefits[]
 }
 
 model address {
@@ -63,7 +62,7 @@ model address {
   reference         String
   conditions        String
   construction_type String
-  rooms             String
+  rooms             Int
   rent_value        Int
   edcenso_uf        edcenso_uf        @relation(fields: [edcenso_uf_fk], references: [id])
   edcenso_city      edcenso_city      @relation(fields: [edcenso_city_fk], references: [id])
@@ -112,6 +111,15 @@ model user {
   technician technician?
 }
 
+model family_benefits {
+  id          Int      @id @default(autoincrement())
+  family_fk   Int
+  benefits_fk Int
+  value       Int
+  family      family   @relation(fields: [family_fk], references: [id])
+  benefits    benefits @relation(fields: [benefits_fk], references: [id])
+}
+
 model technician {
   id          Int          @id @default(autoincrement())
   name        String
@@ -130,10 +138,9 @@ model task {
 }
 
 model benefits {
-  id          Int      @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   description String
-  value       Int
-  family      family[]
+  family      family_benefits[]
   type        Benefits
 }
 

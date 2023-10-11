@@ -7,7 +7,7 @@ import type { vulnerability, vulnerabilityId } from './vulnerability';
 export interface user_identifyAttributes {
   id: number;
   vulnerability_fk: number;
-  family_fk: number;
+  family_fk?: number;
   name: string;
   surname: string;
   folder?: string;
@@ -35,13 +35,13 @@ export interface user_identifyAttributes {
 
 export type user_identifyPk = "id";
 export type user_identifyId = user_identify[user_identifyPk];
-export type user_identifyOptionalAttributes = "id" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "final_date" | "profission" | "income";
+export type user_identifyOptionalAttributes = "id" | "family_fk" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "final_date" | "profission" | "income";
 export type user_identifyCreationAttributes = Sequelize.InferCreationAttributes<user_identify>;
 
 export class user_identify extends Model<user_identifyAttributes, user_identifyCreationAttributes> implements user_identifyAttributes {
   id!: number;
   vulnerability_fk!: number;
-  family_fk!: number;
+  family_fk?: number;
   name!: string;
   surname!: string;
   folder?: string;
@@ -107,7 +107,7 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
     },
     family_fk: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         table: 'family',
         key: 'id'
