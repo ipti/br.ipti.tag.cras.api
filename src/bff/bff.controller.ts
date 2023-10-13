@@ -37,5 +37,17 @@ import {
     create(@Req() request, @Body() createUserWithoutFamily: CreateUserIdentifyWithoutFamilyDto) {
       return this.bffService.createUserWithoutFamily(request, createUserWithoutFamily);
     }
+
+    @Get('get-state')
+    @ApiOkResponse({ isArray: true })
+    getState(@Req() request) {
+      return this.bffService.getState(request);
+    }
+
+    @Get('get-city')
+    @ApiOkResponse({ isArray: true })
+    getCity(@Req() request, @Query('ufId') ufId: string) {
+      return this.bffService.getCity(request, ufId);
+    }
   }
   

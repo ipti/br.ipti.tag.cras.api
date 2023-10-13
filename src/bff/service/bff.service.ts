@@ -5,6 +5,8 @@ import { user_identify as UserIdentify } from '../../sequelize/models/user_ident
 import { family as Family } from '../../sequelize/models/family';
 import { family_benefits as FamilyBenefits } from '../../sequelize/models/family_benefits';
 import { vulnerability as Vulnerability } from '../../sequelize/models/vulnerability';
+import { edcenso_uf as EdcensoUf } from '../../sequelize/models/edcenso_uf';
+import { edcenso_city as EdcensoCity } from '../../sequelize/models/edcenso_city';
 import Sequelize from '@sequelize/core';
 import DbConnection from '../../sequelize/sequelize';
 
@@ -109,5 +111,28 @@ export class BffService {
     });
 
     return transactionResult;
+  }
+
+  async getState(request: Request): Promise<any> {
+    const dbName = request['dbName'];
+
+    const states = await EdcensoUf.withSchema(dbName).findAll({
+      attributes: ['id', 'name', 'acronym'],
+      order: [['name', 'ASC']],
+    });
+
+    return states;
+  }
+
+  async getCity(request: Request, ufId: string): Promise<any> {
+    const dbName = request['dbName'];
+
+    const cities = await EdcensoCity.withSchema(dbName).findAll({
+      attributes: ['id', 'name', 'edcenso_uf_fk'],
+      where: { edcenso_uf_fk: +ufId },
+      order: [['name', 'ASC']],
+    });
+
+    return cities;
   }
 }
