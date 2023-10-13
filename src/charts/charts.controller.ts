@@ -21,15 +21,27 @@ import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import { ChartsService } from './service/charts.service';
 
 @ApiTags('Charts')
-// @UseGuards(JwtAuthGuard)
-// @ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 @Controller('charts')
 export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
 
-  @Get()
+  @Get('count-attendance')
   @ApiOkResponse({ isArray: true })
   findAll() {
-    return this.chartsService.charts();
+    return this.chartsService.countAttendance();
+  }
+
+  @Get('attendance-finished-or-pending')
+  @ApiOkResponse({ isArray: true })
+  attendanceFinishedOrPending() {
+    return this.chartsService.attendanceFinishedOrPending();
+  }
+
+  @Get('attendance-by-month')
+  @ApiOkResponse({ isArray: true })
+  attendanceByMonth() {
+    return this.chartsService.attendanceByMonth();
   }
 }

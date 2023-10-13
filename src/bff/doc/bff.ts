@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { BenefitsForFamily } from '../../utils/types';
 
 export class UserIdentifyWithoutFamily {
 
@@ -126,8 +127,5 @@ export class UserIdentifyWithoutFamily {
   others: boolean;
 
   @ApiProperty()
-  benefits_fk: number;
-
-  @ApiProperty()
-  value: number;
+  benefitsForFamily: BenefitsForFamily[];
 }

@@ -4,17 +4,26 @@ import DbConnection from '../../sequelize/sequelize';
 
 @Injectable()
 export class ChartsService {
-  async charts() {
+  async countAttendance() {
     try {
       const connection: Sequelize = DbConnection.getInstance().getConnection();
 
-      const result = [];
-
-      const qnt_attendance = connection.query(`
+      const qnt_attendance = await connection.query(`
       SELECT COUNT(id) FROM attendance a 
       `);
 
-      const qnt_attendance_finished_and_not_finished = connection.query(`
+      return qnt_attendance;
+
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async attendanceFinishedOrPending() {
+
+    const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    const qnt_attendance_finished_and_not_finished = await connection.query(`
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.\`result\` = "finalizado" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
@@ -28,7 +37,13 @@ export class ChartsService {
       FROM \`cras-db\`.attendance a
       `);
 
-      const qnt_attendance_by_month = connection.query(`
+    return qnt_attendance_finished_and_not_finished;
+  }
+
+  async attendanceByMonth() {
+    const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    const qnt_attendance_by_month = await connection.query(`
       SELECT MONTHNAME(a.\`date\`) as name,
       COUNT(*) as value
       FROM \`cras-db\`.attendance a
@@ -36,10 +51,6 @@ export class ChartsService {
       ORDER BY MONTH(a.\`date\`)
       `);
 
-      return Promise.all([qnt_attendance, qnt_attendance_finished_and_not_finished, qnt_attendance_by_month]);
-
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return qnt_attendance_by_month;
   }
 }

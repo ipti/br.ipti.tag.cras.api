@@ -21,8 +21,8 @@ export class AuthService {
 
     if(!userFound){
       throw new HttpException(
-        'USER NOT FOUND!',
-        HttpStatus.NOT_FOUND,
+        'USER OR PASSWORD IS INCORRECT!',
+        HttpStatus.UNAUTHORIZED,
       );
     };
 

@@ -86,13 +86,14 @@ export class BffService {
 
       const familyCreated = await Family.create(family, { transaction: t });
 
-      const familyBenefits = {
-        family_fk: familyCreated.id,
-        benefits_fk: createUserWithoutFamily.benefits_fk,
-        value: createUserWithoutFamily.value,
-      };
-
-      await FamilyBenefits.create(familyBenefits, { transaction: t });
+      await FamilyBenefits.bulkCreate(
+        createUserWithoutFamily.benefitsForFamily.map((benefit) => ({
+          family_fk: familyCreated.id,
+          benefits_fk: benefit.benefits_fk,
+          value: benefit.value,
+        })),
+        { transaction: t },
+      );
 
       await UserIdentify.update(
         { family_fk: familyCreated.id },
@@ -102,7 +103,6 @@ export class BffService {
       return {
         userIdentifyCreated,
         familyCreated,
-        familyBenefits,
         addressCreated,
         vulnerability,
       };
