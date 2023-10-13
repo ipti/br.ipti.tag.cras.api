@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsISO8601,
   IsNotEmpty,
@@ -6,6 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { BenefitsForFamily } from '../../utils/types';
 
 export class CreateUserIdentifyWithoutFamilyDto {
 
@@ -13,7 +15,7 @@ export class CreateUserIdentifyWithoutFamilyDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   surname: string;
 
@@ -65,7 +67,7 @@ export class CreateUserIdentifyWithoutFamilyDto {
   @IsBoolean()
   is_deficiency: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   deficiency: string;
 
@@ -103,10 +105,6 @@ export class CreateUserIdentifyWithoutFamilyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  address_fk: number;
-
-  @IsNotEmpty()
-  @IsNumber()
   attendance_unity_fk: number;
 
   @IsNotEmpty()
@@ -125,7 +123,7 @@ export class CreateUserIdentifyWithoutFamilyDto {
   @IsString()
   telephone: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   reference: string;
 
@@ -174,10 +172,6 @@ export class CreateUserIdentifyWithoutFamilyDto {
   others: boolean;
 
   @IsNotEmpty()
-  @IsNumber()
-  benefits_fk: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  value: number;
+  @IsArray()
+  benefitsForFamily: Array<BenefitsForFamily>;
 }

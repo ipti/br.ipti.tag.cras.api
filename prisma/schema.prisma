@@ -15,7 +15,7 @@ model user_identify {
   vulnerability_fk  Int
   family_fk         Int?
   name              String
-  surname           String
+  surname           String?
   folder            String?
   archive           String?
   number            String?
@@ -28,7 +28,7 @@ model user_identify {
   emission_rg       String?
   cpf               String
   is_deficiency     Boolean
-  deficiency        String
+  deficiency        String?
   mother            String
   father            String
   marital_status    String
@@ -59,7 +59,7 @@ model address {
   edcenso_city_fk   Int
   address           String
   telephone         String
-  reference         String
+  reference         String?
   conditions        String
   construction_type String
   rooms             Int

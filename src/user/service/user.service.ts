@@ -6,10 +6,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  async create(
-    request: Request,
-    createUser: CreateUserDto,
-  ): Promise<User> {
+  async create(request: Request, createUser: CreateUserDto): Promise<User> {
     const dbName = request['dbName'];
 
     const userRegistered = await User.withSchema(dbName).findOne({
@@ -55,14 +52,16 @@ export class UserService {
     return user;
   }
 
-  async update(
-    request: Request,
-    id: string,
-    UpdateUserDto: UpdateUserDto,
-  ) {
+  async update(request: Request, id: string, UpdateUserDto: UpdateUserDto) {
     const dbName = request['dbName'];
 
     await this.findOne(request, id);
+
+    if (UpdateUserDto.password) {
+      UpdateUserDto.password = this.encryptedMd5Password(
+        UpdateUserDto.password,
+      );
+    }
 
     const userUpdated = await User.withSchema(dbName).update(
       {
