@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserIdentifyWithoutFamilyDto } from '../dto/create-bff.dto';
+import { CreateUserIdentifyWithFamilyDto, CreateUserIdentifyWithoutFamilyDto } from '../dto/create-bff.dto';
 import { address as Address } from '../../sequelize/models/address';
 import { user_identify as UserIdentify } from '../../sequelize/models/user_identify';
 import { family as Family } from '../../sequelize/models/family';
@@ -50,7 +50,6 @@ export class BffService {
       });
 
       const userIdentify = {
-        vulnerability_fk: vulnerabilityCreated.id,
         name: createUserWithoutFamily.name,
         surname: createUserWithoutFamily.surname,
         folder: createUserWithoutFamily.folder,
@@ -81,6 +80,7 @@ export class BffService {
       });
 
       const family = {
+        vulnerability_fk: vulnerabilityCreated.id,
         family_representative_fk: userIdentifyCreated.id,
         address_fk: addressCreated.id,
         attendance_unity_fk: createUserWithoutFamily.attendance_unity_fk,
@@ -107,6 +107,64 @@ export class BffService {
         familyCreated,
         addressCreated,
         vulnerability,
+      };
+    });
+
+    return transactionResult;
+  }
+
+  async createUserWithFamily(
+    request: Request,
+    createUserWithFamily: CreateUserIdentifyWithFamilyDto,
+  ): Promise<any> {
+    const dbName = request['dbName'];
+
+    const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    const transactionResult = await connection.transaction(async (t) => {
+
+      const userIdentify = {
+        family_fk: createUserWithFamily.family_fk,
+        name: createUserWithFamily.name,
+        surname: createUserWithFamily.surname,
+        folder: createUserWithFamily.folder,
+        archive: createUserWithFamily.archive,
+        number: createUserWithFamily.number,
+        birthday: createUserWithFamily.birthday,
+        birth_certificate: createUserWithFamily.birth_certificate,
+        nis: createUserWithFamily.nis,
+        rg_number: createUserWithFamily.rg_number,
+        rg_date_emission: createUserWithFamily.rg_date_emission,
+        uf_rg: createUserWithFamily.uf_rg,
+        emission_rg: createUserWithFamily.emission_rg,
+        cpf: createUserWithFamily.cpf,
+        is_deficiency: createUserWithFamily.is_deficiency,
+        deficiency: createUserWithFamily.deficiency,
+        mother: createUserWithFamily.mother,
+        father: createUserWithFamily.father,
+        marital_status: createUserWithFamily.marital_status,
+        escolarity: createUserWithFamily.escolarity,
+        initial_date: createUserWithFamily.initial_date,
+        final_date: createUserWithFamily.final_date,
+        profission: createUserWithFamily.profission,
+        income: createUserWithFamily.income,
+      };
+
+      const userIdentifyCreated = await UserIdentify.create(userIdentify, {
+        transaction: t,
+      });
+
+      await FamilyBenefits.bulkCreate(
+        createUserWithFamily.benefitsForFamily.map((benefit) => ({
+          family_fk: createUserWithFamily.family_fk,
+          benefits_fk: benefit.benefits_fk,
+          value: benefit.value,
+        })),
+        { transaction: t },
+      );
+
+      return {
+        userIdentifyCreated,
       };
     });
 

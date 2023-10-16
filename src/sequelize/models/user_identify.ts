@@ -2,14 +2,12 @@ import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
 import type { attendance, attendanceId } from './attendance';
 import type { family, familyId } from './family';
-import type { vulnerability, vulnerabilityId } from './vulnerability';
 
 export interface user_identifyAttributes {
   id: number;
-  vulnerability_fk: number;
   family_fk?: number;
   name: string;
-  surname: string;
+  surname?: string;
   folder?: string;
   archive?: string;
   number?: string;
@@ -22,7 +20,7 @@ export interface user_identifyAttributes {
   emission_rg?: string;
   cpf: string;
   is_deficiency: boolean;
-  deficiency: string;
+  deficiency?: string;
   mother: string;
   father: string;
   marital_status: string;
@@ -35,15 +33,14 @@ export interface user_identifyAttributes {
 
 export type user_identifyPk = "id";
 export type user_identifyId = user_identify[user_identifyPk];
-export type user_identifyOptionalAttributes = "id" | "family_fk" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "final_date" | "profission" | "income";
+export type user_identifyOptionalAttributes = "id" | "family_fk" | "surname" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "deficiency" | "final_date" | "profission" | "income";
 export type user_identifyCreationAttributes = Sequelize.InferCreationAttributes<user_identify>;
 
 export class user_identify extends Model<user_identifyAttributes, user_identifyCreationAttributes> implements user_identifyAttributes {
   id!: number;
-  vulnerability_fk!: number;
   family_fk?: number;
   name!: string;
-  surname!: string;
+  surname?: string;
   folder?: string;
   archive?: string;
   number?: string;
@@ -56,7 +53,7 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
   emission_rg?: string;
   cpf!: string;
   is_deficiency!: boolean;
-  deficiency!: string;
+  deficiency?: string;
   mother!: string;
   father!: string;
   marital_status!: string;
@@ -83,11 +80,6 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
   hasAttendance!: Sequelize.HasManyHasAssociationMixin<attendance, attendanceId>;
   hasAttendances!: Sequelize.HasManyHasAssociationsMixin<attendance, attendanceId>;
   countAttendances!: Sequelize.HasManyCountAssociationsMixin<attendance>;
-  // user_identify belongsTo vulnerability via vulnerability_fk
-  vulnerability_fk_vulnerability!: vulnerability;
-  getVulnerability_fk_vulnerability!: Sequelize.BelongsToGetAssociationMixin<vulnerability>;
-  setVulnerability_fk_vulnerability!: Sequelize.BelongsToSetAssociationMixin<vulnerability, vulnerabilityId>;
-  createVulnerability_fk_vulnerability!: Sequelize.BelongsToCreateAssociationMixin<vulnerability>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof user_identify {
     return user_identify.init({
@@ -96,14 +88,6 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
-    },
-    vulnerability_fk: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        table: 'vulnerability',
-        key: 'id'
-      }
     },
     family_fk: {
       type: DataTypes.INTEGER,
@@ -119,7 +103,7 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
     },
     surname: {
       type: DataTypes.STRING(191),
-      allowNull: false
+      allowNull: true
     },
     folder: {
       type: DataTypes.STRING(191),
@@ -171,7 +155,7 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
     },
     deficiency: {
       type: DataTypes.STRING(191),
-      allowNull: false
+      allowNull: true
     },
     mother: {
       type: DataTypes.STRING(191),
@@ -217,13 +201,6 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "user_identify_vulnerability_fk_fkey",
-        using: "BTREE",
-        fields: [
-          { name: "vulnerability_fk" },
         ]
       },
       {

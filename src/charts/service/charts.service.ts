@@ -12,7 +12,7 @@ export class ChartsService {
       SELECT COUNT(id) FROM attendance a 
       `);
 
-      return qnt_attendance;
+      return qnt_attendance[0];
 
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -27,17 +27,17 @@ export class ChartsService {
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.\`result\` = "finalizado" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
-      FROM \`cras-db\`.attendance a
+      FROM \`${connection.config.database}\`.attendance a
 
       UNION
 
       SELECT "Atendimentos Pendentes" as name, 
       SUM(CASE WHEN a.\`result\` = "pendente" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
-      FROM \`cras-db\`.attendance a
+      FROM \`${connection.config.database}\`.attendance a
       `);
 
-    return qnt_attendance_finished_and_not_finished;
+    return qnt_attendance_finished_and_not_finished[0];
   }
 
   async attendanceByMonth() {
@@ -46,11 +46,66 @@ export class ChartsService {
     const qnt_attendance_by_month = await connection.query(`
       SELECT MONTHNAME(a.\`date\`) as name,
       COUNT(*) as value
-      FROM \`cras-db\`.attendance a
+      FROM \`${connection.config.database}\`.attendance a
       GROUP BY MONTHNAME(a.\`date\`)
       ORDER BY MONTH(a.\`date\`)
       `);
 
-    return qnt_attendance_by_month;
+    return qnt_attendance_by_month[0];
+  }
+
+  async vulnerabilityRegistered() {
+    const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    const vulnerability_registered = await connection.query(`
+    SELECT "Ocupação Irregular" as name, 
+    SUM(CASE WHEN v.irregular_ocupation = 1 THEN 1 ELSE 0 END) as value, 
+    COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v 
+
+    UNION
+
+    SELECT "Criança Sozinha" as name, 
+        SUM(CASE WHEN v.alone_child = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+
+    UNION
+
+    SELECT "Idosos Pendentes" as name, 
+        SUM(CASE WHEN v.dependent_elderly = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+
+    UNION
+
+    SELECT "Desempregados" as name, 
+        SUM(CASE WHEN v.unemployed = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+
+    UNION
+
+    SELECT "Deficientes" as name, 
+        SUM(CASE WHEN v.deficient = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+
+    UNION
+
+    SELECT "Baixa Renda" as name, 
+        SUM(CASE WHEN v.low_income = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+
+    UNION
+
+    SELECT "Outros" as name, 
+        SUM(CASE WHEN v.\`others\` = 1 THEN 1 ELSE 0 END) as value, 
+        COUNT(*) as total
+    FROM \`${connection.config.database}\`.vulnerability v
+      `);
+
+    return vulnerability_registered[0];
   }
 }

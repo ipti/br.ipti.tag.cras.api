@@ -44,4 +44,10 @@ export class ChartsController {
   attendanceByMonth() {
     return this.chartsService.attendanceByMonth();
   }
+
+  @Get('vulnerability-registered')
+  @ApiOkResponse({ isArray: true })
+  vulnerabilityRegistered() {
+    return this.chartsService.vulnerabilityRegistered();
+  }
 }
