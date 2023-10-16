@@ -11,7 +11,7 @@ export interface addressAttributes {
   edcenso_city_fk: number;
   address: string;
   telephone: string;
-  reference: string;
+  reference?: string;
   conditions: string;
   construction_type: string;
   rooms: number;
@@ -20,7 +20,7 @@ export interface addressAttributes {
 
 export type addressPk = "id";
 export type addressId = address[addressPk];
-export type addressOptionalAttributes = "id";
+export type addressOptionalAttributes = "id" | "reference";
 export type addressCreationAttributes = Sequelize.InferCreationAttributes<address>;
 
 export class address extends Model<addressAttributes, addressCreationAttributes> implements addressAttributes {
@@ -29,7 +29,7 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
   edcenso_city_fk!: number;
   address!: string;
   telephone!: string;
-  reference!: string;
+  reference?: string;
   conditions!: string;
   construction_type!: string;
   rooms!: number;
@@ -97,7 +97,7 @@ export class address extends Model<addressAttributes, addressCreationAttributes>
     },
     reference: {
       type: DataTypes.STRING(191),
-      allowNull: false
+      allowNull: true
     },
     conditions: {
       type: DataTypes.STRING(191),

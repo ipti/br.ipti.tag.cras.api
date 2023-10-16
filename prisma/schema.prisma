@@ -11,8 +11,7 @@ datasource db {
 }
 
 model user_identify {
-  id                Int           @id @default(autoincrement())
-  vulnerability_fk  Int
+  id                Int          @id @default(autoincrement())
   family_fk         Int?
   name              String
   surname           String?
@@ -36,9 +35,8 @@ model user_identify {
   initial_date      String
   final_date        String?
   profission        String?
-  income            Int           @default(0)
-  vulnerability     vulnerability @relation(fields: [vulnerability_fk], references: [id])
-  family            family?       @relation(fields: [family_fk], references: [id])
+  income            Int          @default(0)
+  family            family?      @relation(fields: [family_fk], references: [id])
   attendances       attendance[]
 }
 
@@ -47,8 +45,10 @@ model family {
   family_representative_fk Int
   address_fk               Int
   attendance_unity_fk      Int
+  vulnerability_fk         Int
   address                  address           @relation(fields: [address_fk], references: [id])
   attendance_unity         attendance_unity  @relation(fields: [attendance_unity_fk], references: [id])
+  vulnerability            vulnerability     @relation(fields: [vulnerability_fk], references: [id])
   user_identify            user_identify[]
   benefits                 family_benefits[]
 }
@@ -71,15 +71,15 @@ model address {
 }
 
 model vulnerability {
-  id                  Int             @id @default(autoincrement())
-  irregular_ocupation Boolean         @default(false)
-  alone_child         Boolean         @default(false)
-  dependent_elderly   Boolean         @default(false)
-  unemployed          Boolean         @default(false)
-  deficient           Boolean         @default(false)
-  low_income          Boolean         @default(false)
-  others              Boolean         @default(false)
-  users_identify      user_identify[]
+  id                  Int      @id @default(autoincrement())
+  irregular_ocupation Boolean  @default(false)
+  alone_child         Boolean  @default(false)
+  dependent_elderly   Boolean  @default(false)
+  unemployed          Boolean  @default(false)
+  deficient           Boolean  @default(false)
+  low_income          Boolean  @default(false)
+  others              Boolean  @default(false)
+  family              family[]
 }
 
 model attendance {

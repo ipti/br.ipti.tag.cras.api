@@ -114,8 +114,8 @@ export function initModels(sequelize: Sequelize) {
   user.hasOne(technician, { as: "technician", foreignKey: "user_fk"});
   attendance.belongsTo(user_identify, { as: "user_identify_fk_user_identify", foreignKey: "user_identify_fk"});
   user_identify.hasMany(attendance, { as: "attendances", foreignKey: "user_identify_fk"});
-  user_identify.belongsTo(vulnerability, { as: "vulnerability_fk_vulnerability", foreignKey: "vulnerability_fk"});
-  vulnerability.hasMany(user_identify, { as: "user_identifies", foreignKey: "vulnerability_fk"});
+  family.belongsTo(vulnerability, { as: "vulnerability_fk_vulnerability", foreignKey: "vulnerability_fk"});
+  vulnerability.hasMany(family, { as: "families", foreignKey: "vulnerability_fk"});
 
   return {
     address: address,

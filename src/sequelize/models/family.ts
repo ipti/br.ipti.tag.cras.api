@@ -4,12 +4,14 @@ import type { address, addressId } from './address';
 import type { attendance_unity, attendance_unityId } from './attendance_unity';
 import type { family_benefits, family_benefitsId } from './family_benefits';
 import type { user_identify, user_identifyId } from './user_identify';
+import type { vulnerability, vulnerabilityId } from './vulnerability';
 
 export interface familyAttributes {
   id: number;
   family_representative_fk: number;
   address_fk: number;
   attendance_unity_fk: number;
+  vulnerability_fk: number;
 }
 
 export type familyPk = "id";
@@ -22,6 +24,7 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   family_representative_fk!: number;
   address_fk!: number;
   attendance_unity_fk!: number;
+  vulnerability_fk!: number;
 
   // family belongsTo address via address_fk
   address_fk_address!: address;
@@ -57,6 +60,11 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
   hasUser_identify!: Sequelize.HasManyHasAssociationMixin<user_identify, user_identifyId>;
   hasUser_identifies!: Sequelize.HasManyHasAssociationsMixin<user_identify, user_identifyId>;
   countUser_identifies!: Sequelize.HasManyCountAssociationsMixin<user_identify>;
+  // family belongsTo vulnerability via vulnerability_fk
+  vulnerability_fk_vulnerability!: vulnerability;
+  getVulnerability_fk_vulnerability!: Sequelize.BelongsToGetAssociationMixin<vulnerability>;
+  setVulnerability_fk_vulnerability!: Sequelize.BelongsToSetAssociationMixin<vulnerability, vulnerabilityId>;
+  createVulnerability_fk_vulnerability!: Sequelize.BelongsToCreateAssociationMixin<vulnerability>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof family {
     return family.init({
@@ -85,6 +93,14 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         table: 'attendance_unity',
         key: 'id'
       }
+    },
+    vulnerability_fk: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        table: 'vulnerability',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
@@ -111,6 +127,13 @@ export class family extends Model<familyAttributes, familyCreationAttributes> im
         using: "BTREE",
         fields: [
           { name: "attendance_unity_fk" },
+        ]
+      },
+      {
+        name: "family_vulnerability_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "vulnerability_fk" },
         ]
       },
     ]

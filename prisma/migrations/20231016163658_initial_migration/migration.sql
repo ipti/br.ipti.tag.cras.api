@@ -1,10 +1,9 @@
 -- CreateTable
 CREATE TABLE `user_identify` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `vulnerability_fk` INTEGER NOT NULL,
     `family_fk` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
-    `surname` VARCHAR(191) NOT NULL,
+    `surname` VARCHAR(191) NULL,
     `folder` VARCHAR(191) NULL,
     `archive` VARCHAR(191) NULL,
     `number` VARCHAR(191) NULL,
@@ -17,7 +16,7 @@ CREATE TABLE `user_identify` (
     `emission_rg` VARCHAR(191) NULL,
     `cpf` VARCHAR(191) NOT NULL,
     `is_deficiency` BOOLEAN NOT NULL,
-    `deficiency` VARCHAR(191) NOT NULL,
+    `deficiency` VARCHAR(191) NULL,
     `mother` VARCHAR(191) NOT NULL,
     `father` VARCHAR(191) NOT NULL,
     `marital_status` VARCHAR(191) NOT NULL,
@@ -36,6 +35,7 @@ CREATE TABLE `family` (
     `family_representative_fk` INTEGER NOT NULL,
     `address_fk` INTEGER NOT NULL,
     `attendance_unity_fk` INTEGER NOT NULL,
+    `vulnerability_fk` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -47,7 +47,7 @@ CREATE TABLE `address` (
     `edcenso_city_fk` INTEGER NOT NULL,
     `address` VARCHAR(191) NOT NULL,
     `telephone` VARCHAR(191) NOT NULL,
-    `reference` VARCHAR(191) NOT NULL,
+    `reference` VARCHAR(191) NULL,
     `conditions` VARCHAR(191) NOT NULL,
     `construction_type` VARCHAR(191) NOT NULL,
     `rooms` INTEGER NOT NULL,
@@ -178,9 +178,6 @@ CREATE TABLE `attendance_unity` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_vulnerability_fk_fkey` FOREIGN KEY (`vulnerability_fk`) REFERENCES `vulnerability`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -188,6 +185,9 @@ ALTER TABLE `family` ADD CONSTRAINT `family_address_fk_fkey` FOREIGN KEY (`addre
 
 -- AddForeignKey
 ALTER TABLE `family` ADD CONSTRAINT `family_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `family` ADD CONSTRAINT `family_vulnerability_fk_fkey` FOREIGN KEY (`vulnerability_fk`) REFERENCES `vulnerability`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `address` ADD CONSTRAINT `address_edcenso_uf_fk_fkey` FOREIGN KEY (`edcenso_uf_fk`) REFERENCES `edcenso_uf`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

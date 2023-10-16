@@ -129,3 +129,81 @@ export class UserIdentifyWithoutFamily {
   @ApiProperty()
   benefitsForFamily: BenefitsForFamily[];
 }
+
+export class UserIdentifyWithFamily {
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  surname: string;
+
+  @ApiProperty()
+  folder?: string;
+
+  @ApiProperty()
+  archive?: string;
+
+  @ApiProperty()
+  number?: string;
+
+  @ApiProperty()
+  birthday?: string;
+
+  @ApiProperty()
+  birth_certificate?: number;
+
+  @ApiProperty()
+  nis?: number;
+
+  @ApiProperty()
+  rg_number?: string;
+
+  @ApiProperty()
+  rg_date_emission?: string;
+
+  @ApiProperty()
+  uf_rg?: string;
+
+  @ApiProperty()
+  emission_rg?: string;
+
+  @ApiProperty()
+  cpf: string;
+
+  @ApiProperty()
+  is_deficiency: boolean;
+
+  @ApiProperty()
+  deficiency: string;
+
+  @ApiProperty()
+  mother: string;
+
+  @ApiProperty()
+  father: string;
+
+  @ApiProperty()
+  marital_status: string;
+
+  @ApiProperty()
+  escolarity: string;
+
+  @ApiProperty()
+  initial_date: string;
+
+  @ApiProperty()
+  final_date?: string;
+
+  @ApiProperty()
+  profission?: string;
+
+  @ApiProperty()
+  income: number;
+
+  @ApiProperty()
+  family_fk: number;
+  
+  @ApiProperty()
+  benefitsForFamily: BenefitsForFamily[];
+}
