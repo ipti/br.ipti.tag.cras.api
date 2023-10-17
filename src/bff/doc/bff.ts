@@ -207,3 +207,35 @@ export class UserIdentifyWithFamily {
   @ApiProperty()
   benefitsForFamily: BenefitsForFamily[];
 }
+
+export class AttendanceUnityAndAddress {
+  @ApiProperty()
+  edcenso_uf_fk: number;
+
+  @ApiProperty()
+  edcenso_city_fk: number;
+
+  @ApiProperty()
+  address: string;
+
+  @ApiProperty()
+  telephone: string;
+
+  @ApiProperty()
+  reference: string;
+
+  @ApiProperty()
+  conditions: string;
+
+  @ApiProperty()
+  construction_type: string;
+
+  @ApiProperty()
+  rooms: number;
+
+  @ApiProperty()
+  rent_value: number;
+
+  @ApiProperty()
+  name: string;
+}

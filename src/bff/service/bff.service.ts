@@ -1,5 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserIdentifyWithFamilyDto, CreateUserIdentifyWithoutFamilyDto } from '../dto/create-bff.dto';
+import {
+  CreateAttendanceUnityAndAddressDto,
+  CreateUserIdentifyWithFamilyDto,
+  CreateUserIdentifyWithoutFamilyDto,
+} from '../dto/create-bff.dto';
 import { address as Address } from '../../sequelize/models/address';
 import { user_identify as UserIdentify } from '../../sequelize/models/user_identify';
 import { family as Family } from '../../sequelize/models/family';
@@ -7,8 +11,12 @@ import { family_benefits as FamilyBenefits } from '../../sequelize/models/family
 import { vulnerability as Vulnerability } from '../../sequelize/models/vulnerability';
 import { edcenso_uf as EdcensoUf } from '../../sequelize/models/edcenso_uf';
 import { edcenso_city as EdcensoCity } from '../../sequelize/models/edcenso_city';
+import { attendance_unity as AttendanceUnity } from '../../sequelize/models/attendance_unity';
 import Sequelize from '@sequelize/core';
 import DbConnection from '../../sequelize/sequelize';
+import { CreateAddressDto } from 'src/address/dto/create-address.dto';
+import { CreateAttendanceUnityDto } from 'src/attendance-unity/dto/create-attendance_unity.dto';
+import { UpdateAttendanceUnityDto } from 'src/attendance-unity/dto/update-attendance_unity.dto';
 
 @Injectable()
 export class BffService {
@@ -122,7 +130,6 @@ export class BffService {
     const connection: Sequelize = DbConnection.getInstance().getConnection();
 
     const transactionResult = await connection.transaction(async (t) => {
-
       const userIdentify = {
         family_fk: createUserWithFamily.family_fk,
         name: createUserWithFamily.name,
@@ -165,6 +172,48 @@ export class BffService {
 
       return {
         userIdentifyCreated,
+      };
+    });
+
+    return transactionResult;
+  }
+
+  async createUnityAttendanceAndAddress(
+    request: Request,
+    createAttendanceAndAddress: CreateAttendanceUnityAndAddressDto,
+  ) {
+    const dbName = request['dbName'];
+
+    const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    const transactionResult = await connection.transaction(async (t) => {
+      const address = {
+        edcenso_uf_fk: createAttendanceAndAddress.edcenso_uf_fk,
+        edcenso_city_fk: createAttendanceAndAddress.edcenso_city_fk,
+        address: createAttendanceAndAddress.address,
+        telephone: createAttendanceAndAddress.telephone,
+        reference: createAttendanceAndAddress.reference,
+        conditions: createAttendanceAndAddress.conditions,
+        construction_type: createAttendanceAndAddress.construction_type,
+        rooms: createAttendanceAndAddress.rooms,
+        rent_value: createAttendanceAndAddress.rent_value,
+      };
+
+      const addressCreated = await Address.create(address, { transaction: t });
+
+      const attendanceUnity = {
+        name: createAttendanceAndAddress.name,
+        address_fk: addressCreated.id,
+      };
+
+      const attendanceUnityCreated = await AttendanceUnity.create(
+        attendanceUnity,
+        { transaction: t },
+      );
+
+      return {
+        attendanceUnityCreated,
+        addressCreated,
       };
     });
 
