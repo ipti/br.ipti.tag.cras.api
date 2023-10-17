@@ -30,7 +30,7 @@ export class CreateAddressDto {
   construction_type: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   rooms: number;
 
   @IsNotEmpty()

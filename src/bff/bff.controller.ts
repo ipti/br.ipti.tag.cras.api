@@ -19,12 +19,13 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import {
+  CreateAttendanceUnityAndAddressDto,
   CreateUserIdentifyWithFamilyDto,
   CreateUserIdentifyWithoutFamilyDto,
 } from './dto/create-bff.dto';
 import { UpdateBffDto } from './dto/update-bff.dto';
 import { BffService } from './service/bff.service';
-import { UserIdentifyWithFamily, UserIdentifyWithoutFamily } from './doc/bff';
+import { AttendanceUnityAndAddress, UserIdentifyWithFamily, UserIdentifyWithoutFamily } from './doc/bff';
 
 @ApiTags('BFF')
 @UseGuards(JwtAuthGuard)
@@ -52,6 +53,18 @@ export class BffController {
     @Body() createUserWithFamily: CreateUserIdentifyWithFamilyDto,
   ) {
     return this.bffService.createUserWithFamily(request, createUserWithFamily);
+  }
+
+  @Post('create-attendance-unity-address')
+  @ApiCreatedResponse({ type: AttendanceUnityAndAddress })
+  createAttendanceUnityAndAddress(
+    @Req() request,
+    @Body() createAttendanceUnityAndAddress: CreateAttendanceUnityAndAddressDto,
+  ) {
+    return this.bffService.createUnityAttendanceAndAddress(
+      request,
+      createAttendanceUnityAndAddress,
+    );
   }
 
   @Get('get-state')
