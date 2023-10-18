@@ -1,22 +1,31 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { attendance as Attendance } from '../../sequelize/models/attendance';
 import { CreateAttendanceDto } from '../dto/create-attendance.dto';
 import { UpdateAttendanceDto } from '../dto/update-attendance.dto';
 import { UserIdentifyService } from '../../user-identify/service/user_identify.service';
 import { TechnicianService } from '../../technician/service/technician.service';
+import { TaskService } from '../../task/service/task.service';
+import { AttendanceUnityService } from '../../attendance-unity/service/attendance_unity.service';
 
 @Injectable()
 export class AttendanceService {
 
   user_identify: UserIdentifyService;
   technician: TechnicianService;
+  task: TaskService;
+  attendance_unity: AttendanceUnityService;
 
   constructor(
     userIdentifyService: UserIdentifyService,
     technicianService: TechnicianService,
+    @Inject(forwardRef(() => TaskService))
+    taskService: TaskService,
+    attendanceUnityService: AttendanceUnityService,
   ){
     this.user_identify = userIdentifyService;
     this.technician = technicianService;
+    this.task = taskService;
+    this.attendance_unity = attendanceUnityService;
   }
 
   async create(
@@ -35,6 +44,28 @@ export class AttendanceService {
 
     if (!technician) {
       throw new HttpException('Technician not found', HttpStatus.NOT_FOUND);
+    }
+
+    const task = await this.task.findOne(request, createAttendance.task_fk.toString());
+
+    if (!task) {
+      throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    }
+
+    const attendance_unity = await this.attendance_unity.findOne(request, createAttendance.attendance_unity_fk.toString());
+
+    if (!attendance_unity) {
+      throw new HttpException('AttendanceUnity not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isAttendanceValid = await Attendance.withSchema(dbName).findOne({
+      where: {
+        task_fk: createAttendance.task_fk,
+      },
+    });
+
+    if (isAttendanceValid) {
+      throw new HttpException('Attendance with this task already exists', HttpStatus.CONFLICT);
     }
 
     const createdAttendance = await Attendance.withSchema(dbName).create({

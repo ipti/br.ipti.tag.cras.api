@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { task as Task } from '../../sequelize/models/task';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
@@ -6,17 +12,16 @@ import { AttendanceService } from '../../attendance/service/attendance.service';
 
 @Injectable()
 export class TaskService {
-
   attendance: AttendanceService;
 
-  constructor(attendanceService: AttendanceService){
+  constructor(
+    @Inject(forwardRef(() => AttendanceService))
+    attendanceService: AttendanceService,
+  ) {
     this.attendance = attendanceService;
   }
 
-  async create(
-    request: Request,
-    createTask: CreateTaskDto,
-  ): Promise<Task> {
+  async create(request: Request, createTask: CreateTaskDto): Promise<Task> {
     const dbName = request['dbName'];
 
     const createdTask = await Task.withSchema(dbName).create({
@@ -46,11 +51,7 @@ export class TaskService {
     return task;
   }
 
-  async update(
-    request: Request,
-    id: string,
-    UpdateTaskDto: UpdateTaskDto,
-  ) {
+  async update(request: Request, id: string, UpdateTaskDto: UpdateTaskDto) {
     const dbName = request['dbName'];
 
     await this.findOne(request, id);

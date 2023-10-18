@@ -18,6 +18,7 @@ import { JwtMiddleware } from './utils/middleware/jwt.middleware';
 import { ChartsModule } from './charts/charts.module';
 import { AttendanceUnityModule } from './attendance-unity/attendance_unity.module';
 import { BffModule } from './bff/bff.module';
+import { FamilyBenefitsModule } from './family-benefits/family_benefits.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { BffModule } from './bff/bff.module';
     AttendanceUnityModule,
     BenefitsModule,
     FamilyModule,
+    FamilyBenefitsModule,
     TaskModule,
     TechnicianModule,
     UserModule,
