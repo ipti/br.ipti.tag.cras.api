@@ -25,6 +25,16 @@ export class TechnicianService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
+    const isValidTechnician = await Technician.withSchema(dbName).findOne({
+      where: {
+        user_fk: createTechnician.user_fk,
+      },
+    });
+
+    if (isValidTechnician) {
+      throw new HttpException('Technician with this user already exists', HttpStatus.CONFLICT);
+    }
+
     const createdTechnician = await Technician.withSchema(dbName).create({
       ...createTechnician,
     });

@@ -8,4 +8,4 @@ import { FamilyBenefitsService } from './service/family_benefits.service';
   providers: [FamilyBenefitsService],
   exports: [FamilyBenefitsService],
 })
-export class AttendanceUnityModule {}
+export class FamilyBenefitsModule {}
