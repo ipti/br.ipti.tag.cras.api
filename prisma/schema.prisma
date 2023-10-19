@@ -86,7 +86,7 @@ model attendance {
   id                  Int              @id @default(autoincrement())
   user_identify_fk    Int
   technician_fk       Int
-  task_fk             Int              @unique
+  task_fk             Int
   attendance_unity_fk Int
   solicitation        String
   providence          String
@@ -129,12 +129,12 @@ model technician {
 }
 
 model task {
-  id          Int         @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
   description String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  attendances attendance?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  attendances attendance[]
 }
 
 model benefits {
