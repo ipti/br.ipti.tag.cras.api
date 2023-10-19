@@ -58,16 +58,6 @@ export class AttendanceService {
       throw new HttpException('AttendanceUnity not found', HttpStatus.NOT_FOUND);
     }
 
-    const isAttendanceValid = await Attendance.withSchema(dbName).findOne({
-      where: {
-        task_fk: createAttendance.task_fk,
-      },
-    });
-
-    if (isAttendanceValid) {
-      throw new HttpException('Attendance with this task already exists', HttpStatus.CONFLICT);
-    }
-
     const createdAttendance = await Attendance.withSchema(dbName).create({
       ...createAttendance,
     });
