@@ -28,8 +28,8 @@ model user_identify {
   cpf               String
   is_deficiency     Boolean
   deficiency        String?
-  mother            String
-  father            String
+  filiation_1       String
+  filiation_2       String?
   marital_status    String
   escolarity        String
   initial_date      String

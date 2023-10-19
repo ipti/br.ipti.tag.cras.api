@@ -1,6 +1,6 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
-import type { attendance, attendanceCreationAttributes, attendanceId } from './attendance';
+import type { attendance, attendanceId } from './attendance';
 
 export interface taskAttributes {
   id: number;
@@ -22,11 +22,18 @@ export class task extends Model<taskAttributes, taskCreationAttributes> implemen
   createdAt!: Date;
   updatedAt!: Date;
 
-  // task hasOne attendance via task_fk
-  attendance!: attendance;
-  getAttendance!: Sequelize.HasOneGetAssociationMixin<attendance>;
-  setAttendance!: Sequelize.HasOneSetAssociationMixin<attendance, attendanceId>;
-  createAttendance!: Sequelize.HasOneCreateAssociationMixin<attendance>;
+  // task hasMany attendance via task_fk
+  attendances!: attendance[];
+  getAttendances!: Sequelize.HasManyGetAssociationsMixin<attendance>;
+  setAttendances!: Sequelize.HasManySetAssociationsMixin<attendance, attendanceId>;
+  addAttendance!: Sequelize.HasManyAddAssociationMixin<attendance, attendanceId>;
+  addAttendances!: Sequelize.HasManyAddAssociationsMixin<attendance, attendanceId>;
+  createAttendance!: Sequelize.HasManyCreateAssociationMixin<attendance>;
+  removeAttendance!: Sequelize.HasManyRemoveAssociationMixin<attendance, attendanceId>;
+  removeAttendances!: Sequelize.HasManyRemoveAssociationsMixin<attendance, attendanceId>;
+  hasAttendance!: Sequelize.HasManyHasAssociationMixin<attendance, attendanceId>;
+  hasAttendances!: Sequelize.HasManyHasAssociationsMixin<attendance, attendanceId>;
+  countAttendances!: Sequelize.HasManyCountAssociationsMixin<attendance>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof task {
     return task.init({

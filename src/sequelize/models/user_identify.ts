@@ -21,8 +21,8 @@ export interface user_identifyAttributes {
   cpf: string;
   is_deficiency: boolean;
   deficiency?: string;
-  mother: string;
-  father: string;
+  filiation_1: string;
+  filiation_2?: string;
   marital_status: string;
   escolarity: string;
   initial_date: string;
@@ -33,7 +33,7 @@ export interface user_identifyAttributes {
 
 export type user_identifyPk = "id";
 export type user_identifyId = user_identify[user_identifyPk];
-export type user_identifyOptionalAttributes = "id" | "family_fk" | "surname" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "deficiency" | "final_date" | "profission" | "income";
+export type user_identifyOptionalAttributes = "id" | "family_fk" | "surname" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "deficiency" | "filiation_2" | "final_date" | "profission" | "income";
 export type user_identifyCreationAttributes = Sequelize.InferCreationAttributes<user_identify>;
 
 export class user_identify extends Model<user_identifyAttributes, user_identifyCreationAttributes> implements user_identifyAttributes {
@@ -54,8 +54,8 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
   cpf!: string;
   is_deficiency!: boolean;
   deficiency?: string;
-  mother!: string;
-  father!: string;
+  filiation_1!: string;
+  filiation_2?: string;
   marital_status!: string;
   escolarity!: string;
   initial_date!: string;
@@ -157,13 +157,13 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
       type: DataTypes.STRING(191),
       allowNull: true
     },
-    mother: {
+    filiation_1: {
       type: DataTypes.STRING(191),
       allowNull: false
     },
-    father: {
+    filiation_2: {
       type: DataTypes.STRING(191),
-      allowNull: false
+      allowNull: true
     },
     marital_status: {
       type: DataTypes.STRING(191),

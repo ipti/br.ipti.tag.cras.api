@@ -86,8 +86,7 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
       references: {
         table: 'task',
         key: 'id'
-      },
-      unique: "attendance_task_fk_fkey"
+      }
     },
     attendance_unity_fk: {
       type: DataTypes.INTEGER,
@@ -132,14 +131,6 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         ]
       },
       {
-        name: "attendance_task_fk_key",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "task_fk" },
-        ]
-      },
-      {
         name: "attendance_user_identify_fk_fkey",
         using: "BTREE",
         fields: [
@@ -151,6 +142,13 @@ export class attendance extends Model<attendanceAttributes, attendanceCreationAt
         using: "BTREE",
         fields: [
           { name: "technician_fk" },
+        ]
+      },
+      {
+        name: "attendance_task_fk_fkey",
+        using: "BTREE",
+        fields: [
+          { name: "task_fk" },
         ]
       },
       {

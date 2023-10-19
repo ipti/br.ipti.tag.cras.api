@@ -49,10 +49,10 @@ export class UserIdentifyWithoutFamily {
   deficiency: string;
 
   @ApiProperty()
-  mother: string;
+  filiation_1: string;
 
   @ApiProperty()
-  father: string;
+  filiation_2?: string;
 
   @ApiProperty()
   marital_status: string;
@@ -178,10 +178,10 @@ export class UserIdentifyWithFamily {
   deficiency: string;
 
   @ApiProperty()
-  mother: string;
+  filiation_1: string;
 
   @ApiProperty()
-  father: string;
+  filiation_2?: string;
 
   @ApiProperty()
   marital_status: string;

@@ -17,8 +17,8 @@ CREATE TABLE `user_identify` (
     `cpf` VARCHAR(191) NOT NULL,
     `is_deficiency` BOOLEAN NOT NULL,
     `deficiency` VARCHAR(191) NULL,
-    `mother` VARCHAR(191) NOT NULL,
-    `father` VARCHAR(191) NOT NULL,
+    `filiation_1` VARCHAR(191) NOT NULL,
+    `filiation_2` VARCHAR(191) NULL,
     `marital_status` VARCHAR(191) NOT NULL,
     `escolarity` VARCHAR(191) NOT NULL,
     `initial_date` VARCHAR(191) NOT NULL,
@@ -83,7 +83,6 @@ CREATE TABLE `attendance` (
     `description` VARCHAR(191) NOT NULL,
     `date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `attendance_task_fk_key`(`task_fk`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
