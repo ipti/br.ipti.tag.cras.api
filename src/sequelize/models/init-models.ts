@@ -107,7 +107,7 @@ export function initModels(sequelize: Sequelize) {
   user_identify.belongsTo(family, { as: "family_fk_family", foreignKey: "family_fk"});
   family.hasMany(user_identify, { as: "user_identifies", foreignKey: "family_fk"});
   attendance.belongsTo(task, { as: "task_fk_task", foreignKey: "task_fk"});
-  task.hasOne(attendance, { as: "attendance", foreignKey: "task_fk"});
+  task.hasMany(attendance, { as: "attendances", foreignKey: "task_fk"});
   attendance.belongsTo(technician, { as: "technician_fk_technician", foreignKey: "technician_fk"});
   technician.hasMany(attendance, { as: "attendances", foreignKey: "technician_fk"});
   technician.belongsTo(user, { as: "user_fk_user", foreignKey: "user_fk"});

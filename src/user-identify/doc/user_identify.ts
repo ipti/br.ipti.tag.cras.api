@@ -53,10 +53,10 @@ export class UserIdentifyDocument {
     readonly deficiency: string;
     
     @ApiProperty()
-    readonly mother: string;
+    readonly filiation_1: string;
     
     @ApiProperty()
-    readonly father: string;
+    readonly filiation_2?: string;
     
     @ApiProperty()
     readonly marital_status: string;

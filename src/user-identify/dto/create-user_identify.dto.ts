@@ -77,11 +77,11 @@ export class CreateUserIdentifyDto {
 
   @IsNotEmpty()
   @IsString()
-  mother: string;
+  filiation_1: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  father: string;
+  filiation_2: string;
 
   @IsNotEmpty()
   @IsString()
