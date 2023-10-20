@@ -78,4 +78,16 @@ export class BffController {
   getCity(@Req() request, @Query('ufId') ufId: string) {
     return this.bffService.getCity(request, ufId);
   }
+
+  @Get('get-attendance')
+  @ApiOkResponse({ isArray: true })
+  getAttendance(@Req() request) {
+    return this.bffService.getAttendance(request);
+  }
+
+  @Get('get-all-from-family')
+  @ApiOkResponse({ isArray: true })
+  getAllFromFamily(@Req() request, @Query('familyId') familyId: string) {
+    return this.bffService.getAllFromFamily(request, familyId);
+  }
 }

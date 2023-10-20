@@ -7,19 +7,27 @@ import {
 import { address as Address } from '../../sequelize/models/address';
 import { user_identify as UserIdentify } from '../../sequelize/models/user_identify';
 import { family as Family } from '../../sequelize/models/family';
-import { family_benefits as FamilyBenefits } from '../../sequelize/models/family_benefits';
+import { family_benefits as FamilyBenefits, family_benefits } from '../../sequelize/models/family_benefits';
 import { vulnerability as Vulnerability } from '../../sequelize/models/vulnerability';
 import { edcenso_uf as EdcensoUf } from '../../sequelize/models/edcenso_uf';
 import { edcenso_city as EdcensoCity } from '../../sequelize/models/edcenso_city';
 import { attendance_unity as AttendanceUnity } from '../../sequelize/models/attendance_unity';
+import { attendance as Attendance } from '../../sequelize/models/attendance';
 import Sequelize from '@sequelize/core';
 import DbConnection from '../../sequelize/sequelize';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
-import { CreateAttendanceUnityDto } from 'src/attendance-unity/dto/create-attendance_unity.dto';
-import { UpdateAttendanceUnityDto } from 'src/attendance-unity/dto/update-attendance_unity.dto';
+import { AttendanceUnityService } from '../../attendance-unity/service/attendance_unity.service';
 
 @Injectable()
 export class BffService {
+
+  attendanceUnity: AttendanceUnityService;
+
+  constructor(
+    private readonly attendanceUnityService: AttendanceUnityService
+  ) {
+    this.attendanceUnity = attendanceUnityService;
+  }
+
   async createUserWithoutFamily(
     request: Request,
     createUserWithoutFamily: CreateUserIdentifyWithoutFamilyDto,
@@ -27,6 +35,12 @@ export class BffService {
     const dbName = request['dbName'];
 
     const connection: Sequelize = DbConnection.getInstance().getConnection();
+
+    await this.attendanceUnity.findOne(request, createUserWithoutFamily.attendance_unity_fk.toString());
+
+    await this.getEdcensoUf(request, createUserWithoutFamily.edcenso_uf_fk.toString());
+
+    await this.getEdcensoCity(request, createUserWithoutFamily.edcenso_city_fk.toString());
 
     const transactionResult = await connection.transaction(async (t) => {
       const address = {
@@ -241,5 +255,79 @@ export class BffService {
     });
 
     return cities;
+  }
+
+  async getAttendance(request: Request): Promise<any> {
+    const dbName = request['dbName'];
+
+    const attendance = await Attendance.withSchema(dbName).findAll({
+      attributes: ['id', 'result'],
+      include: ['task', 'technician'],
+      order: [['id', 'ASC']],
+    });
+
+    return attendance;
+  }
+
+  async getAllFromFamily(request: Request, familyId: string): Promise<any> {
+    const dbName = request['dbName'];
+
+    const family = await Family.withSchema(dbName).findByPk(+familyId, {
+      include: [
+        'address',
+        'attendance_unity',
+        'vulnerability',
+        'user_identifies',
+        {model: family_benefits, include: ['benefits']}
+      ],
+    });
+
+    if(!family){
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Família não encontrada',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return family;
+  }
+
+  private async getEdcensoUf(request: Request, ufId: string): Promise<any> {
+    const dbName = request['dbName'];
+
+    const edcensoUf = await EdcensoUf.withSchema(dbName).findByPk(+ufId);
+
+    if(!edcensoUf){
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Estado não encontrado',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return edcensoUf;
+  }
+
+  private async getEdcensoCity(request: Request, cityId: string): Promise<any> {
+    const dbName = request['dbName'];
+
+    const edcensoCity = await EdcensoCity.withSchema(dbName).findByPk(+cityId);
+
+    if(!edcensoCity){
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Cidade não encontrada',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return edcensoCity;
   }
 }
