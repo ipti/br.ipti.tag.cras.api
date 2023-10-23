@@ -95,6 +95,8 @@ export class BffService {
         final_date: createUserWithoutFamily.final_date,
         profission: createUserWithoutFamily.profission,
         income: createUserWithoutFamily.income,
+        signed_portfolio: createUserWithoutFamily.signed_portfolio,
+        nuclear_family: createUserWithoutFamily.nuclear_family,
       };
 
       const userIdentifyCreated = await UserIdentify.create(userIdentify, {
@@ -169,6 +171,8 @@ export class BffService {
         final_date: createUserWithFamily.final_date,
         profission: createUserWithFamily.profission,
         income: createUserWithFamily.income,
+        signed_portfolio: createUserWithFamily.signed_portfolio,
+        nuclear_family: createUserWithFamily.nuclear_family,
       };
 
       const userIdentifyCreated = await UserIdentify.create(userIdentify, {

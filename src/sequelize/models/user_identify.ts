@@ -1,6 +1,5 @@
 import * as Sequelize from '@sequelize/core';
 import { DataTypes, Model } from '@sequelize/core';
-import type { attendance, attendanceId } from './attendance';
 import type { family, familyId } from './family';
 
 export interface user_identifyAttributes {
@@ -29,11 +28,13 @@ export interface user_identifyAttributes {
   final_date?: string;
   profission?: string;
   income: number;
+  nuclear_family?: string;
+  signed_portfolio?: boolean;
 }
 
 export type user_identifyPk = "id";
 export type user_identifyId = user_identify[user_identifyPk];
-export type user_identifyOptionalAttributes = "id" | "family_fk" | "surname" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "deficiency" | "filiation_2" | "final_date" | "profission" | "income";
+export type user_identifyOptionalAttributes = "id" | "family_fk" | "surname" | "folder" | "archive" | "number" | "birthday" | "birth_certificate" | "nis" | "rg_number" | "rg_date_emission" | "uf_rg" | "emission_rg" | "deficiency" | "filiation_2" | "final_date" | "profission" | "income" | "nuclear_family" | "signed_portfolio";
 export type user_identifyCreationAttributes = Sequelize.InferCreationAttributes<user_identify>;
 
 export class user_identify extends Model<user_identifyAttributes, user_identifyCreationAttributes> implements user_identifyAttributes {
@@ -62,24 +63,14 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
   final_date?: string;
   profission?: string;
   income!: number;
+  nuclear_family?: string;
+  signed_portfolio?: boolean;
 
   // user_identify belongsTo family via family_fk
   family_fk_family!: family;
   getFamily_fk_family!: Sequelize.BelongsToGetAssociationMixin<family>;
   setFamily_fk_family!: Sequelize.BelongsToSetAssociationMixin<family, familyId>;
   createFamily_fk_family!: Sequelize.BelongsToCreateAssociationMixin<family>;
-  // user_identify hasMany attendance via user_identify_fk
-  attendances!: attendance[];
-  getAttendances!: Sequelize.HasManyGetAssociationsMixin<attendance>;
-  setAttendances!: Sequelize.HasManySetAssociationsMixin<attendance, attendanceId>;
-  addAttendance!: Sequelize.HasManyAddAssociationMixin<attendance, attendanceId>;
-  addAttendances!: Sequelize.HasManyAddAssociationsMixin<attendance, attendanceId>;
-  createAttendance!: Sequelize.HasManyCreateAssociationMixin<attendance>;
-  removeAttendance!: Sequelize.HasManyRemoveAssociationMixin<attendance, attendanceId>;
-  removeAttendances!: Sequelize.HasManyRemoveAssociationsMixin<attendance, attendanceId>;
-  hasAttendance!: Sequelize.HasManyHasAssociationMixin<attendance, attendanceId>;
-  hasAttendances!: Sequelize.HasManyHasAssociationsMixin<attendance, attendanceId>;
-  countAttendances!: Sequelize.HasManyCountAssociationsMixin<attendance>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof user_identify {
     return user_identify.init({
@@ -189,6 +180,14 @@ export class user_identify extends Model<user_identifyAttributes, user_identifyC
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    nuclear_family: {
+      type: DataTypes.STRING(191),
+      allowNull: true
+    },
+    signed_portfolio: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
     }
   }, {
     sequelize,

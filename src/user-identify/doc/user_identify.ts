@@ -75,4 +75,10 @@ export class UserIdentifyDocument {
     
     @ApiProperty()
     readonly income: number;
+
+    @ApiProperty()
+    readonly signed_portfolio: boolean;
+
+    @ApiProperty()
+    readonly nuclear_family: string;
 }

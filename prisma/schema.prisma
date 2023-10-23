@@ -35,6 +35,8 @@ model user_identify {
   initial_date      String
   final_date        String?
   profission        String?
+  signed_portfolio  Boolean?
+  nuclear_family    String?
   income            Int          @default(0)
   family            family?      @relation(fields: [family_fk], references: [id])
   attendances       attendance[]

@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BenefitsForFamily } from '../../utils/types';
 
 export class UserIdentifyWithoutFamily {
-
   @ApiProperty()
   name: string;
 
@@ -71,6 +70,12 @@ export class UserIdentifyWithoutFamily {
 
   @ApiProperty()
   income: number;
+
+  @ApiProperty()
+  signed_portfolio: boolean;
+
+  @ApiProperty()
+  nuclear_family: string;
 
   @ApiProperty()
   address_fk: number;
@@ -131,7 +136,6 @@ export class UserIdentifyWithoutFamily {
 }
 
 export class UserIdentifyWithFamily {
-
   @ApiProperty()
   name: string;
 
@@ -202,8 +206,14 @@ export class UserIdentifyWithFamily {
   income: number;
 
   @ApiProperty()
+  signed_portfolio: boolean;
+
+  @ApiProperty()
+  nuclear_family: string;
+
+  @ApiProperty()
   family_fk: number;
-  
+
   @ApiProperty()
   benefitsForFamily: BenefitsForFamily[];
 }

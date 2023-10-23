@@ -103,6 +103,14 @@ export class CreateUserIdentifyWithoutFamilyDto {
   @IsNumber()
   income: number;
 
+  @IsOptional()
+  @IsBoolean()
+  signed_portfolio: boolean;
+
+  @IsOptional()
+  @IsString()
+  nuclear_family: string;
+
   @IsNotEmpty()
   @IsNumber()
   attendance_unity_fk: number;
@@ -269,6 +277,14 @@ export class CreateUserIdentifyWithFamilyDto {
   @IsNotEmpty()
   @IsNumber()
   income: number;
+
+  @IsOptional()
+  @IsBoolean()
+  signed_portfolio: boolean;
+
+  @IsOptional()
+  @IsString()
+  nuclear_family: string;
 
   @IsNotEmpty()
   @IsNumber()
