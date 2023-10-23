@@ -106,4 +106,12 @@ export class CreateUserIdentifyDto {
   @IsNotEmpty()
   @IsNumber()
   income: number;
+
+  @IsOptional()
+  @IsBoolean()
+  signed_portfolio: boolean;
+
+  @IsOptional()
+  @IsString()
+  nuclear_family: string;
 }
