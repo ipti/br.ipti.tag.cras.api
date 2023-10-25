@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { attendance as Attendance } from '../../sequelize/models/attendance';
 import { CreateAttendanceDto } from '../dto/create-attendance.dto';
 import { UpdateAttendanceDto } from '../dto/update-attendance.dto';
 import { UserIdentifyService } from '../../user-identify/service/user_identify.service';
 import { TechnicianService } from '../../technician/service/technician.service';
 import { TaskService } from '../../task/service/task.service';
 import { AttendanceUnityService } from '../../attendance-unity/service/attendance_unity.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { attendance } from '@prisma/client';
+import { Request } from 'express';
 
 @Injectable()
 export class AttendanceService {
@@ -16,6 +18,7 @@ export class AttendanceService {
   attendance_unity: AttendanceUnityService;
 
   constructor(
+    private readonly prismaService: PrismaService,
     userIdentifyService: UserIdentifyService,
     technicianService: TechnicianService,
     @Inject(forwardRef(() => TaskService))
@@ -31,52 +34,80 @@ export class AttendanceService {
   async create(
     request: Request,
     createAttendance: CreateAttendanceDto,
-  ): Promise<Attendance> {
-    const dbName = request['dbName'];
+  ): Promise<attendance> {
 
-    const user_identify = await this.user_identify.findOne(request, createAttendance.user_identify_fk.toString());
+    const user_identify = await this.user_identify.findOne(request, createAttendance.user_identify.toString());
 
     if (!user_identify) {
       throw new HttpException('UserIdentify not found', HttpStatus.NOT_FOUND);
     }
 
-    const technician = await this.technician.findOne(request, createAttendance.technician_fk.toString());
+    const technician = await this.technician.findOne(request, createAttendance.technician.toString());
 
     if (!technician) {
       throw new HttpException('Technician not found', HttpStatus.NOT_FOUND);
     }
 
-    const task = await this.task.findOne(request, createAttendance.task_fk.toString());
+    const task = await this.task.findOne(request, createAttendance.task.toString());
 
     if (!task) {
       throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     }
 
-    const attendance_unity = await this.attendance_unity.findOne(request, createAttendance.attendance_unity_fk.toString());
+    const attendance_unity = await this.attendance_unity.findOne(request, createAttendance.attendance_unity.toString());
 
     if (!attendance_unity) {
       throw new HttpException('AttendanceUnity not found', HttpStatus.NOT_FOUND);
     }
 
-    const createdAttendance = await Attendance.withSchema(dbName).create({
-      ...createAttendance,
+    const createdAttendance = await this.prismaService.attendance.create({
+      data: {
+        ...createAttendance,
+        user_identify: {
+          connect: {
+            id: user_identify.id,
+          },
+        },
+        technician: {
+          connect: {
+            id: technician.id,
+          },
+        },
+        task: {
+          connect: {
+            id: task.id,
+          },
+        },
+        attendance_unity: {
+          connect: {
+            id: attendance_unity.id,
+          },
+        },
+        edcenso_city: {
+          connect: {
+            id: attendance_unity.edcenso_city_fk,
+          },
+        },
+      },
     });
 
     return createdAttendance;
   }
 
-  async findAll(request: Request): Promise<Attendance[]> {
-    const dbName = request['dbName'];
+  async findAll(request: Request): Promise<attendance[]> {
 
-    const allAttendance = await Attendance.withSchema(dbName).findAll();
+    const allAttendance = await this.prismaService.attendance.findMany({
+      where: { edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     return allAttendance;
   }
 
-  async findOne(request: Request, id: string): Promise<Attendance> {
-    const dbName = request['dbName'];
+  async findOne(request: Request, id: string): Promise<attendance> {
 
-    const attendance = await Attendance.withSchema(dbName).findByPk(+id);
+    const attendance = await this.prismaService.attendance.findUnique({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     if (!attendance) {
       throw new HttpException('Attendance not found', HttpStatus.NOT_FOUND);
@@ -89,29 +120,49 @@ export class AttendanceService {
     request: Request,
     id: string,
     UpdateAttendanceDto: UpdateAttendanceDto,
-  ) {
-    const dbName = request['dbName'];
+  ): Promise<attendance> {
 
     await this.findOne(request, id);
 
-    const attendanceUpdated = await Attendance.withSchema(dbName).update(
-      {
+    const attendanceUpdated = await this.prismaService.attendance.update({
+      where: { id: +id },
+      data: {
         ...UpdateAttendanceDto,
+        user_identify: {
+          connect: {
+            id: UpdateAttendanceDto.user_identify,
+          },
+        },
+        technician: {
+          connect: {
+            id: UpdateAttendanceDto.technician,
+          },
+        },
+        task: {
+          connect: {
+            id: UpdateAttendanceDto.task,
+          },
+        },
+        attendance_unity: {
+          connect: {
+            id: UpdateAttendanceDto.attendance_unity,
+          },
+        },
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
       },
-      {
-        where: { id: +id },
-      },
-    );
+    });
 
     return attendanceUpdated;
   }
 
-  async remove(request: Request, id: string) {
+  async remove(request: Request, id: string): Promise<attendance> {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const attendanceDeleted = await Attendance.withSchema(dbName).destroy({
+    const attendanceDeleted = await this.prismaService.attendance.delete({
       where: { id: +id },
     });
 

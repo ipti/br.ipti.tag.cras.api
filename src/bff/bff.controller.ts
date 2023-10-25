@@ -67,18 +67,6 @@ export class BffController {
     );
   }
 
-  @Get('get-state')
-  @ApiOkResponse({ isArray: true })
-  getState(@Req() request) {
-    return this.bffService.getState(request);
-  }
-
-  @Get('get-city')
-  @ApiOkResponse({ isArray: true })
-  getCity(@Req() request, @Query('ufId') ufId: string) {
-    return this.bffService.getCity(request, ufId);
-  }
-
   @Get('get-attendance')
   @ApiOkResponse({ isArray: true })
   getAttendance(@Req() request) {

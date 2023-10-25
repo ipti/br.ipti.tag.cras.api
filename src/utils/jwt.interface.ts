@@ -3,7 +3,7 @@ export interface JwtPayload {
   username: string;
   id: number;
   role: string;
-  dbName: string;
+  edcenso_city_fk: number;
 }
 
 declare module 'express' {

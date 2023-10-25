@@ -1,22 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { user } from '../../sequelize/models/user';
 import * as crypto from 'crypto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+    private readonly prismaService: PrismaService,
   ) {}
 
-  async validateUser(request, userUsername: string, userPassword: string) {
+  async validateUser(userUsername: string, userPassword: string) {
 
-    const dbName = request['dbName'];
-
-    const userFound = await user.withSchema(dbName).findOne({
-      where: {
-        username: userUsername,
-      }
+    const userFound = await this.prismaService.user.findUnique({
+      where: { username: userUsername },
     });
 
     if(!userFound){
@@ -27,17 +24,17 @@ export class AuthService {
     };
 
     if (
-      userFound.dataValues && this.validateMd5Password(userPassword, userFound.dataValues.password)
+      userFound && this.validateMd5Password(userPassword, userFound.password)
     ) {
-      const { name, username, id, role } = userFound.dataValues;
+      const { name, username, id, role, edcenso_city_fk } = userFound;
 
-      return { name, username, id, role, dbName: dbName };
+      return { name, username, id, role, edcenso_city_fk  };
     }
     return null;
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role, dbName: user.dbName };
+    const payload = { username: user.username, sub: user.id, role: user.role, edcenso_city_fk: user.edcenso_city_fk };
     return {
       access_token: this.jwtService.sign(payload),
       user,

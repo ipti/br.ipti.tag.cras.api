@@ -1,16 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { user as User } from '../../sequelize/models/user';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { Request } from 'express';
+import { user } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  async create(request: Request, createUser: CreateUserDto): Promise<User> {
-    const dbName = request['dbName'];
+  constructor(private readonly prismaService: PrismaService) {}
 
-    const userRegistered = await User.withSchema(dbName).findOne({
-      where: { username: createUser.username },
+  async create(request: Request, createUser: CreateUserDto): Promise<user> {
+    const userRegistered = await this.prismaService.user.findUnique({
+      where: {
+        username: createUser.username,
+      },
     });
 
     if (userRegistered) {
@@ -22,9 +26,16 @@ export class UserService {
 
     const cryptoPassword = this.encryptedMd5Password(createUser.password);
 
-    const createdUser = await User.withSchema(dbName).create({
-      ...createUser,
-      password: cryptoPassword,
+    const createdUser = await this.prismaService.user.create({
+      data: {
+        ...createUser,
+        password: cryptoPassword,
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
+      },
     });
 
     delete createdUser.password;
@@ -32,18 +43,23 @@ export class UserService {
     return createdUser;
   }
 
-  async findAll(request: Request): Promise<User[]> {
-    const dbName = request['dbName'];
-
-    const allUser = await User.withSchema(dbName).findAll();
+  async findAll(request: Request): Promise<user[]> {
+    const allUser = await this.prismaService.user.findMany({
+      where: {
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+    });
 
     return allUser;
   }
 
-  async findOne(request: Request, id: string): Promise<User> {
-    const dbName = request['dbName'];
-
-    const user = await User.withSchema(dbName).findByPk(+id);
+  async findOne(request: Request, id: string): Promise<user> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: +id,
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+    });
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -53,8 +69,6 @@ export class UserService {
   }
 
   async update(request: Request, id: string, UpdateUserDto: UpdateUserDto) {
-    const dbName = request['dbName'];
-
     await this.findOne(request, id);
 
     if (UpdateUserDto.password) {
@@ -63,14 +77,10 @@ export class UserService {
       );
     }
 
-    const userUpdated = await User.withSchema(dbName).update(
-      {
-        ...UpdateUserDto,
-      },
-      {
-        where: { id: +id },
-      },
-    );
+    const userUpdated = await this.prismaService.user.update({
+      where: { id: +id },
+      data: UpdateUserDto,
+    });
 
     return userUpdated;
   }
@@ -78,9 +88,7 @@ export class UserService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const userDeleted = await User.withSchema(dbName).destroy({
+    const userDeleted = await this.prismaService.user.delete({
       where: { id: +id },
     });
 

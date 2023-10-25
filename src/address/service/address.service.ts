@@ -1,35 +1,55 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { address as Address } from '../../sequelize/models/address';
 import { CreateAddressDto } from '../dto/create-address.dto';
 import { UpdateAddressDto } from '../dto/update-address.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { address } from '@prisma/client';
+import { Request } from 'express';
 
 @Injectable()
 export class AddressService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   async create(
     request: Request,
     createAddress: CreateAddressDto,
-  ): Promise<Address> {
-    const dbName = request['dbName'];
+  ): Promise<address> {
+    const transactionResult = await this.prismaService.$transaction(
+      async (tx) => {
+        const edcenso_city = await tx.edcenso_city.findFirst({
+          where: { id: request.user.edcenso_city_fk },
+        });
 
-    const createdAddress = await Address.withSchema(dbName).create({
-      ...createAddress,
-    });
+        const createdAddress = await tx.address.create({
+          data: {
+            ...createAddress,
+            edcenso_city: {
+              connect: { id: edcenso_city.id },
+            },
+            edcenso_uf: {
+              connect: { id: edcenso_city.edcenso_uf_fk },
+            },
+          },
+        });
 
-    return createdAddress;
+        return createdAddress;
+      },
+    );
+
+    return transactionResult;
   }
 
-  async findAll(request: Request): Promise<Address[]> {
-    const dbName = request['dbName'];
-
-    const allAddress = await Address.withSchema(dbName).findAll();
+  async findAll(request: Request): Promise<address[]> {
+    const allAddress = await this.prismaService.address.findMany({
+      where: { edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     return allAddress;
   }
 
-  async findOne(request: Request, id: string): Promise<Address> {
-    const dbName = request['dbName'];
-
-    const address = await Address.withSchema(dbName).findByPk(+id);
+  async findOne(request: Request, id: string): Promise<address> {
+    const address = await this.prismaService.address.findUnique({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     if (!address) {
       throw new HttpException('Address not found', HttpStatus.NOT_FOUND);
@@ -42,29 +62,23 @@ export class AddressService {
     request: Request,
     id: string,
     UpdateAddressDto: UpdateAddressDto,
-  ) {
-    const dbName = request['dbName'];
-
+  ): Promise<address> {
     await this.findOne(request, id);
 
-    const addressUpdated = await Address.withSchema(dbName).update(
-      {
+    const addressUpdated = await this.prismaService.address.update({
+      data: {
         ...UpdateAddressDto,
       },
-      {
-        where: { id: +id },
-      },
-    );
+      where: { id: +id },
+    });
 
     return addressUpdated;
   }
 
-  async remove(request: Request, id: string) {
+  async remove(request: Request, id: string): Promise<address> {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const addressDeleted = await Address.withSchema(dbName).destroy({
+    const addressDeleted = await this.prismaService.address.delete({
       where: { id: +id },
     });
 

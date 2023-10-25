@@ -1,35 +1,54 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { benefits as Benefits } from '../../sequelize/models/benefits';
 import { CreateBenefitsDto } from '../dto/create-benefits.dto';
 import { UpdateBenefitsDto } from '../dto/update-benefits.dto';
+import { benefits } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Request } from 'express';
 
 @Injectable()
 export class BenefitsService {
+
+  constructor(
+    private readonly prismaService: PrismaService,
+  ) {}
+
   async create(
     request: Request,
     createBenefits: CreateBenefitsDto,
-  ): Promise<Benefits> {
-    const dbName = request['dbName'];
+  ): Promise<benefits> {
 
-    const createdBenefits = await Benefits.withSchema(dbName).create({
-      ...createBenefits,
+    const createdBenefits = await this.prismaService.benefits.create({
+      data: {
+        ...createBenefits,
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
+      },
     });
 
     return createdBenefits;
   }
 
-  async findAll(request: Request): Promise<Benefits[]> {
-    const dbName = request['dbName'];
+  async findAll(request: Request): Promise<benefits[]> {
 
-    const allBenefits = await Benefits.withSchema(dbName).findAll();
+    const allBenefits = await this.prismaService.benefits.findMany({
+      where: {
+        edcenso_city: {
+          id: request.user.edcenso_city_fk,
+        },
+      },
+    });
 
     return allBenefits;
   }
 
-  async findOne(request: Request, id: string): Promise<Benefits> {
-    const dbName = request['dbName'];
+  async findOne(request: Request, id: string): Promise<benefits> {
 
-    const benefits = await Benefits.withSchema(dbName).findByPk(+id);
+    const benefits = await this.prismaService.benefits.findUnique({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     if (!benefits) {
       throw new HttpException('Benefits not found', HttpStatus.NOT_FOUND);
@@ -43,18 +62,20 @@ export class BenefitsService {
     id: string,
     UpdateBenefitsDto: UpdateBenefitsDto,
   ) {
-    const dbName = request['dbName'];
 
     await this.findOne(request, id);
 
-    const benefitsUpdated = await Benefits.withSchema(dbName).update(
-      {
+    const benefitsUpdated = await this.prismaService.benefits.update({
+      where: { id: +id },
+      data: {
         ...UpdateBenefitsDto,
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
       },
-      {
-        where: { id: +id },
-      },
-    );
+    });
 
     return benefitsUpdated;
   }
@@ -62,9 +83,7 @@ export class BenefitsService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const benefitsDeleted = await Benefits.withSchema(dbName).destroy({
+    const benefitsDeleted = await this.prismaService.benefits.delete({
       where: { id: +id },
     });
 

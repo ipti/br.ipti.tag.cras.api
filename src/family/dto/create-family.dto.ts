@@ -7,9 +7,13 @@ export class CreateFamilyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  address_fk: number;
+  address: number;
 
   @IsNotEmpty()
   @IsNumber()
-  attendance_unity_fk: number;
+  attendance_unity: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  vulnerability: number;
 }

@@ -5,9 +5,10 @@ import { UserIdentifyModule } from '../user-identify/user_identify.module';
 import { TechnicianModule } from '../technician/technician.module';
 import { TaskModule } from '../task/task.module';
 import { AttendanceUnityModule } from '../attendance-unity/attendance_unity.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports: [UserIdentifyModule, TechnicianModule, forwardRef(() =>TaskModule), AttendanceUnityModule],
+  imports: [PrismaModule, UserIdentifyModule, TechnicianModule, forwardRef(() =>TaskModule), AttendanceUnityModule],
   controllers: [AttendanceController],
   providers: [AttendanceService],
   exports: [AttendanceService],

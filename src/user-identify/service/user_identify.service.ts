@@ -1,9 +1,17 @@
-import { HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { user_identify as UserIdentify } from '../../sequelize/models/user_identify';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateUserIdentifyDto } from '../dto/create-user_identify.dto';
 import { UpdateUserIdentifyDto } from '../dto/update-user_identify.dto';
 import { FamilyService } from '../../family/service/family.service';
 import { VulnerabilityService } from '../../vulnerability/service/vulnerability.service';
+import { Request } from 'express';
+import { user_identify } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserIdentifyService {
@@ -11,6 +19,7 @@ export class UserIdentifyService {
   vulnerability: VulnerabilityService;
 
   constructor(
+    private readonly prismaService: PrismaService,
     @Inject(forwardRef(() => FamilyService))
     familyService: FamilyService,
     vulnerabilityService: VulnerabilityService,
@@ -22,46 +31,52 @@ export class UserIdentifyService {
   async create(
     request: Request,
     createUserIdentify: CreateUserIdentifyDto,
-  ): Promise<UserIdentify> {
-    const dbName = request['dbName'];
-
+  ): Promise<user_identify> {
     const family = await this.family.findOne(
       request,
-      createUserIdentify.family_fk.toString(),
+      createUserIdentify.family.toString(),
     );
 
     if (!family) {
       throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
     }
 
-    const vulnerability = await this.vulnerability.findOne(
-      request,
-      createUserIdentify.vulnerability_fk.toString(),
-    );
-
-    if (!vulnerability) {
-      throw new HttpException('Vulnerability not found', HttpStatus.NOT_FOUND);
-    }
-
-    const createdUserIdentify = await UserIdentify.withSchema(dbName).create({
-      ...createUserIdentify,
+    const createdUserIdentify = await this.prismaService.user_identify.create({
+      data: {
+        ...createUserIdentify,
+        family: {
+          connect: {
+            id: createUserIdentify.family,
+          },
+        },
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
+      },
     });
 
     return createdUserIdentify;
   }
 
-  async findAll(request: Request): Promise<UserIdentify[]> {
-    const dbName = request['dbName'];
-
-    const allUserIdentify = await UserIdentify.withSchema(dbName).findAll();
+  async findAll(request: Request): Promise<user_identify[]> {
+    const allUserIdentify = await this.prismaService.user_identify.findMany({
+      where: {
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+    });
 
     return allUserIdentify;
   }
 
-  async findOne(request: Request, id: string): Promise<UserIdentify> {
-    const dbName = request['dbName'];
-
-    const user_identify = await UserIdentify.withSchema(dbName).findByPk(+id);
+  async findOne(request: Request, id: string): Promise<user_identify> {
+    const user_identify = await this.prismaService.user_identify.findUnique({
+      where: {
+        id: +id,
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+    });
 
     if (!user_identify) {
       throw new HttpException('UserIdentify not found', HttpStatus.NOT_FOUND);
@@ -75,18 +90,24 @@ export class UserIdentifyService {
     id: string,
     UpdateUserIdentifyDto: UpdateUserIdentifyDto,
   ) {
-    const dbName = request['dbName'];
-
     await this.findOne(request, id);
 
-    const user_identifyUpdated = await UserIdentify.withSchema(dbName).update(
-      {
+    const user_identifyUpdated = await this.prismaService.user_identify.update({
+      where: { id: +id },
+      data: {
         ...UpdateUserIdentifyDto,
+        family: {
+          connect: {
+            id: UpdateUserIdentifyDto.family,
+          },
+        },
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
       },
-      {
-        where: { id: +id },
-      },
-    );
+    });
 
     return user_identifyUpdated;
   }
@@ -94,9 +115,7 @@ export class UserIdentifyService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const user_identifyDeleted = await UserIdentify.withSchema(dbName).destroy({
+    const user_identifyDeleted = await this.prismaService.user_identify.delete({
       where: { id: +id },
     });
 

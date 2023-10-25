@@ -7,5 +7,5 @@ export class CreateTechnicianDto {
 
   @IsOptional()
   @IsNumber()
-  user_fk: number;
+  user: number;
 }
