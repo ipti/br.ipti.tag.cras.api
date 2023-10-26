@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 
 export class UserDocument {
   @ApiProperty({
@@ -34,7 +35,7 @@ export class UserDocument {
     description: 'Função do usuário',
     required: true,
   })
-  role: string;
+  role: Role;
 
   @ApiProperty({
     type: Number,

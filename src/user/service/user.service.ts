@@ -34,9 +34,13 @@ export class UserService {
 
     var edcenso_city: number;
 
-    if (request.user.role === Role.SECRETARY) {
-      edcenso_city = request.user.edcenso_city_fk;
-    } else {
+    try {
+      if (request.user.role === Role.SECRETARY) {
+        edcenso_city = request.user.edcenso_city_fk;
+      } else {
+        edcenso_city = createUser.edcenso_city;
+      }
+    } catch (error) {
       edcenso_city = createUser.edcenso_city;
     }
 
