@@ -7,5 +7,5 @@ export class CreateAttendanceUnityDto {
 
   @IsNotEmpty()
   @IsNumber()
-  address_fk: number;
+  address: number;
 }

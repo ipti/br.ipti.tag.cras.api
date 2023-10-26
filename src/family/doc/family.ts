@@ -13,12 +13,19 @@ export class FamilyDocument {
         description: 'Identificador do endereço',
         required: true,
     })
-    address_fk: number;
+    address: number;
     
     @ApiProperty({
         type: Number,
         description: 'Identificador da unidade de atendimento',
         required: true,
     })
-    attendance_unity_fk: number;
+    attendance_unity: number;
+
+    @ApiProperty({
+        type: Number,
+        description: 'Identificador da vulnerabilidade',
+        required: true,
+    })
+    vulnerability: number;
 }

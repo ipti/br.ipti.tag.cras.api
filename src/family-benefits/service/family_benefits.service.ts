@@ -1,35 +1,62 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { family_benefits as FamilyBenefits } from '../../sequelize/models/family_benefits';
 import { CreateFamilyBenefitsDto } from '../dto/create-family_benefits.dto';
 import { UpdateFamilyBenefitsDto } from '../dto/update-family_benefits.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { family_benefits } from '@prisma/client';
+import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class FamilyBenefitsService {
+  constructor(private readonly prismaService: PrismaService) {}
+
   async create(
     request: Request,
     createFamilyBenefits: CreateFamilyBenefitsDto,
-  ): Promise<FamilyBenefits> {
-    const dbName = request['dbName'];
-
-    const createdFamilyBenefits = await FamilyBenefits.withSchema(dbName).create({
-      ...createFamilyBenefits,
-    });
+  ): Promise<family_benefits> {
+    const createdFamilyBenefits =
+      await this.prismaService.family_benefits.create({
+        data: {
+          ...createFamilyBenefits,
+          family: {
+            connect: {
+              id: createFamilyBenefits.family,
+            },
+          },
+          benefits: {
+            connect: {
+              id: createFamilyBenefits.benefits,
+            },
+          },
+          edcenso_city: {
+            connect: {
+              id: request.user.edcenso_city_fk,
+            },
+          },
+        },
+      });
 
     return createdFamilyBenefits;
   }
 
-  async findAll(request: Request): Promise<FamilyBenefits[]> {
-    const dbName = request['dbName'];
-
-    const allFamilyBenefits = await FamilyBenefits.withSchema(dbName).findAll();
+  async findAll(request: Request): Promise<family_benefits[]> {
+    const allFamilyBenefits = await this.prismaService.family_benefits.findMany(
+      {
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+      },
+    );
 
     return allFamilyBenefits;
   }
 
-  async findOne(request: Request, id: string): Promise<FamilyBenefits> {
-    const dbName = request['dbName'];
-
-    const family_benefits = await FamilyBenefits.withSchema(dbName).findByPk(+id);
+  async findOne(request: Request, id: string): Promise<family_benefits> {
+    const family_benefits = await this.prismaService.family_benefits.findUnique(
+      {
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      },
+    );
 
     if (!family_benefits) {
       throw new HttpException('FamilyBenefits not found', HttpStatus.NOT_FOUND);
@@ -43,18 +70,42 @@ export class FamilyBenefitsService {
     id: string,
     UpdateFamilyBenefitsDto: UpdateFamilyBenefitsDto,
   ) {
-    const dbName = request['dbName'];
-
     await this.findOne(request, id);
 
-    const family_benefitsUpdated = await FamilyBenefits.withSchema(dbName).update(
+    const familyOptional = optionalKeyValidation(
+      UpdateFamilyBenefitsDto.family,
       {
-        ...UpdateFamilyBenefitsDto,
-      },
-      {
-        where: { id: +id },
+        connect: {
+          id: UpdateFamilyBenefitsDto.family,
+        },
       },
     );
+
+    const benefitsOptional = optionalKeyValidation(
+      UpdateFamilyBenefitsDto.benefits,
+      {
+        connect: {
+          id: UpdateFamilyBenefitsDto.benefits,
+        },
+      },
+    );
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
+    const family_benefitsUpdated =
+      await this.prismaService.family_benefits.update({
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+        data: {
+          ...UpdateFamilyBenefitsDto,
+          family: familyOptional,
+          benefits: benefitsOptional,
+          edcenso_city: cityOptional,
+        },
+      });
 
     return family_benefitsUpdated;
   }
@@ -62,11 +113,10 @@ export class FamilyBenefitsService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const family_benefitsDeleted = await FamilyBenefits.withSchema(dbName).destroy({
-      where: { id: +id },
-    });
+    const family_benefitsDeleted =
+      await this.prismaService.family_benefits.delete({
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      });
 
     return family_benefitsDeleted;
   }

@@ -13,5 +13,5 @@ export class TechnicianDocument {
     description: 'Identificador do usuário',
     required: false,
   })
-  user_fk: number;
+  user: number;
 }

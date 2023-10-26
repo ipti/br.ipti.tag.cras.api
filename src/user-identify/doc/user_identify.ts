@@ -77,6 +77,9 @@ export class UserIdentifyDocument {
     readonly income: number;
 
     @ApiProperty()
+    readonly kinship: string;
+
+    @ApiProperty()
     readonly signed_portfolio: boolean;
 
     @ApiProperty()

@@ -4,17 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 import * as session from 'express-session';
-import Sequelize from '@sequelize/core';
-import DbConnection from './sequelize/sequelize';
-import { initModels } from './sequelize/models/init-models';
 
 declare const module: any;
 
 async function bootstrap() {
-
-  const connection: Sequelize = DbConnection.getInstance().getConnection();
-
-  initModels(connection);
 
   const app = await NestFactory.create(AppModule);
   app.enableCors({

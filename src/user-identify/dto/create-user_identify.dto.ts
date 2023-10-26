@@ -1,5 +1,7 @@
+import { Kinship } from '@prisma/client';
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -7,13 +9,9 @@ import {
 } from 'class-validator';
 
 export class CreateUserIdentifyDto {
-  @IsNotEmpty()
-  @IsNumber()
-  vulnerability_fk: number;
-
   @IsOptional()
   @IsNumber()
-  family_fk: number;
+  family: number;
 
   @IsNotEmpty()
   @IsString()
@@ -106,6 +104,10 @@ export class CreateUserIdentifyDto {
   @IsNotEmpty()
   @IsNumber()
   income: number;
+
+  @IsNotEmpty()
+  @IsEnum(Kinship)
+  kinship: Kinship;
 
   @IsOptional()
   @IsBoolean()

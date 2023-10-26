@@ -5,44 +5,55 @@ import {
   Injectable,
   forwardRef,
 } from '@nestjs/common';
-import { task as Task } from '../../sequelize/models/task';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { AttendanceService } from '../../attendance/service/attendance.service';
+import { Request } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { task } from '@prisma/client';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class TaskService {
   attendance: AttendanceService;
 
   constructor(
+    private readonly prismaService: PrismaService,
     @Inject(forwardRef(() => AttendanceService))
     attendanceService: AttendanceService,
   ) {
     this.attendance = attendanceService;
   }
 
-  async create(request: Request, createTask: CreateTaskDto): Promise<Task> {
-    const dbName = request['dbName'];
-
-    const createdTask = await Task.withSchema(dbName).create({
-      ...createTask,
+  async create(request: Request, createTask: CreateTaskDto): Promise<task> {
+    const createdTask = await this.prismaService.task.create({
+      data: {
+        ...createTask,
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
+      },
     });
 
     return createdTask;
   }
 
-  async findAll(request: Request): Promise<Task[]> {
-    const dbName = request['dbName'];
-
-    const allTask = await Task.withSchema(dbName).findAll();
+  async findAll(request: Request): Promise<task[]> {
+    const allTask = await this.prismaService.task.findMany({
+      where: {
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+    });
 
     return allTask;
   }
 
-  async findOne(request: Request, id: string): Promise<Task> {
-    const dbName = request['dbName'];
-
-    const task = await Task.withSchema(dbName).findByPk(+id);
+  async findOne(request: Request, id: string): Promise<task> {
+    const task = await this.prismaService.task.findUnique({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+    });
 
     if (!task) {
       throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
@@ -52,18 +63,21 @@ export class TaskService {
   }
 
   async update(request: Request, id: string, UpdateTaskDto: UpdateTaskDto) {
-    const dbName = request['dbName'];
-
     await this.findOne(request, id);
 
-    const taskUpdated = await Task.withSchema(dbName).update(
-      {
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
+    const taskUpdated = await this.prismaService.task.update({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      data: {
         ...UpdateTaskDto,
+        edcenso_city: cityOptional,
       },
-      {
-        where: { id: +id },
-      },
-    );
+    });
 
     return taskUpdated;
   }
@@ -71,10 +85,8 @@ export class TaskService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const dbName = request['dbName'];
-
-    const taskDeleted = await Task.withSchema(dbName).destroy({
-      where: { id: +id },
+    const taskDeleted = await this.prismaService.task.delete({
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return taskDeleted;

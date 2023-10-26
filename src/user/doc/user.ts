@@ -35,4 +35,11 @@ export class UserDocument {
     required: true,
   })
   role: string;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Identificador da cidade do usuário',
+    required: false,
+  })
+  edcenso_city: number;
 }

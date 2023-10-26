@@ -13,6 +13,7 @@ WORKDIR /home/api
 COPY package*.json ./
 COPY prisma ./prisma
 
+RUN npx prisma generate
 RUN npm ci
 
 COPY . .

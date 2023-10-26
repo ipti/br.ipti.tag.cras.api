@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsISO8601,
   IsNotEmpty,
   IsNumber,
@@ -8,6 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import { BenefitsForFamily } from '../../utils/types';
+import { Kinship } from '@prisma/client';
 
 export class CreateUserIdentifyWithoutFamilyDto {
 
@@ -113,15 +115,7 @@ export class CreateUserIdentifyWithoutFamilyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  attendance_unity_fk: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  edcenso_uf_fk: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  edcenso_city_fk: number;
+  attendance_unity: number;
 
   @IsNotEmpty()
   @IsString()
@@ -178,6 +172,10 @@ export class CreateUserIdentifyWithoutFamilyDto {
   @IsNotEmpty()
   @IsBoolean()
   others: boolean;
+
+  @IsNotEmpty()
+  @IsEnum(Kinship)
+  kinship: Kinship;
 
   @IsNotEmpty()
   @IsArray()
@@ -288,7 +286,11 @@ export class CreateUserIdentifyWithFamilyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  family_fk: number;
+  family: number;
+
+  @IsNotEmpty()
+  @IsEnum(Kinship)
+  kinship: Kinship;
 
   @IsNotEmpty()
   @IsArray()
@@ -296,13 +298,6 @@ export class CreateUserIdentifyWithFamilyDto {
 }
 
 export class CreateAttendanceUnityAndAddressDto {
-  @IsNotEmpty()
-  @IsNumber()
-  edcenso_uf_fk: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  edcenso_city_fk: number;
 
   @IsNotEmpty()
   @IsString()

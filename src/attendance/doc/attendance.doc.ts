@@ -6,28 +6,28 @@ export class AttendanceDocument {
     description: 'Identificador do usuário',
     required: true,
   })
-  user_identify_fk: number;
+  user_identify: number;
 
   @ApiProperty({
     type: Number,
     description: 'Identificador do técnico',
     required: true,
   })
-  technician_fk: number;
+  technician: number;
 
   @ApiProperty({
     type: Number,
     description: 'Serviço',
     required: true,
   })
-  task_fk: number;
+  task: number;
 
   @ApiProperty({
     type: Number,
     description: 'Identificador da unidade',
     required: true,
   })
-  attendance_unity_fk: number;
+  attendance_unity: number;
 
   @ApiProperty({
     type: String,

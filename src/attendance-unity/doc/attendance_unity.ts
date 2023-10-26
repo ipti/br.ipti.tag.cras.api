@@ -13,5 +13,5 @@ export class AttendanceUnityDocument {
         description: 'Identificador do endereço',
         required: true,
     })
-    address_fk: number;
+    address: number;
 }

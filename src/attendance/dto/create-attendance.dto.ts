@@ -1,4 +1,6 @@
+import { Result } from '@prisma/client';
 import {
+  IsEnum,
   IsISO8601,
   IsNotEmpty,
   IsNumber,
@@ -9,31 +11,31 @@ import {
 export class CreateAttendanceDto {
   @IsNotEmpty()
   @IsNumber()
-  user_identify_fk: number;
+  user_identify: number;
 
   @IsNotEmpty()
   @IsNumber()
-  technician_fk: number;
+  technician: number;
 
   @IsNotEmpty()
   @IsNumber()
-  task_fk: number;
+  task: number;
 
   @IsNotEmpty()
   @IsNumber()
-  attendance_unity_fk: number;
+  attendance_unity: number;
 
   @IsNotEmpty()
   @IsString()
   solicitation: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   providence: string;
 
   @IsNotEmpty()
-  @IsString()
-  result: string;
+  @IsEnum(Result)
+  result: Result;
 
   @IsNotEmpty()
   @IsString()

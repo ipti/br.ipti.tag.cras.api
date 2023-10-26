@@ -27,4 +27,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(Role, { message: 'Invalid role. Role must be SECRETARY, TECHNICIAN, USER.' })
   role: Role;
+
+  @IsOptional()
+  @IsNumber()
+  edcenso_city: number;
 }
