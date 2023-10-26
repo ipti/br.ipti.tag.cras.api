@@ -4,6 +4,7 @@ import { UpdateAddressDto } from '../dto/update-address.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { address } from '@prisma/client';
 import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class AddressService {
@@ -65,11 +66,33 @@ export class AddressService {
   ): Promise<address> {
     await this.findOne(request, id);
 
+    const edcenso_city = await this.prismaService.edcenso_city.findUnique({
+      where: { id: request.user.edcenso_city_fk },
+      select: { edcenso_uf_fk: true },
+    });
+
+    if(!edcenso_city) throw new HttpException('City not found', HttpStatus.NOT_FOUND);
+
+    const ufOptional = optionalKeyValidation(edcenso_city.edcenso_uf_fk, {
+      connect: {
+        id: edcenso_city.edcenso_uf_fk,
+      },
+    });
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
+
     const addressUpdated = await this.prismaService.address.update({
       data: {
         ...UpdateAddressDto,
+        edcenso_city: cityOptional,
+        edcenso_uf: ufOptional,
       },
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return addressUpdated;
@@ -79,7 +102,7 @@ export class AddressService {
     await this.findOne(request, id);
 
     const addressDeleted = await this.prismaService.address.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return addressDeleted;

@@ -13,6 +13,7 @@ import { BenefitsService } from '../../benefits/service/benefits.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { family } from '@prisma/client';
 import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class FamilyService {
@@ -86,9 +87,7 @@ export class FamilyService {
   async findAll(request: Request): Promise<family[]> {
     const allFamily = await this.prismaService.family.findMany({
       where: {
-        edcenso_city: {
-          id: request.user.edcenso_city_fk,
-        },
+        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -118,26 +117,44 @@ export class FamilyService {
       UpdateFamilyDto.address.toString(),
     );
 
+    const addressOptional = optionalKeyValidation(address.id, {
+      connect: {
+        id: address.id,
+      },
+    });
+
+    const attendanceUnityOptional = optionalKeyValidation(
+      UpdateFamilyDto.attendance_unity,
+      {
+        connect: {
+          id: UpdateFamilyDto.attendance_unity,
+        },
+      },
+    );
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
+    const vulnerabilityOptional = optionalKeyValidation(
+      UpdateFamilyDto.vulnerability,
+      {
+        connect: {
+          id: UpdateFamilyDto.vulnerability,
+        },
+      },
+    );
+
     const familyUpdated = await this.prismaService.family.update({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateFamilyDto,
-        address: { connect: { id: address.id } },
-        attendance_unity: {
-          connect: {
-            id: UpdateFamilyDto.attendance_unity,
-          },
-        },
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
-        vulnerability: {
-          connect: {
-            id: UpdateFamilyDto.vulnerability,
-          },
-        },
+        address: addressOptional,
+        attendance_unity: attendanceUnityOptional,
+        edcenso_city: cityOptional,
+        vulnerability: vulnerabilityOptional,
       },
     });
 
@@ -148,7 +165,7 @@ export class FamilyService {
     await this.findOne(request, id);
 
     const familyDeleted = await this.prismaService.family.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return familyDeleted;

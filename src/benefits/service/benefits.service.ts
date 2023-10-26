@@ -4,19 +4,16 @@ import { UpdateBenefitsDto } from '../dto/update-benefits.dto';
 import { benefits } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class BenefitsService {
-
-  constructor(
-    private readonly prismaService: PrismaService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(
     request: Request,
     createBenefits: CreateBenefitsDto,
   ): Promise<benefits> {
-
     const createdBenefits = await this.prismaService.benefits.create({
       data: {
         ...createBenefits,
@@ -32,12 +29,9 @@ export class BenefitsService {
   }
 
   async findAll(request: Request): Promise<benefits[]> {
-
     const allBenefits = await this.prismaService.benefits.findMany({
       where: {
-        edcenso_city: {
-          id: request.user.edcenso_city_fk,
-        },
+        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -45,7 +39,6 @@ export class BenefitsService {
   }
 
   async findOne(request: Request, id: string): Promise<benefits> {
-
     const benefits = await this.prismaService.benefits.findUnique({
       where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
@@ -62,18 +55,19 @@ export class BenefitsService {
     id: string,
     UpdateBenefitsDto: UpdateBenefitsDto,
   ) {
-
     await this.findOne(request, id);
 
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const benefitsUpdated = await this.prismaService.benefits.update({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateBenefitsDto,
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
+        edcenso_city: cityOptional,
       },
     });
 
@@ -84,7 +78,7 @@ export class BenefitsService {
     await this.findOne(request, id);
 
     const benefitsDeleted = await this.prismaService.benefits.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return benefitsDeleted;

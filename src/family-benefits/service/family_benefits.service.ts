@@ -4,6 +4,7 @@ import { UpdateFamilyBenefitsDto } from '../dto/update-family_benefits.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { family_benefits } from '@prisma/client';
 import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class FamilyBenefitsService {
@@ -42,9 +43,7 @@ export class FamilyBenefitsService {
     const allFamilyBenefits = await this.prismaService.family_benefits.findMany(
       {
         where: {
-          edcenso_city: {
-            id: request.user.edcenso_city_fk,
-          },
+          edcenso_city_fk: request.user.edcenso_city_fk,
         },
       },
     );
@@ -73,21 +72,38 @@ export class FamilyBenefitsService {
   ) {
     await this.findOne(request, id);
 
+    const familyOptional = optionalKeyValidation(
+      UpdateFamilyBenefitsDto.family,
+      {
+        connect: {
+          id: UpdateFamilyBenefitsDto.family,
+        },
+      },
+    );
+
+    const benefitsOptional = optionalKeyValidation(
+      UpdateFamilyBenefitsDto.benefits,
+      {
+        connect: {
+          id: UpdateFamilyBenefitsDto.benefits,
+        },
+      },
+    );
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const family_benefitsUpdated =
       await this.prismaService.family_benefits.update({
-        where: { id: +id },
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
         data: {
           ...UpdateFamilyBenefitsDto,
-          family: {
-            connect: {
-              id: UpdateFamilyBenefitsDto.family,
-            },
-          },
-          benefits: {
-            connect: {
-              id: UpdateFamilyBenefitsDto.benefits,
-            },
-          },
+          family: familyOptional,
+          benefits: benefitsOptional,
+          edcenso_city: cityOptional,
         },
       });
 
@@ -99,7 +115,7 @@ export class FamilyBenefitsService {
 
     const family_benefitsDeleted =
       await this.prismaService.family_benefits.delete({
-        where: { id: +id },
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       });
 
     return family_benefitsDeleted;

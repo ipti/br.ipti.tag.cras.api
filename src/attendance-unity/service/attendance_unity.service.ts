@@ -5,6 +5,7 @@ import { UserService } from '../../user/service/user.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { attendance_unity } from '@prisma/client';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class AttendanceUnityService {
@@ -45,9 +46,7 @@ export class AttendanceUnityService {
     const allAttendanceUnity =
       await this.prismaService.attendance_unity.findMany({
         where: {
-          edcenso_city: {
-            id: request.user.edcenso_city_fk,
-          },
+          edcenso_city_fk: request.user.edcenso_city_fk,
         },
       });
 
@@ -77,16 +76,28 @@ export class AttendanceUnityService {
   ) {
     await this.findOne(request, id);
 
+    const addressOptional = optionalKeyValidation(
+      UpdateAttendanceUnityDto.address,
+      {
+        connect: {
+          id: UpdateAttendanceUnityDto.address,
+        },
+      },
+    );
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const attendance_unityUpdated =
       await this.prismaService.attendance_unity.update({
-        where: { id: +id },
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
         data: {
           ...UpdateAttendanceUnityDto,
-          address: {
-            connect: {
-              id: UpdateAttendanceUnityDto.address,
-            },
-          },
+          address: addressOptional,
+          edcenso_city: cityOptional,
         },
       });
 
@@ -98,7 +109,7 @@ export class AttendanceUnityService {
 
     const attendance_unityDeleted =
       await this.prismaService.attendance_unity.delete({
-        where: { id: +id },
+        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       });
 
     return attendance_unityDeleted;

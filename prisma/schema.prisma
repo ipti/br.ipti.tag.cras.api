@@ -118,7 +118,7 @@ model user {
   username        String       @unique
   email           String
   password        String
-  role            Role         @default(USER)
+  role            Role         @default(TECHNICIAN)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   edcenso_city    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
@@ -217,7 +217,6 @@ enum Benefits {
 enum Role {
   SECRETARY
   TECHNICIAN
-  USER
 }
 
 enum Result {

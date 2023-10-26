@@ -9,6 +9,7 @@ import { AttendanceUnityService } from '../../attendance-unity/service/attendanc
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { edcenso_city } from '@prisma/client';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class BffService {
@@ -138,9 +139,27 @@ export class BffService {
           });
         });
 
+        const familyOptional = optionalKeyValidation(familyCreated.id, {
+          connect: {
+            id: familyCreated.id,
+          },
+        });
+
+        const cityOptional = optionalKeyValidation(
+          request.user.edcenso_city_fk,
+          {
+            connect: {
+              id: request.user.edcenso_city_fk,
+            },
+          },
+        );
+
         await tx.user_identify.update({
-          where: { id: userIdentifyCreated.id },
-          data: { family_fk: familyCreated.id },
+          where: {
+            id: userIdentifyCreated.id,
+            edcenso_city_fk: request.user.edcenso_city_fk,
+          },
+          data: { family: familyOptional, edcenso_city: cityOptional },
         });
 
         return {
@@ -227,7 +246,6 @@ export class BffService {
     request: Request,
     createAttendanceAndAddress: CreateAttendanceUnityAndAddressDto,
   ) {
-
     const edcenso_city = await this.getEdcensoCity(request);
     const edcenso_uf = edcenso_city.edcenso_uf_fk;
 
@@ -250,7 +268,6 @@ export class BffService {
             edcenso_uf: { connect: { id: edcenso_uf } },
           },
         });
-
 
         const attendanceUnity = {
           name: createAttendanceAndAddress.name,
@@ -275,7 +292,6 @@ export class BffService {
   }
 
   async getAttendance(request: Request): Promise<any> {
-
     // const attendance = await Attendance.withSchema(dbName).findAll({
     //   attributes: ['id', 'result'],
     //   include: ['task', 'technician'],
@@ -299,7 +315,6 @@ export class BffService {
   }
 
   async getAllFromFamily(request: Request, familyId: string): Promise<any> {
-
     const family = await this.prismaService.family.findUnique({
       where: {
         id: +familyId,

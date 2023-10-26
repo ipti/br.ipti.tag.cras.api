@@ -3,8 +3,9 @@ import * as crypto from 'crypto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Request } from 'express';
-import { user } from '@prisma/client';
+import { Role, user } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,21 @@ export class UserService {
       );
     }
 
+    if (request.user === undefined && createUser.edcenso_city === undefined) {
+      throw new HttpException(
+        'YOU MUST PUT THE CITY ID IN THE BODY IF YOU ARE NOT LOGGED IN AS A SECRETARY',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    var edcenso_city: number;
+
+    if (request.user.role === Role.SECRETARY) {
+      edcenso_city = request.user.edcenso_city_fk;
+    } else {
+      edcenso_city = createUser.edcenso_city;
+    }
+
     const cryptoPassword = this.encryptedMd5Password(createUser.password);
 
     const createdUser = await this.prismaService.user.create({
@@ -32,7 +48,7 @@ export class UserService {
         password: cryptoPassword,
         edcenso_city: {
           connect: {
-            id: request.user.edcenso_city_fk,
+            id: edcenso_city,
           },
         },
       },
@@ -77,9 +93,15 @@ export class UserService {
       );
     }
 
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const userUpdated = await this.prismaService.user.update({
-      where: { id: +id },
-      data: UpdateUserDto,
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      data: { ...UpdateUserDto, edcenso_city: cityOptional },
     });
 
     return userUpdated;
@@ -89,7 +111,7 @@ export class UserService {
     await this.findOne(request, id);
 
     const userDeleted = await this.prismaService.user.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return userDeleted;

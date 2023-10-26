@@ -8,6 +8,7 @@ import { AttendanceUnityService } from '../../attendance-unity/service/attendanc
 import { PrismaService } from 'src/prisma/prisma.service';
 import { attendance } from '@prisma/client';
 import { Request } from 'express';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class AttendanceService {
@@ -124,35 +125,45 @@ export class AttendanceService {
 
     await this.findOne(request, id);
 
+    const userOptional = optionalKeyValidation(UpdateAttendanceDto.user_identify, {
+      connect: {
+        id: UpdateAttendanceDto.user_identify,
+      },
+    });
+
+    const technicianOptional = optionalKeyValidation(UpdateAttendanceDto.technician, {
+      connect: {
+        id: UpdateAttendanceDto.technician,
+      },
+    });
+
+    const taskOptional = optionalKeyValidation(UpdateAttendanceDto.task, {
+      connect: {
+        id: UpdateAttendanceDto.task,
+      },
+    });
+
+    const attendanceUnityOptional = optionalKeyValidation(UpdateAttendanceDto.attendance_unity, {
+      connect: {
+        id: UpdateAttendanceDto.attendance_unity,
+      },
+    });
+
+    const edcensoCityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const attendanceUpdated = await this.prismaService.attendance.update({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateAttendanceDto,
-        user_identify: {
-          connect: {
-            id: UpdateAttendanceDto.user_identify,
-          },
-        },
-        technician: {
-          connect: {
-            id: UpdateAttendanceDto.technician,
-          },
-        },
-        task: {
-          connect: {
-            id: UpdateAttendanceDto.task,
-          },
-        },
-        attendance_unity: {
-          connect: {
-            id: UpdateAttendanceDto.attendance_unity,
-          },
-        },
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
+        user_identify: userOptional,
+        technician: technicianOptional,
+        task: taskOptional,
+        attendance_unity: attendanceUnityOptional,
+        edcenso_city: edcensoCityOptional,
       },
     });
 
@@ -163,7 +174,7 @@ export class AttendanceService {
     await this.findOne(request, id);
 
     const attendanceDeleted = await this.prismaService.attendance.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return attendanceDeleted;

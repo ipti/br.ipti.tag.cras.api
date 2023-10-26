@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BenefitsForFamily } from '../../utils/types';
+import { Kinship } from '@prisma/client';
 
 export class UserIdentifyWithoutFamily {
   @ApiProperty()
@@ -72,25 +73,19 @@ export class UserIdentifyWithoutFamily {
   income: number;
 
   @ApiProperty()
+  kinship: string;
+
+  @ApiProperty()
   signed_portfolio: boolean;
 
   @ApiProperty()
   nuclear_family: string;
 
   @ApiProperty()
-  address_fk: number;
+  address: number;
 
   @ApiProperty()
-  attendance_unity_fk: number;
-
-  @ApiProperty()
-  edcenso_uf_fk: number;
-
-  @ApiProperty()
-  edcenso_city_fk: number;
-
-  @ApiProperty()
-  address: string;
+  attendance_unity: number;
 
   @ApiProperty()
   telephone: string;
@@ -206,25 +201,22 @@ export class UserIdentifyWithFamily {
   income: number;
 
   @ApiProperty()
+  kinship: string;
+
+  @ApiProperty()
   signed_portfolio: boolean;
 
   @ApiProperty()
   nuclear_family: string;
 
   @ApiProperty()
-  family_fk: number;
+  family: number;
 
   @ApiProperty()
   benefitsForFamily: BenefitsForFamily[];
 }
 
 export class AttendanceUnityAndAddress {
-  @ApiProperty()
-  edcenso_uf_fk: number;
-
-  @ApiProperty()
-  edcenso_city_fk: number;
-
   @ApiProperty()
   address: string;
 

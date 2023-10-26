@@ -12,6 +12,7 @@ import { VulnerabilityService } from '../../vulnerability/service/vulnerability.
 import { Request } from 'express';
 import { user_identify } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class UserIdentifyService {
@@ -41,14 +42,16 @@ export class UserIdentifyService {
       throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
     }
 
+    const familyOptional = optionalKeyValidation(createUserIdentify.family, {
+      connect: {
+        id: createUserIdentify.family,
+      },
+    });
+
     const createdUserIdentify = await this.prismaService.user_identify.create({
       data: {
         ...createUserIdentify,
-        family: {
-          connect: {
-            id: createUserIdentify.family,
-          },
-        },
+        family: familyOptional,
         edcenso_city: {
           connect: {
             id: request.user.edcenso_city_fk,
@@ -92,20 +95,24 @@ export class UserIdentifyService {
   ) {
     await this.findOne(request, id);
 
+    const familyOptional = optionalKeyValidation(UpdateUserIdentifyDto.family, {
+      connect: {
+        id: UpdateUserIdentifyDto.family,
+      },
+    });
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const user_identifyUpdated = await this.prismaService.user_identify.update({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateUserIdentifyDto,
-        family: {
-          connect: {
-            id: UpdateUserIdentifyDto.family,
-          },
-        },
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
+        family: familyOptional,
+        edcenso_city: cityOptional,
       },
     });
 
@@ -116,7 +123,7 @@ export class UserIdentifyService {
     await this.findOne(request, id);
 
     const user_identifyDeleted = await this.prismaService.user_identify.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return user_identifyDeleted;

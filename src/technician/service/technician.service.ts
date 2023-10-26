@@ -5,6 +5,7 @@ import { UserService } from '../../user/service/user.service';
 import { Request } from 'express';
 import { technician } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class TechnicianService {
@@ -35,7 +36,6 @@ export class TechnicianService {
     const isValidTechnician = await this.prismaService.technician.findUnique({
       where: {
         user_fk: createTechnician.user,
-        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -46,6 +46,12 @@ export class TechnicianService {
       );
     }
 
+    const userOptional = optionalKeyValidation(createTechnician.user, {
+      connect: {
+        id: createTechnician.user,
+      },
+    });
+
     const createdTechnician = await this.prismaService.technician.create({
       data: {
         ...createTechnician,
@@ -54,11 +60,7 @@ export class TechnicianService {
             id: request.user.edcenso_city_fk,
           },
         },
-        user: {
-          connect: {
-            id: createTechnician.user,
-          },
-        },
+        user: userOptional,
       },
     });
 
@@ -94,20 +96,24 @@ export class TechnicianService {
   ) {
     await this.findOne(request, id);
 
+    const userOptional = optionalKeyValidation(UpdateTechnicianDto.user, {
+      connect: {
+        id: UpdateTechnicianDto.user,
+      },
+    });
+
+    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
+      connect: {
+        id: request.user.edcenso_city_fk,
+      },
+    });
+
     const technicianUpdated = await this.prismaService.technician.update({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateTechnicianDto,
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
-        user: {
-          connect: {
-            id: UpdateTechnicianDto.user,
-          },
-        },
+        edcenso_city: cityOptional,
+        user: userOptional,
       },
     });
 
@@ -118,7 +124,7 @@ export class TechnicianService {
     await this.findOne(request, id);
 
     const technicianDeleted = await this.prismaService.technician.delete({
-      where: { id: +id },
+      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
 
     return technicianDeleted;
