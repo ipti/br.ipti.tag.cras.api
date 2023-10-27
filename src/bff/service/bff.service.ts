@@ -8,7 +8,7 @@ import Sequelize from '@sequelize/core';
 import { AttendanceUnityService } from '../../attendance-unity/service/attendance_unity.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { edcenso_city } from '@prisma/client';
+import { Kinship, edcenso_city } from '@prisma/client';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
@@ -96,7 +96,7 @@ export class BffService {
           final_date: createUserWithoutFamily.final_date,
           profission: createUserWithoutFamily.profission,
           income: createUserWithoutFamily.income,
-          kinship: createUserWithoutFamily.kinship,
+          kinship: Kinship.RESPONSAVEL,
           signed_portfolio: createUserWithoutFamily.signed_portfolio,
           nuclear_family: createUserWithoutFamily.nuclear_family,
         };
