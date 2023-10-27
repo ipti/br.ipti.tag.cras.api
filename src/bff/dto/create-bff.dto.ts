@@ -174,10 +174,6 @@ export class CreateUserIdentifyWithoutFamilyDto {
   others: boolean;
 
   @IsNotEmpty()
-  @IsEnum(Kinship)
-  kinship: Kinship;
-
-  @IsNotEmpty()
   @IsArray()
   benefitsForFamily: Array<BenefitsForFamily>;
 }
