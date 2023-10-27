@@ -110,7 +110,7 @@ export class BffService {
 
         const family = {
           vulnerability: vulnerabilityCreated.id,
-          family_representative: userIdentifyCreated.id,
+          family_representative_fk: userIdentifyCreated.id,
           address: addressCreated.id,
           attendance_unity: createUserWithoutFamily.attendance_unity,
         };
@@ -120,7 +120,6 @@ export class BffService {
             ...family,
             edcenso_city: { connect: { id: edcenso_city.id } },
             address: { connect: { id: addressCreated.id } },
-            family_representative_fk: userIdentifyCreated.id,
             attendance_unity: {
               connect: { id: createUserWithoutFamily.attendance_unity },
             },
