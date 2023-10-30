@@ -184,7 +184,7 @@ export class BffService {
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {
         const userIdentify = {
-          familyId: createUserWithFamily.family,
+          family: createUserWithFamily.family,
           name: createUserWithFamily.name,
           surname: createUserWithFamily.surname,
           folder: createUserWithFamily.folder,
@@ -217,7 +217,7 @@ export class BffService {
           data: {
             ...userIdentify,
             edcenso_city: { connect: { id: edcenso_city.id } },
-            family: { connect: { id: userIdentify.familyId } },
+            family: { connect: { id: userIdentify.family } },
           },
         });
 
