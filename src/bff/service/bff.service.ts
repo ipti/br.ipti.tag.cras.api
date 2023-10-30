@@ -324,7 +324,11 @@ export class BffService {
         attendance_unity: true,
         vulnerability: true,
         user_identify: true,
-        benefits: true,
+        benefits: {
+          include: {
+            benefits: true,
+          }
+        },
       },
     });
 
