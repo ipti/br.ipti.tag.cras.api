@@ -26,6 +26,7 @@ import {
 import { UpdateBffDto } from './dto/update-bff.dto';
 import { BffService } from './service/bff.service';
 import { AttendanceUnityAndAddress, UserIdentifyWithFamily, UserIdentifyWithoutFamily } from './doc/bff';
+import { Request } from 'express';
 
 @ApiTags('BFF')
 @UseGuards(JwtAuthGuard)
@@ -37,7 +38,7 @@ export class BffController {
   @Post('create-user-without-family')
   @ApiCreatedResponse({ type: UserIdentifyWithoutFamily })
   create(
-    @Req() request,
+    @Req() request: Request,
     @Body() createUserWithoutFamily: CreateUserIdentifyWithoutFamilyDto,
   ) {
     return this.bffService.createUserWithoutFamily(
@@ -49,7 +50,7 @@ export class BffController {
   @Post('create-user-with-family')
   @ApiCreatedResponse({ type: UserIdentifyWithFamily })
   createWithFamily(
-    @Req() request,
+    @Req() request: Request,
     @Body() createUserWithFamily: CreateUserIdentifyWithFamilyDto,
   ) {
     return this.bffService.createUserWithFamily(request, createUserWithFamily);
@@ -58,7 +59,7 @@ export class BffController {
   @Post('create-attendance-unity-address')
   @ApiCreatedResponse({ type: AttendanceUnityAndAddress })
   createAttendanceUnityAndAddress(
-    @Req() request,
+    @Req() request: Request,
     @Body() createAttendanceUnityAndAddress: CreateAttendanceUnityAndAddressDto,
   ) {
     return this.bffService.createUnityAttendanceAndAddress(
@@ -69,13 +70,19 @@ export class BffController {
 
   @Get('get-attendance')
   @ApiOkResponse({ isArray: true })
-  getAttendance(@Req() request) {
+  getAttendance(@Req() request: Request) {
     return this.bffService.getAttendance(request);
   }
 
   @Get('get-all-from-family')
   @ApiOkResponse({ isArray: true })
-  getAllFromFamily(@Req() request, @Query('familyId') familyId: string) {
+  getAllFromFamily(@Req() request: Request, @Query('familyId') familyId: string) {
     return this.bffService.getAllFromFamily(request, familyId);
+  }
+
+  @Get('get-all-family-representative')
+  @ApiOkResponse({ isArray: true })
+  getAllFamilyRepresentative(@Req() request: Request) {
+    return this.bffService.getAllFamilyWithRepresentative(request);
   }
 }
