@@ -4,7 +4,6 @@ import {
   CreateUserIdentifyWithFamilyDto,
   CreateUserIdentifyWithoutFamilyDto,
 } from '../dto/create-bff.dto';
-import Sequelize from '@sequelize/core';
 import { AttendanceUnityService } from '../../attendance-unity/service/attendance_unity.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -221,7 +220,7 @@ export class BffService {
           },
         });
 
-        createUserWithFamily.benefitsForFamily.forEach(async (benefit) => {
+        const familyBenefitsPromises = createUserWithFamily.benefitsForFamily.map(async (benefit) => {
           await tx.family_benefits.create({
             data: {
               family: { connect: { id: createUserWithFamily.family } },
@@ -231,6 +230,8 @@ export class BffService {
             },
           });
         });
+  
+        await Promise.all(familyBenefitsPromises);
 
         return {
           userIdentifyCreated,
@@ -327,7 +328,7 @@ export class BffService {
         benefits: {
           include: {
             benefits: true,
-          }
+          },
         },
       },
     });
@@ -363,5 +364,36 @@ export class BffService {
     }
 
     return edcensoCity;
+  }
+
+  async getAllFamilyWithRepresentative(request: Request): Promise<any> {
+    const family = await this.prismaService.family.findMany({
+      where: {
+        edcenso_city_fk: request.user.edcenso_city_fk,
+      },
+      include: {
+        user_identify: {
+          select: {
+            id: true,
+            kinship: true,
+            name: true,
+            birthday: true,
+            initial_date: true,
+          },
+        },
+      },
+    });
+
+    Promise.all(
+      family.map((family) => {
+        family['representative'] = family.user_identify.find(
+          (user) => user.id === family.family_representative_fk,
+        );
+        delete family.user_identify;
+        return family;
+      }),
+    );
+
+    return family;
   }
 }
