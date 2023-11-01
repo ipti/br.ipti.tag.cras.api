@@ -220,19 +220,6 @@ export class BffService {
           },
         });
 
-        const familyBenefitsPromises = createUserWithFamily.benefitsForFamily.map(async (benefit) => {
-          await tx.family_benefits.create({
-            data: {
-              family: { connect: { id: createUserWithFamily.family } },
-              benefits: { connect: { id: benefit.benefits_fk } },
-              edcenso_city: { connect: { id: edcenso_city.id } },
-              value: benefit.value,
-            },
-          });
-        });
-  
-        await Promise.all(familyBenefitsPromises);
-
         return {
           userIdentifyCreated,
         };
@@ -389,6 +376,7 @@ export class BffService {
         family['representative'] = family.user_identify.find(
           (user) => user.id === family.family_representative_fk,
         );
+        family['members_quantity'] = family.user_identify.length;
         delete family.user_identify;
         return family;
       }),
