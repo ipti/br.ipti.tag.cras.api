@@ -77,10 +77,29 @@ export class BenefitsService {
   async remove(request: Request, id: string) {
     await this.findOne(request, id);
 
-    const benefitsDeleted = await this.prismaService.benefits.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
-    });
+    const transactionResult = await this.prismaService.$transaction(
+      async (tx) => {
+        const benefitsFounded = await tx.family_benefits.findMany({
+          where: {
+            benefits_fk: +id,
+          },
+        });
 
-    return benefitsDeleted;
+        if (benefitsFounded.length > 0) {
+          throw new HttpException(
+            'Benefits cannot be deleted',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+
+        const benefitsDeleted = await tx.benefits.delete({
+          where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+        });
+
+        return benefitsDeleted;
+      },
+    );
+
+    return transactionResult;
   }
 }
