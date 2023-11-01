@@ -287,10 +287,6 @@ export class CreateUserIdentifyWithFamilyDto {
   @IsNotEmpty()
   @IsEnum(Kinship)
   kinship: Kinship;
-
-  @IsNotEmpty()
-  @IsArray()
-  benefitsForFamily: Array<BenefitsForFamily>;
 }
 
 export class CreateAttendanceUnityAndAddressDto {

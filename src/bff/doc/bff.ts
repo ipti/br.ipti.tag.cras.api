@@ -211,9 +211,6 @@ export class UserIdentifyWithFamily {
 
   @ApiProperty()
   family: number;
-
-  @ApiProperty()
-  benefitsForFamily: BenefitsForFamily[];
 }
 
 export class AttendanceUnityAndAddress {
