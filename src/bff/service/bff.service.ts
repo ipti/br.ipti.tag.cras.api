@@ -112,6 +112,7 @@ export class BffService {
           family_representative_fk: userIdentifyCreated.id,
           address: addressCreated.id,
           attendance_unity: createUserWithoutFamily.attendance_unity,
+          isActive: true
         };
 
         const familyCreated = await tx.family.create({

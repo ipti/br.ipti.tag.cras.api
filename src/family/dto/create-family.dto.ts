@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateFamilyDto {
   @IsNotEmpty()
@@ -16,4 +16,8 @@ export class CreateFamilyDto {
   @IsNotEmpty()
   @IsNumber()
   vulnerability: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive: boolean;
 }

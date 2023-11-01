@@ -53,6 +53,7 @@ model family {
   address_fk               Int
   attendance_unity_fk      Int
   vulnerability_fk         Int
+  isActive                 Boolean           @default(true)
   edcenso_city             edcenso_city      @relation(fields: [edcenso_city_fk], references: [id])
   address                  address           @relation(fields: [address_fk], references: [id])
   attendance_unity         attendance_unity  @relation(fields: [attendance_unity_fk], references: [id])
