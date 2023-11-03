@@ -15,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
@@ -29,21 +30,21 @@ export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
 
   @Get('count-attendance')
-  @ApiOkResponse({ isArray: true })
-  findAll(@Req() request: Request) {
-    return this.chartsService.countAttendance(request);
+  @ApiQuery({ name: 'year', type: Number })
+  findAll(@Req() request: Request, @Query('year') year: number) {
+    return this.chartsService.countAttendance(request, year);
   }
 
   @Get('attendance-finished-or-pending')
-  @ApiOkResponse({ isArray: true })
-  attendanceFinishedOrPending(@Req() request: Request) {
-    return this.chartsService.attendanceFinishedOrPending(request);
+  @ApiQuery({ name: 'year', type: Number })
+  attendanceFinishedOrPending(@Req() request: Request, @Query('year') year: number) {
+    return this.chartsService.attendanceFinishedOrPending(request, year);
   }
 
   @Get('attendance-by-month')
-  @ApiOkResponse({ isArray: true })
-  attendanceByMonth(@Req() request: Request) {
-    return this.chartsService.attendanceByMonth(request);
+  @ApiQuery({ name: 'year', type: Number })
+  attendanceByMonth(@Req() request: Request, @Query('year') year: number) {
+    return this.chartsService.attendanceByMonth(request, year);
   }
 
   @Get('vulnerability-registered')
