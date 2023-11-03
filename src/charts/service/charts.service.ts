@@ -7,11 +7,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ChartsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async countAttendance(request: Request) {
+  async countAttendance(request: Request, year: number) {
     try {
       const result = await this.prismaService.$queryRaw`
         SELECT COUNT(id) as count FROM attendance a 
         WHERE a.edcenso_city_fk = ${request.user.edcenso_city_fk}
+        AND YEAR(a.date) = ${year}
       `;
 
       const qnt_attendance = Number(result[0].count);
@@ -22,13 +23,14 @@ export class ChartsService {
     }
   }
 
-  async attendanceFinishedOrPending(request: Request) {
+  async attendanceFinishedOrPending(request: Request, year: number) {
     const result = await this.prismaService.$queryRaw`
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
       WHERE a.edcenso_city_fk = ${request.user.edcenso_city_fk}
+      AND YEAR(a.date) = ${year}
 
       UNION
 
@@ -37,29 +39,36 @@ export class ChartsService {
       COUNT(*) as total
       FROM attendance a
       WHERE a.edcenso_city_fk = ${request.user.edcenso_city_fk}
+      AND YEAR(a.date) = ${year}
       `;
 
     const qnt_attendance_finished_and_not_finished = {
       finished: Number(result[0].value),
       pending: Number(result[1].value),
-      total: Number(result[0].total) + Number(result[1].total),
+      total: Number(result[0].value) + Number(result[1].value),
     };
 
     return qnt_attendance_finished_and_not_finished;
   }
 
-  async attendanceByMonth(request: Request) {
-    const qnt_attendance_by_month = await this.prismaService.$queryRaw`
-    SELECT MONTHNAME(a.date) as name,
-    COUNT(*) as value
-    FROM attendance a
-    WHERE a.edcenso_city_fk = ${request.user.edcenso_city_fk}
-    GROUP BY MONTHNAME(a.date)
-    ORDER BY MONTH(a.date)
+  async attendanceByMonth(request: Request, year: number) {
+    const qnt_attendance_by_month: Array<any> = await this.prismaService.$queryRaw`
+      SELECT MONTHNAME(a.date) as name,
+      COUNT(*) as value
+      FROM attendance a
+      WHERE a.edcenso_city_fk = ${request.user.edcenso_city_fk}
+      AND YEAR(a.date) = ${year}
+      GROUP BY MONTHNAME(a.date)
+      ORDER BY MONTH(a.date)
     `;
-
-    return qnt_attendance_by_month;
-  }
+  
+    const result = qnt_attendance_by_month.map(row => ({
+      name: row.name,
+      value: Number(row.value)
+    }));
+  
+    return result;
+  }  
 
   async vulnerabilityRegistered(request: Request) {
     const result = await this.prismaService.$queryRaw`
