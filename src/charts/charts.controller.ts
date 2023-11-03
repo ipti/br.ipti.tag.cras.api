@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import { ChartsService } from './service/charts.service';
+import { Request } from 'express';
 
 @ApiTags('Charts')
 @UseGuards(JwtAuthGuard)
@@ -29,25 +30,25 @@ export class ChartsController {
 
   @Get('count-attendance')
   @ApiOkResponse({ isArray: true })
-  findAll() {
-    return this.chartsService.countAttendance();
+  findAll(@Req() request: Request) {
+    return this.chartsService.countAttendance(request);
   }
 
   @Get('attendance-finished-or-pending')
   @ApiOkResponse({ isArray: true })
-  attendanceFinishedOrPending() {
-    return this.chartsService.attendanceFinishedOrPending();
+  attendanceFinishedOrPending(@Req() request: Request) {
+    return this.chartsService.attendanceFinishedOrPending(request);
   }
 
   @Get('attendance-by-month')
   @ApiOkResponse({ isArray: true })
-  attendanceByMonth() {
-    return this.chartsService.attendanceByMonth();
+  attendanceByMonth(@Req() request: Request) {
+    return this.chartsService.attendanceByMonth(request);
   }
 
   @Get('vulnerability-registered')
   @ApiOkResponse({ isArray: true })
-  vulnerabilityRegistered() {
-    return this.chartsService.vulnerabilityRegistered();
+  vulnerabilityRegistered(@Req() request: Request) {
+    return this.chartsService.vulnerabilityRegistered(request);
   }
 }
