@@ -14,4 +14,11 @@ export class TechnicianDocument {
     required: false,
   })
   user: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Unidade do técnico',
+    required: true,
+  })
+  attendance_unity: number;
 }

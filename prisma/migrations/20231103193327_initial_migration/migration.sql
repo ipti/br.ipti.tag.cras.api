@@ -41,6 +41,7 @@ CREATE TABLE `family` (
     `address_fk` INTEGER NOT NULL,
     `attendance_unity_fk` INTEGER NOT NULL,
     `vulnerability_fk` INTEGER NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -124,8 +125,9 @@ CREATE TABLE `family_benefits` (
 CREATE TABLE `technician` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `edcenso_city_fk` INTEGER NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
+    `attendance_unity_fk` INTEGER NOT NULL,
     `user_fk` INTEGER NULL,
+    `name` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `technician_user_fk_key`(`user_fk`),
     PRIMARY KEY (`id`)
@@ -248,6 +250,9 @@ ALTER TABLE `technician` ADD CONSTRAINT `technician_edcenso_city_fk_fkey` FOREIG
 
 -- AddForeignKey
 ALTER TABLE `technician` ADD CONSTRAINT `technician_user_fk_fkey` FOREIGN KEY (`user_fk`) REFERENCES `user`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `technician` ADD CONSTRAINT `technician_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `task` ADD CONSTRAINT `task_edcenso_city_fk_fkey` FOREIGN KEY (`edcenso_city_fk`) REFERENCES `edcenso_city`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
