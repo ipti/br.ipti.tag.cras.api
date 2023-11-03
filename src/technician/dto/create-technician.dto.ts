@@ -8,4 +8,8 @@ export class CreateTechnicianDto {
   @IsOptional()
   @IsNumber()
   user: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  attendance_unity: number;
 }

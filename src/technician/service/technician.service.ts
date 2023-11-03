@@ -60,6 +60,11 @@ export class TechnicianService {
             id: request.user.edcenso_city_fk,
           },
         },
+        attendance_unity: {
+          connect: {
+            id: createTechnician.attendance_unity,
+          },
+        },
         user: userOptional,
       },
     });
@@ -108,12 +113,22 @@ export class TechnicianService {
       },
     });
 
+    const attendance_unityOptional = optionalKeyValidation(
+      UpdateTechnicianDto.attendance_unity,
+      {
+        connect: {
+          id: UpdateTechnicianDto.attendance_unity,
+        },
+      },
+    );
+
     const technicianUpdated = await this.prismaService.technician.update({
       where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
       data: {
         ...UpdateTechnicianDto,
         edcenso_city: cityOptional,
         user: userOptional,
+        attendance_unity: attendance_unityOptional,
       },
     });
 
