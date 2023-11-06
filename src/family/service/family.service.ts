@@ -85,11 +85,22 @@ export class FamilyService {
   }
 
   async findAll(request: Request): Promise<family[]> {
-    const allFamily = await this.prismaService.family.findMany({
-      where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
-      },
-    });
+    var allFamily;
+
+    if (request.user.attendance_unity_fk === null) {
+      allFamily = await this.prismaService.family.findMany({
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+      });
+    } else {
+      allFamily = await this.prismaService.family.findMany({
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+          attendance_unity_fk: request.user.attendance_unity_fk,
+        },
+      });
+    }
 
     return allFamily;
   }
