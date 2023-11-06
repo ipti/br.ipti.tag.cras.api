@@ -72,10 +72,14 @@ export class TechnicianService {
     return createdTechnician;
   }
 
-  async findAll(request: Request): Promise<technician[]> {
+  async findAll(
+    request: Request,
+    attendance_unity_fk: string,
+  ): Promise<technician[]> {
     const allTechnician = await this.prismaService.technician.findMany({
       where: {
         edcenso_city_fk: request.user.edcenso_city_fk,
+        attendance_unity_fk: +attendance_unity_fk,
       },
     });
 

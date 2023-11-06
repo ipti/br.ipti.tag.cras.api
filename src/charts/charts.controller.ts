@@ -35,10 +35,28 @@ export class ChartsController {
     return this.chartsService.countAttendance(request, year);
   }
 
+  @Get('count-family')
+  countFamily(@Req() request: Request) {
+    return this.chartsService.countFamily(request);
+  }
+
+  @Get('count-uni-family')
+  countUniFamly(@Req() request: Request) {
+    return this.chartsService.countUniFamly(request);
+  }
+
   @Get('attendance-finished-or-pending')
   @ApiQuery({ name: 'year', type: Number })
-  attendanceFinishedOrPending(@Req() request: Request, @Query('year') year: number) {
-    return this.chartsService.attendanceFinishedOrPending(request, year);
+  attendanceFinishedOrPending(
+    @Req() request: Request,
+    @Query('year') year: number,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.chartsService.attendanceFinishedOrPending(
+      request,
+      year,
+      attendance_unity_fk,
+    );
   }
 
   @Get('attendance-by-month')

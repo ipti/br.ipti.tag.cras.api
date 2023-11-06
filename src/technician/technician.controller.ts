@@ -38,8 +38,11 @@ export class TechnicianController {
 
   @Get()
   @ApiOkResponse({ type: TechnicianDocument, isArray: true })
-  findAll(@Req() request) {
-    return this.technicianService.findAll(request);
+  findAll(
+    @Req() request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.technicianService.findAll(request, attendance_unity_fk);
   }
 
   @Get(':id')

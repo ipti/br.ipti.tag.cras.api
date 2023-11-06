@@ -6,6 +6,7 @@ export interface JwtPayload {
   id: number;
   role: Role;
   edcenso_city_fk: number;
+  attendance_unity_fk?: number;
 }
 
 declare module 'express' {

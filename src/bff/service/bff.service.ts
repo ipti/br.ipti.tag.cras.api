@@ -112,7 +112,7 @@ export class BffService {
           family_representative_fk: userIdentifyCreated.id,
           address: addressCreated.id,
           attendance_unity: createUserWithoutFamily.attendance_unity,
-          isActive: true
+          isActive: true,
         };
 
         const familyCreated = await tx.family.create({
@@ -280,24 +280,35 @@ export class BffService {
   }
 
   async getAttendance(request: Request): Promise<any> {
-    // const attendance = await Attendance.withSchema(dbName).findAll({
-    //   attributes: ['id', 'result'],
-    //   include: ['task', 'technician'],
-    //   order: [['id', 'ASC']],
-    // });
+    var attendance;
 
-    const attendance = await this.prismaService.attendance.findMany({
-      where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
-      },
-      include: {
-        task: true,
-        technician: true,
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
+    if (request.user.attendance_unity_fk === null) {
+      attendance = await this.prismaService.attendance.findMany({
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+        include: {
+          task: true,
+          technician: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
+    } else {
+      attendance = await this.prismaService.attendance.findMany({
+        where: {
+          attendance_unity_fk: request.user.attendance_unity_fk,
+        },
+        include: {
+          task: true,
+          technician: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
+    }
 
     return attendance;
   }
