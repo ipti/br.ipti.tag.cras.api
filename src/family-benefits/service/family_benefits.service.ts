@@ -14,29 +14,49 @@ export class FamilyBenefitsService {
     request: Request,
     createFamilyBenefits: CreateFamilyBenefitsDto,
   ): Promise<family_benefits> {
-    const createdFamilyBenefits =
-      await this.prismaService.family_benefits.create({
-        data: {
-          ...createFamilyBenefits,
-          family: {
-            connect: {
-              id: createFamilyBenefits.family,
-            },
+    const transactionResult = await this.prismaService.$transaction(
+      async (tx) => {
+        const familyBenefitsExists = await tx.family_benefits.findFirst({
+          where: {
+            family_fk: createFamilyBenefits.family,
+            benefits_fk: createFamilyBenefits.benefits,
+            edcenso_city_fk: request.user.edcenso_city_fk,
           },
-          benefits: {
-            connect: {
-              id: createFamilyBenefits.benefits,
-            },
-          },
-          edcenso_city: {
-            connect: {
-              id: request.user.edcenso_city_fk,
-            },
-          },
-        },
-      });
+        });
 
-    return createdFamilyBenefits;
+        if (familyBenefitsExists) {
+          throw new HttpException(
+            'FamilyBenefits already exists',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        const createdFamilyBenefits = await tx.family_benefits.create({
+          data: {
+            ...createFamilyBenefits,
+            family: {
+              connect: {
+                id: createFamilyBenefits.family,
+              },
+            },
+            benefits: {
+              connect: {
+                id: createFamilyBenefits.benefits,
+              },
+            },
+            edcenso_city: {
+              connect: {
+                id: request.user.edcenso_city_fk,
+              },
+            },
+          },
+        });
+
+        return createdFamilyBenefits;
+      },
+    );
+
+    return transactionResult;
   }
 
   async findAll(request: Request): Promise<family_benefits[]> {
