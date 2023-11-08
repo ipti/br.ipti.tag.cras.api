@@ -36,13 +36,19 @@ export class ChartsController {
   }
 
   @Get('count-family')
-  countFamily(@Req() request: Request) {
-    return this.chartsService.countFamily(request);
+  countFamily(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.chartsService.countFamily(request, attendance_unity_fk);
   }
 
   @Get('count-uni-family')
-  countUniFamly(@Req() request: Request) {
-    return this.chartsService.countUniFamly(request);
+  countUniFamly(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.chartsService.countUniFamly(request, attendance_unity_fk);
   }
 
   @Get('attendance-finished-or-pending')
@@ -61,8 +67,16 @@ export class ChartsController {
 
   @Get('attendance-by-month')
   @ApiQuery({ name: 'year', type: Number })
-  attendanceByMonth(@Req() request: Request, @Query('year') year: number) {
-    return this.chartsService.attendanceByMonth(request, year);
+  attendanceByMonth(
+    @Req() request: Request,
+    @Query('year') year: number,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.chartsService.attendanceByMonth(
+      request,
+      year,
+      attendance_unity_fk,
+    );
   }
 
   @Get('vulnerability-registered')
