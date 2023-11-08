@@ -23,24 +23,62 @@ export class ChartsService {
     }
   }
 
-  async countFamily(request: Request) {
+  async countFamily(request: Request, attendance_unity_fk?: string) {
     try {
-      const result = await this.prismaService.$queryRaw`
+      if (
+        request.user.attendance_unity_fk === null &&
+        attendance_unity_fk === undefined
+      ) {
+        throw new HttpException(
+          'MISSING ATTENDANCE UNITY',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
+      var result;
+
+      if (request.user.attendance_unity_fk !== null) {
+        const counter = await this.prismaService.$queryRaw`
         SELECT COUNT(id) as count FROM family f 
         WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
       `;
 
-      const qnt_family = Number(result[0].count);
+        const qnt_family = Number(counter[0].count);
 
-      return qnt_family;
+        result = qnt_family;
+      } else {
+        const counter = await this.prismaService.$queryRaw`
+        SELECT COUNT(id) as count FROM family f 
+        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
+      `;
+
+        const qnt_family = Number(counter[0].count);
+
+        result = qnt_family;
+      }
+
+      return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async countUniFamly(request: Request) {
+  async countUniFamly(request: Request, attendance_unity_fk?: string) {
     try {
-      const result: Array<any> = await this.prismaService.$queryRaw`
+      if (
+        request.user.attendance_unity_fk === null &&
+        attendance_unity_fk === undefined
+      ) {
+        throw new HttpException(
+          'MISSING ATTENDANCE UNITY',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
+      var result;
+
+      if (request.user.attendance_unity_fk !== null) {
+        const counter: Array<any> = await this.prismaService.$queryRaw`
         SELECT COUNT(f.id) as count FROM family f 
         JOIN user_identify ui ON ui.family_fk = f.id
         WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
@@ -48,13 +86,32 @@ export class ChartsService {
         HAVING count = 1;
       `;
 
-      var qnt_uni_family = 0;
+        var qnt_uni_family = 0;
 
-      if (result.length > 0) {
-        qnt_uni_family = Number(result[0].count);
+        if (counter.length > 0) {
+          qnt_uni_family = Number(counter[0].count);
+        }
+
+        result = qnt_uni_family;
+      } else {
+        const counter: Array<any> = await this.prismaService.$queryRaw`
+        SELECT COUNT(f.id) as count FROM family f 
+        JOIN user_identify ui ON ui.family_fk = f.id
+        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
+        GROUP BY f.id
+        HAVING count = 1;
+      `;
+
+        var qnt_uni_family = 0;
+
+        if (counter.length > 0) {
+          qnt_uni_family = Number(counter[0].count);
+        }
+
+        result = qnt_uni_family;
       }
 
-      return qnt_uni_family;
+      return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -98,7 +155,7 @@ export class ChartsService {
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${+attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
       AND YEAR(a.date) = ${year}
 
       UNION
@@ -107,7 +164,7 @@ export class ChartsService {
       SUM(CASE WHEN a.result = "PENDENTE" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${+attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
       AND YEAR(a.date) = ${year}
       `;
     }
@@ -121,9 +178,23 @@ export class ChartsService {
     return qnt_attendance_finished_and_not_finished;
   }
 
-  async attendanceByMonth(request: Request, year: number) {
-    const qnt_attendance_by_month: Array<any> = await this.prismaService
-      .$queryRaw`
+  async attendanceByMonth(
+    request: Request,
+    year: number,
+    attendance_unity_fk?: string,
+  ) {
+    if (
+      request.user.attendance_unity_fk === null &&
+      attendance_unity_fk === undefined
+    ) {
+      throw new HttpException('MISSING ATTENDANCE UNITY', HttpStatus.FORBIDDEN);
+    }
+
+    var result;
+
+    if (request.user.attendance_unity_fk !== null) {
+      const qnt_attendance_by_month: Array<any> = await this.prismaService
+        .$queryRaw`
       SELECT
         months.name as name,
         COALESCE(COUNT(a.date), 0) as value
@@ -146,10 +217,40 @@ export class ChartsService {
       ORDER BY months.month
     `;
 
-    const result = qnt_attendance_by_month.map((row) => ({
-      name: row.name,
-      value: Number(row.value),
-    }));
+      result = qnt_attendance_by_month.map((row) => ({
+        name: row.name,
+        value: Number(row.value),
+      }));
+    } else {
+      const qnt_attendance_by_month: Array<any> = await this.prismaService
+        .$queryRaw`
+      SELECT
+        months.name as name,
+        COALESCE(COUNT(a.date), 0) as value
+      FROM (
+        SELECT 1 as month, 'January' as name
+        UNION SELECT 2, 'February'
+        UNION SELECT 3, 'March'
+        UNION SELECT 4, 'April'
+        UNION SELECT 5, 'May'
+        UNION SELECT 6, 'June'
+        UNION SELECT 7, 'July'
+        UNION SELECT 8, 'August'
+        UNION SELECT 9, 'September'
+        UNION SELECT 10, 'October'
+        UNION SELECT 11, 'November'
+        UNION SELECT 12, 'December'
+      ) months
+      LEFT JOIN attendance a ON MONTH(a.date) = months.month AND YEAR(a.date) = ${year} AND a.attendance_unity_fk = ${attendance_unity_fk}
+      GROUP BY months.name
+      ORDER BY months.month
+    `;
+
+      result = qnt_attendance_by_month.map((row) => ({
+        name: row.name,
+        value: Number(row.value),
+      }));
+    }
 
     return result;
   }
