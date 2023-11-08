@@ -24,17 +24,14 @@ export class ChartsService {
   }
 
   async countFamily(request: Request, attendance_unity_fk?: string) {
-    try {
-      if (
-        request.user.attendance_unity_fk === null &&
-        attendance_unity_fk === undefined
-      ) {
-        throw new HttpException(
-          'MISSING ATTENDANCE UNITY',
-          HttpStatus.FORBIDDEN,
-        );
-      }
+    if (
+      request.user.attendance_unity_fk === null &&
+      attendance_unity_fk === undefined
+    ) {
+      throw new HttpException('MISSING ATTENDANCE UNITY', HttpStatus.FORBIDDEN);
+    }
 
+    try {
       var result;
 
       if (request.user.attendance_unity_fk !== null) {
@@ -64,17 +61,13 @@ export class ChartsService {
   }
 
   async countUniFamly(request: Request, attendance_unity_fk?: string) {
+    if (
+      request.user.attendance_unity_fk === null &&
+      attendance_unity_fk === undefined
+    ) {
+      throw new HttpException('MISSING ATTENDANCE UNITY', HttpStatus.FORBIDDEN);
+    }
     try {
-      if (
-        request.user.attendance_unity_fk === null &&
-        attendance_unity_fk === undefined
-      ) {
-        throw new HttpException(
-          'MISSING ATTENDANCE UNITY',
-          HttpStatus.FORBIDDEN,
-        );
-      }
-
       var result;
 
       if (request.user.attendance_unity_fk !== null) {
@@ -131,8 +124,9 @@ export class ChartsService {
       throw new HttpException('MISSING ATTENDANCE UNITY', HttpStatus.FORBIDDEN);
     }
 
-    if (request.user.attendance_unity_fk !== undefined) {
-      result = await this.prismaService.$queryRaw`
+    if (request.user.attendance_unity_fk !== null) {
+      const qnt_attendance_finished_and_not_finished = await this.prismaService
+        .$queryRaw`
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
@@ -149,8 +143,17 @@ export class ChartsService {
       WHERE a.attendance_unity_fk = ${request.user.attendance_unity_fk}
       AND YEAR(a.date) = ${year}
       `;
+
+      result = {
+        finished: Number(qnt_attendance_finished_and_not_finished[0].value),
+        pending: Number(qnt_attendance_finished_and_not_finished[1].value),
+        total:
+          Number(qnt_attendance_finished_and_not_finished[0].value) +
+          Number(qnt_attendance_finished_and_not_finished[1].value),
+      };
     } else {
-      result = await this.prismaService.$queryRaw`
+      const qnt_attendance_finished_and_not_finished = await this.prismaService
+        .$queryRaw`
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
@@ -167,15 +170,17 @@ export class ChartsService {
       WHERE a.attendance_unity_fk = ${attendance_unity_fk}
       AND YEAR(a.date) = ${year}
       `;
+
+      result = {
+        finished: Number(qnt_attendance_finished_and_not_finished[0].value),
+        pending: Number(qnt_attendance_finished_and_not_finished[1].value),
+        total:
+          Number(qnt_attendance_finished_and_not_finished[0].value) +
+          Number(qnt_attendance_finished_and_not_finished[1].value),
+      };
     }
 
-    const qnt_attendance_finished_and_not_finished = {
-      finished: Number(result[0].value),
-      pending: Number(result[1].value),
-      total: Number(result[0].value) + Number(result[1].value),
-    };
-
-    return qnt_attendance_finished_and_not_finished;
+    return result;
   }
 
   async attendanceByMonth(
