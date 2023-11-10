@@ -285,10 +285,7 @@ export class BffService {
   ): Promise<any> {
     var attendance;
 
-    if (
-      request.user.attendance_unity_fk === null &&
-      attendance_unity_fk !== undefined
-    ) {
+    if (attendance_unity_fk !== undefined) {
       attendance = await this.prismaService.attendance.findMany({
         where: {
           attendance_unity_fk: +attendance_unity_fk,
@@ -301,10 +298,7 @@ export class BffService {
           id: 'asc',
         },
       });
-    } else if (
-      request.user.attendance_unity_fk !== null &&
-      attendance_unity_fk === undefined
-    ) {
+    } else if (request.user.attendance_unity_fk !== null) {
       attendance = await this.prismaService.attendance.findMany({
         where: {
           attendance_unity_fk: request.user.attendance_unity_fk,
