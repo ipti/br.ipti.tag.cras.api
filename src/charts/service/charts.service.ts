@@ -34,10 +34,10 @@ export class ChartsService {
     try {
       var result;
 
-      if (request.user.attendance_unity_fk !== null) {
+      if (attendance_unity_fk !== undefined) {
         const counter = await this.prismaService.$queryRaw`
         SELECT COUNT(id) as count FROM family f 
-        WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
+        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
       `;
 
         const qnt_family = Number(counter[0].count);
@@ -46,7 +46,7 @@ export class ChartsService {
       } else {
         const counter = await this.prismaService.$queryRaw`
         SELECT COUNT(id) as count FROM family f 
-        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
+        WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
       `;
 
         const qnt_family = Number(counter[0].count);
@@ -70,11 +70,11 @@ export class ChartsService {
     try {
       var result;
 
-      if (request.user.attendance_unity_fk !== null) {
+      if (attendance_unity_fk !== undefined) {
         const counter: Array<any> = await this.prismaService.$queryRaw`
         SELECT COUNT(f.id) as count FROM family f 
         JOIN user_identify ui ON ui.family_fk = f.id
-        WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
+        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
         GROUP BY f.id
         HAVING count = 1;
       `;
@@ -90,7 +90,7 @@ export class ChartsService {
         const counter: Array<any> = await this.prismaService.$queryRaw`
         SELECT COUNT(f.id) as count FROM family f 
         JOIN user_identify ui ON ui.family_fk = f.id
-        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
+        WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
         GROUP BY f.id
         HAVING count = 1;
       `;
@@ -124,14 +124,14 @@ export class ChartsService {
       throw new HttpException('MISSING ATTENDANCE UNITY', HttpStatus.FORBIDDEN);
     }
 
-    if (request.user.attendance_unity_fk !== null) {
+    if (attendance_unity_fk !== undefined) {
       const qnt_attendance_finished_and_not_finished = await this.prismaService
         .$queryRaw`
       SELECT "Atendimentos Finalizados" as name, 
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${request.user.attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
       AND YEAR(a.date) = ${year}
 
       UNION
@@ -140,7 +140,7 @@ export class ChartsService {
       SUM(CASE WHEN a.result = "PENDENTE" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${request.user.attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
       AND YEAR(a.date) = ${year}
       `;
 
@@ -158,7 +158,7 @@ export class ChartsService {
       SUM(CASE WHEN a.result = "FINALIZADO" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${request.user.attendance_unity_fk}
       AND YEAR(a.date) = ${year}
 
       UNION
@@ -167,7 +167,7 @@ export class ChartsService {
       SUM(CASE WHEN a.result = "PENDENTE" THEN 1 ELSE 0 END) as value, 
       COUNT(*) as total
       FROM attendance a
-      WHERE a.attendance_unity_fk = ${attendance_unity_fk}
+      WHERE a.attendance_unity_fk = ${request.user.attendance_unity_fk}
       AND YEAR(a.date) = ${year}
       `;
 
@@ -197,7 +197,7 @@ export class ChartsService {
 
     var result;
 
-    if (request.user.attendance_unity_fk !== null) {
+    if (attendance_unity_fk !== undefined) {
       const qnt_attendance_by_month: Array<any> = await this.prismaService
         .$queryRaw`
       SELECT
@@ -217,7 +217,7 @@ export class ChartsService {
         UNION SELECT 11, 'November'
         UNION SELECT 12, 'December'
       ) months
-      LEFT JOIN attendance a ON MONTH(a.date) = months.month AND YEAR(a.date) = ${year} AND a.attendance_unity_fk = ${request.user.attendance_unity_fk}
+      LEFT JOIN attendance a ON MONTH(a.date) = months.month AND YEAR(a.date) = ${year} AND a.attendance_unity_fk = ${attendance_unity_fk}
       GROUP BY months.name
       ORDER BY months.month
     `;
@@ -246,7 +246,7 @@ export class ChartsService {
         UNION SELECT 11, 'November'
         UNION SELECT 12, 'December'
       ) months
-      LEFT JOIN attendance a ON MONTH(a.date) = months.month AND YEAR(a.date) = ${year} AND a.attendance_unity_fk = ${attendance_unity_fk}
+      LEFT JOIN attendance a ON MONTH(a.date) = months.month AND YEAR(a.date) = ${year} AND a.attendance_unity_fk = ${request.user.attendance_unity_fk}
       GROUP BY months.name
       ORDER BY months.month
     `;
