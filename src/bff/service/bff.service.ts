@@ -279,13 +279,35 @@ export class BffService {
     return transactionResult;
   }
 
-  async getAttendance(request: Request): Promise<any> {
+  async getAttendance(
+    request: Request,
+    attendance_unity_fk: string,
+  ): Promise<any> {
     var attendance;
 
-    if (request.user.attendance_unity_fk === null) {
+    if (
+      request.user.attendance_unity_fk === null &&
+      attendance_unity_fk !== undefined
+    ) {
       attendance = await this.prismaService.attendance.findMany({
         where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
+          attendance_unity_fk: +attendance_unity_fk,
+        },
+        include: {
+          task: true,
+          technician: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
+    } else if (
+      request.user.attendance_unity_fk !== null &&
+      attendance_unity_fk === undefined
+    ) {
+      attendance = await this.prismaService.attendance.findMany({
+        where: {
+          attendance_unity_fk: request.user.attendance_unity_fk,
         },
         include: {
           task: true,
@@ -298,7 +320,7 @@ export class BffService {
     } else {
       attendance = await this.prismaService.attendance.findMany({
         where: {
-          attendance_unity_fk: request.user.attendance_unity_fk,
+          edcenso_city_fk: request.user.edcenso_city_fk,
         },
         include: {
           task: true,
@@ -365,23 +387,64 @@ export class BffService {
     return edcensoCity;
   }
 
-  async getAllFamilyWithRepresentative(request: Request): Promise<any> {
-    const family = await this.prismaService.family.findMany({
-      where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
-      },
-      include: {
-        user_identify: {
-          select: {
-            id: true,
-            kinship: true,
-            name: true,
-            birthday: true,
-            initial_date: true,
+  async getAllFamilyWithRepresentative(
+    request: Request,
+    attendance_unity_fk: string,
+  ): Promise<any> {
+    var family;
+
+    if (attendance_unity_fk !== undefined) {
+      family = await this.prismaService.family.findMany({
+        where: {
+          attendance_unity_fk: +attendance_unity_fk,
+        },
+        include: {
+          user_identify: {
+            select: {
+              id: true,
+              kinship: true,
+              name: true,
+              birthday: true,
+              initial_date: true,
+            },
           },
         },
-      },
-    });
+      });
+    } else if (request.user.attendance_unity_fk !== null) {
+      family = await this.prismaService.family.findMany({
+        where: {
+          attendance_unity_fk: request.user.attendance_unity_fk,
+        },
+        include: {
+          user_identify: {
+            select: {
+              id: true,
+              kinship: true,
+              name: true,
+              birthday: true,
+              initial_date: true,
+            },
+          },
+        },
+      });
+    } else {
+      family = await this.prismaService.family.findMany({
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+        include: {
+          user_identify: {
+            select: {
+              id: true,
+              kinship: true,
+              name: true,
+              birthday: true,
+              initial_date: true,
+            },
+          },
+        },
+      });
+    }
 
     Promise.all(
       family.map((family) => {

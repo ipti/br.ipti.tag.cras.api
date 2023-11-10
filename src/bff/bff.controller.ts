@@ -25,7 +25,11 @@ import {
 } from './dto/create-bff.dto';
 import { UpdateBffDto } from './dto/update-bff.dto';
 import { BffService } from './service/bff.service';
-import { AttendanceUnityAndAddress, UserIdentifyWithFamily, UserIdentifyWithoutFamily } from './doc/bff';
+import {
+  AttendanceUnityAndAddress,
+  UserIdentifyWithFamily,
+  UserIdentifyWithoutFamily,
+} from './doc/bff';
 import { Request } from 'express';
 
 @ApiTags('BFF')
@@ -70,19 +74,31 @@ export class BffController {
 
   @Get('get-attendance')
   @ApiOkResponse({ isArray: true })
-  getAttendance(@Req() request: Request) {
-    return this.bffService.getAttendance(request);
+  getAttendance(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.bffService.getAttendance(request, attendance_unity_fk);
   }
 
   @Get('get-all-from-family')
   @ApiOkResponse({ isArray: true })
-  getAllFromFamily(@Req() request: Request, @Query('familyId') familyId: string) {
+  getAllFromFamily(
+    @Req() request: Request,
+    @Query('familyId') familyId: string,
+  ) {
     return this.bffService.getAllFromFamily(request, familyId);
   }
 
   @Get('get-all-family-representative')
   @ApiOkResponse({ isArray: true })
-  getAllFamilyRepresentative(@Req() request: Request) {
-    return this.bffService.getAllFamilyWithRepresentative(request);
+  getAllFamilyRepresentative(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.bffService.getAllFamilyWithRepresentative(
+      request,
+      attendance_unity_fk,
+    );
   }
 }
