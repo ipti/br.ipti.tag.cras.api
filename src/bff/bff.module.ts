@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
-import { BffController } from './bff.controller';
-import { BffService } from './service/bff.service';
-import { AttendanceUnityModule } from '../attendance-unity/attendance_unity.module';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { AttendanceBffModule } from './attendance-bff/attendance_bff.module';
+import { AttendanceUnityBffModule } from './attendance-unity-bff/attendance_unity_bff.module';
+import { ChartsModule } from './charts/charts.module';
+import { EdcensoBffModule } from './edcenso-bff/edcenso_bff.module';
+import { FamilyBffModule } from './family-bff/family_bff.module';
+import { UserIdentifyBffModule } from './user-identify-bff/user_identify_bff.module';
 
 @Module({
-  imports: [PrismaModule, AttendanceUnityModule],
-  controllers: [BffController],
-  providers: [BffService],
-  exports: [BffService],
+  imports: [
+    AttendanceBffModule,
+    AttendanceUnityBffModule,
+    ChartsModule,
+    EdcensoBffModule,
+    FamilyBffModule,
+    UserIdentifyBffModule,
+  ],
 })
-export class BffModule {}
+export class BFFModule {}
