@@ -26,13 +26,13 @@ import { CreateAttendanceUnityAndAddressDto } from './dto/create-attendance_unit
 @ApiTags('AttendanceUnityBff')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('attendance-unity-bff')
+@Controller()
 export class AttendanceUnityBffController {
   constructor(
     private readonly AttendanceUnityBffService: AttendanceUnityBffService,
   ) {}
 
-  @Post('create-attendance-unity-address')
+  @Post()
   @ApiCreatedResponse({ type: AttendanceUnityAndAddress })
   createAttendanceUnityAndAddress(
     @Req() request: Request,

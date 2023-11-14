@@ -26,7 +26,7 @@ import { CreateUserIdentifyWithFamilyDto, CreateUserIdentifyWithoutFamilyDto } f
 @ApiTags('UserIdentifyBff')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('user-identify-bff')
+@Controller()
 export class UserIdentifyBffController {
   constructor(
     private readonly user_identifyBffService: UserIdentifyBffService,

@@ -24,7 +24,7 @@ import { Request } from 'express';
 @ApiTags('FamilyBff')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('family-bff')
+@Controller()
 export class FamilyBffController {
   constructor(private readonly FamilyBffService: FamilyBffService) {}
 

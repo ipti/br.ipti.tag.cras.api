@@ -26,7 +26,7 @@ import { AddressDocument } from './doc/address.doc';
 @ApiTags('Address')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('address')
+@Controller()
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 

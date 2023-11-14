@@ -24,7 +24,7 @@ import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 @ApiTags('AttendanceBff')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('attendance-bff')
+@Controller()
 export class AttendanceBffController {
   constructor(private readonly AttendanceBffService: AttendanceBffService) {}
 

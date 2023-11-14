@@ -26,7 +26,7 @@ import { BenefitsDocument } from './doc/benefits';
 @ApiTags('Benefits')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('benefits')
+@Controller()
 export class BenefitsController {
   constructor(private readonly benefitsService: BenefitsService) {}
 

@@ -25,7 +25,7 @@ import { Request } from 'express';
 @ApiTags('Charts')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('charts')
+@Controller()
 export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
 

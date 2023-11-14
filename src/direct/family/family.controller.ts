@@ -25,7 +25,7 @@ import {
   @ApiTags('Family')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @Controller('family')
+  @Controller()
   export class FamilyController {
     constructor(private readonly familyService: FamilyService) {}
   

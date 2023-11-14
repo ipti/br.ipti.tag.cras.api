@@ -25,7 +25,7 @@ import { Request } from 'express';
 @ApiTags('EdcensoBff')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('edcenso-bff')
+@Controller()
 export class EdcensoBffController {
   constructor(private readonly edcensoBffService: EdcensoBffService) {}
 

@@ -26,7 +26,7 @@ import { TaskDocument } from './doc/task';
 @ApiTags('Task')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('task')
+@Controller()
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
