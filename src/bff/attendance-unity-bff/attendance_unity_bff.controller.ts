@@ -43,4 +43,15 @@ export class AttendanceUnityBffController {
       createAttendanceUnityAndAddress,
     );
   }
+
+  @Get()
+  getAttendanceUnity(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.AttendanceUnityBffService.getAttendanceUnity(
+      request.user,
+      attendance_unity_fk,
+    );
+  }
 }

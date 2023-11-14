@@ -5,7 +5,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Kinship, edcenso_city } from '@prisma/client';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
-import { CreateUserIdentifyWithFamilyDto, CreateUserIdentifyWithoutFamilyDto } from '../dto/create-user_identify_bff.dto';
+import {
+  CreateUserIdentifyWithFamilyDto,
+  CreateUserIdentifyWithoutFamilyDto,
+} from '../dto/create-user_identify_bff.dto';
+import { JwtPayload } from 'src/utils/jwt.interface';
 
 @Injectable()
 export class UserIdentifyBffService {
@@ -222,5 +226,20 @@ export class UserIdentifyBffService {
     );
 
     return transactionResult;
+  }
+
+  async getUsersIdentify(user: JwtPayload, attendance_unity_fk: string) {
+    let attendance_unity: string = attendance_unity_fk
+      ? attendance_unity_fk
+      : user.attendance_unity_fk.toString();
+
+    const usersIdentify = await this.prismaService.$queryRaw`
+    SELECT ui.id, ui.name, ui.cpf, ui.birthday FROM family f 
+    JOIN attendance_unity au ON au.id = f.attendance_unity_fk
+    JOIN user_identify ui ON ui.family_fk = f.id
+    WHERE au.id = ${attendance_unity}
+    `;
+
+    return usersIdentify;
   }
 }

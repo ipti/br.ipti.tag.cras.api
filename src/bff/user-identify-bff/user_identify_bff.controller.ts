@@ -18,10 +18,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserIdentifyBffService } from './service/user_identify_bff.service';
-import { UserIdentifyWithFamily, UserIdentifyWithoutFamily } from './doc/user_identify_bff';
+import {
+  UserIdentifyWithFamily,
+  UserIdentifyWithoutFamily,
+} from './doc/user_identify_bff';
 import { JwtAuthGuard } from '../../auth/shared/jwt-auth.guard';
 import { Request } from 'express';
-import { CreateUserIdentifyWithFamilyDto, CreateUserIdentifyWithoutFamilyDto } from './dto/create-user_identify_bff.dto';
+import {
+  CreateUserIdentifyWithFamilyDto,
+  CreateUserIdentifyWithoutFamilyDto,
+} from './dto/create-user_identify_bff.dto';
 
 @ApiTags('UserIdentifyBff')
 @UseGuards(JwtAuthGuard)
@@ -53,6 +59,17 @@ export class UserIdentifyBffController {
     return this.user_identifyBffService.createUserWithFamily(
       request,
       createUserWithFamily,
+    );
+  }
+
+  @Get('from-attendance-unity')
+  getUserIdentifyFromAttendanceUnity(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.user_identifyBffService.getUsersIdentify(
+      request.user,
+      attendance_unity_fk,
     );
   }
 }
