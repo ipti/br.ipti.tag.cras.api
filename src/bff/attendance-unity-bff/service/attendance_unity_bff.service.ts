@@ -6,6 +6,7 @@ import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { CreateAttendanceUnityAndAddressDto } from '../dto/create-attendance_unity_bff.dto';
 import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
 import { JwtPayload } from 'src/utils/jwt.interface';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AttendanceUnityBffService {
@@ -80,5 +81,22 @@ export class AttendanceUnityBffService {
     }
 
     return attendanceUnity;
+  }
+
+  async setAttendanceToUser(req: Request, attendanceUnityId: number) {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (token) {
+      try {
+        const decodedToken = jwt.verify(
+          token,
+          process.env.SECRET,
+        ) as JwtPayload;
+
+        req.user = decodedToken;
+      } catch (error) {
+        throw new HttpException(error, 401);
+      }
+    }
   }
 }
