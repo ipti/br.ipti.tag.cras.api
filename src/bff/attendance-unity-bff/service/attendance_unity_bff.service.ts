@@ -64,10 +64,14 @@ export class AttendanceUnityBffService {
     return transactionResult;
   }
 
-  async getAttendanceUnityById(user: JwtPayload) {
+  async getAttendanceUnity(user: JwtPayload, attendance_unity_fk?: string) {
+    let attendance_unity: string = attendance_unity_fk
+      ? attendance_unity_fk
+      : user.attendance_unity_fk.toString();
+
     const attendanceUnity =
       await this.prismaService.attendance_unity.findUnique({
-        where: { id: user.attendance_unity_fk },
+        where: { id: parseInt(attendance_unity) },
         include: {
           address: true,
         },
@@ -81,22 +85,5 @@ export class AttendanceUnityBffService {
     }
 
     return attendanceUnity;
-  }
-
-  async setAttendanceToUser(req: Request, attendanceUnityId: number) {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (token) {
-      try {
-        const decodedToken = jwt.verify(
-          token,
-          process.env.SECRET,
-        ) as JwtPayload;
-
-        req.user = decodedToken;
-      } catch (error) {
-        throw new HttpException(error, 401);
-      }
-    }
   }
 }
