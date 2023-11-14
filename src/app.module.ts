@@ -69,6 +69,10 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
         module: DirectModule,
         children: [
           {
+            path: 'address',
+            module: AddressModule,
+          },
+          {
             path: 'attendance',
             module: AttendanceModule,
           },
@@ -83,6 +87,10 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
           {
             path: 'family',
             module: FamilyModule,
+          },
+          {
+            path: 'family-benefits',
+            module: FamilyBenefitsModule,
           },
           {
             path: 'task',
