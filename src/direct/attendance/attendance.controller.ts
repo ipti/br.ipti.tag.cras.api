@@ -26,7 +26,7 @@ import { AttendanceDocument } from './doc/attendance.doc';
   @ApiTags('Attendance')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @Controller('attendance')
+  @Controller()
   export class AttendanceController {
     constructor(private readonly attendanceService: AttendanceService) {}
   

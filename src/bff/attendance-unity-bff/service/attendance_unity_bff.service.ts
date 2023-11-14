@@ -5,10 +5,14 @@ import { Kinship, edcenso_city } from '@prisma/client';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { CreateAttendanceUnityAndAddressDto } from '../dto/create-attendance_unity_bff.dto';
 import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
+import { JwtPayload } from 'src/utils/jwt.interface';
 
 @Injectable()
 export class AttendanceUnityBffService {
-  constructor(private readonly prismaService: PrismaService, private readonly edcensoService: EdcensoBffService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly edcensoService: EdcensoBffService,
+  ) {}
 
   async createUnityAttendanceAndAddress(
     request: Request,
@@ -57,5 +61,24 @@ export class AttendanceUnityBffService {
     );
 
     return transactionResult;
+  }
+
+  async getAttendanceUnityById(user: JwtPayload) {
+    const attendanceUnity =
+      await this.prismaService.attendance_unity.findUnique({
+        where: { id: user.attendance_unity_fk },
+        include: {
+          address: true,
+        },
+      });
+
+    if (!attendanceUnity) {
+      throw new HttpException(
+        'Unidade de atendimento não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return attendanceUnity;
   }
 }

@@ -26,7 +26,7 @@ import { FamilyBenefitsDocument } from './doc/family_benefits';
 @ApiTags('FamilyBenefits')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('family-benefits')
+@Controller()
 export class FamilyBenefitsController {
   constructor(
     private readonly familyBenefitsService: FamilyBenefitsService,

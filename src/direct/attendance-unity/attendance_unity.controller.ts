@@ -26,7 +26,7 @@ import { AttendanceUnityDocument } from './doc/attendance_unity';
 @ApiTags('AttendanceUnity')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('attendance-unity')
+@Controller()
 export class AttendanceUnityController {
   constructor(
     private readonly attendanceUnityService: AttendanceUnityService,

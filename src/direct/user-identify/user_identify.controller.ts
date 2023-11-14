@@ -26,7 +26,7 @@ import { UserIdentifyDocument } from './doc/user_identify';
 @ApiTags('UserIdentify')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('user-identify')
+@Controller()
 export class UserIdentifyController {
   constructor(private readonly user_identifyService: UserIdentifyService) {}
 

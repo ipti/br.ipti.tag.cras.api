@@ -24,7 +24,7 @@ import { UserService } from './service/user.service';
 import { UserDocument } from './doc/user';
 
 @ApiTags('User')
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

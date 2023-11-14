@@ -26,7 +26,7 @@ import { TechnicianDocument } from './doc/technician';
 @ApiTags('Technician')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
-@Controller('technician')
+@Controller()
 export class TechnicianController {
   constructor(private readonly technicianService: TechnicianService) {}
 
