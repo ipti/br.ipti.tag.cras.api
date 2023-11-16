@@ -31,6 +31,15 @@ export class AuthService {
 
     if (isTechnician) {
       attendance_unity_fk = isTechnician.attendance_unity_fk;
+    } else {
+      const attendance_unity =
+        await this.prismaService.attendance_unity.findFirst({
+          where: { edcenso_city_fk: userFound.edcenso_city_fk },
+        });
+
+      if (attendance_unity) {
+        attendance_unity_fk = attendance_unity.id;
+      }
     }
 
     if (!isTechnician && userFound.role === Role.TECHNICIAN) {
