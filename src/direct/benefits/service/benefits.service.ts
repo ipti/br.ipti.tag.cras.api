@@ -35,7 +35,13 @@ export class BenefitsService {
       },
     });
 
-    return allBenefits;
+    const benefitsGeneral = await this.prismaService.benefits.findMany({
+      where: {
+        edcenso_city_fk: null,
+      },
+    });
+
+    return [ ...benefitsGeneral, ...allBenefits];
   }
 
   async findOne(request: Request, id: string): Promise<benefits> {

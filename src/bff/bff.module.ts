@@ -5,6 +5,7 @@ import { ChartsModule } from './charts/charts.module';
 import { EdcensoBffModule } from './edcenso-bff/edcenso_bff.module';
 import { FamilyBffModule } from './family-bff/family_bff.module';
 import { UserIdentifyBffModule } from './user-identify-bff/user_identify_bff.module';
+import { CondicionalitiesBffModule } from './condicionalities-bff/condicionalities_bff.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserIdentifyBffModule } from './user-identify-bff/user_identify_bff.mod
     EdcensoBffModule,
     FamilyBffModule,
     UserIdentifyBffModule,
+    CondicionalitiesBffModule,
   ],
 })
 export class BFFModule {}

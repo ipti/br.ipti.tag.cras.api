@@ -25,6 +25,8 @@ import { AttendanceUnityBffModule } from './bff/attendance-unity-bff/attendance_
 import { EdcensoBffModule } from './bff/edcenso-bff/edcenso_bff.module';
 import { FamilyBffModule } from './bff/family-bff/family_bff.module';
 import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff.module';
+import { SeedService } from './prisma/seed.service';
+import { CondicionalitiesBffModule } from './bff/condicionalities-bff/condicionalities_bff.module';
 
 @Module({
   imports: [
@@ -61,6 +63,10 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
           {
             path: 'user-identify',
             module: UserIdentifyBffModule,
+          },
+          {
+            path: 'condicionalities',
+            module: CondicionalitiesBffModule,
           },
         ],
       },
@@ -117,7 +123,7 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

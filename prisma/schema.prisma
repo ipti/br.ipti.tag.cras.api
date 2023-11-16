@@ -12,58 +12,60 @@ datasource db {
 }
 
 model user_identify {
-  id                Int          @id @default(autoincrement())
-  family_fk         Int?
-  edcenso_city_fk   Int
-  name              String
-  surname           String?
-  folder            String?
-  archive           String?
-  number            String?
-  birthday          String?
-  birth_certificate Int?
-  nis               Int?
-  rg_number         String?
-  rg_date_emission  String?
-  uf_rg             String?
-  emission_rg       String?
-  cpf               String
-  is_deficiency     Boolean
-  deficiency        String?
-  filiation_1       String
-  filiation_2       String?
-  marital_status    String
-  escolarity        String
-  initial_date      String
-  final_date        String?
-  profission        String?
-  bpc               Boolean      @default(false)
-  signed_portfolio  Boolean?
-  nuclear_family    String?
-  income            Int          @default(0)
-  kinship           Kinship
-  family            family?      @relation(fields: [family_fk], references: [id])
-  edcenso_city      edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
-  attendances       attendance[]
+  id                          Int                           @id @default(autoincrement())
+  family_fk                   Int?
+  edcenso_city_fk             Int
+  name                        String
+  surname                     String?
+  folder                      String?
+  archive                     String?
+  number                      String?
+  birthday                    String?
+  birth_certificate           Int?
+  nis                         Int?
+  rg_number                   String?
+  rg_date_emission            String?
+  uf_rg                       String?
+  emission_rg                 String?
+  cpf                         String
+  is_deficiency               Boolean
+  deficiency                  String?
+  filiation_1                 String
+  filiation_2                 String?
+  marital_status              String
+  escolarity                  String
+  initial_date                String
+  final_date                  String?
+  profission                  String?
+  bpc                         Boolean                       @default(false)
+  signed_portfolio            Boolean?
+  nuclear_family              String?
+  income                      Int                           @default(0)
+  kinship                     Kinship
+  family                      family?                       @relation(fields: [family_fk], references: [id])
+  edcenso_city                edcenso_city                  @relation(fields: [edcenso_city_fk], references: [id])
+  attendances                 attendance[]
+  user_identify_vulnerability user_identify_vulnerability[]
 }
 
 model family {
-  id                       Int               @id @default(autoincrement())
+  id                       Int                 @id @default(autoincrement())
   edcenso_city_fk          Int
   family_representative_fk Int
   address_fk               Int
   attendance_unity_fk      Int
   vulnerability_fk         Int
   condicionalities_fk      Int?
-  isActive                 Boolean           @default(true)
-  edcenso_city             edcenso_city      @relation(fields: [edcenso_city_fk], references: [id])
-  address                  address           @relation(fields: [address_fk], references: [id])
-  attendance_unity         attendance_unity  @relation(fields: [attendance_unity_fk], references: [id])
-  vulnerability            vulnerability     @relation(fields: [vulnerability_fk], references: [id])
-  condicionalities         condicionalities? @relation(fields: [condicionalities_fk], references: [id])
+  isActive                 Boolean             @default(true)
+  edcenso_city             edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
+  address                  address             @relation(fields: [address_fk], references: [id])
+  attendance_unity         attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
+  vulnerability            vulnerability       @relation(fields: [vulnerability_fk], references: [id])
+  condicionalities         condicionalities?   @relation(fields: [condicionalities_fk], references: [id])
   user_identify            user_identify[]
   benefits                 family_benefits[]
   forwarding               forwarding[]
+  technician_visits        technician_visits[]
 }
 
 model address {
@@ -84,19 +86,21 @@ model address {
 }
 
 model vulnerability {
-  id                       Int          @id @default(autoincrement())
-  edcenso_city_fk          Int
-  irregular_ocupation      Boolean      @default(false)
-  alone_child              Boolean      @default(false)
-  dependent_elderly        Boolean      @default(false)
-  unemployed               Boolean      @default(false)
-  deficient                Boolean      @default(false)
-  low_income               Boolean      @default(false)
-  child_work               Boolean      @default(false)
-  child_shelter_protection Boolean      @default(false)
-  others                   Boolean      @default(false)
-  edcenso_city             edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
-  family                   family[]
+  id                              Int          @id @default(autoincrement())
+  edcenso_city_fk                 Int
+  irregular_ocupation             Boolean      @default(false)
+  alone_child                     Boolean      @default(false)
+  dependent_elderly               Boolean      @default(false)
+  unemployed                      Boolean      @default(false)
+  deficient                       Boolean      @default(false)
+  low_income                      Boolean      @default(false)
+  child_work                      Boolean      @default(false)
+  child_shelter_protection        Boolean      @default(false)
+  psychoactive_substance_violence Boolean      @default(false)
+  socio_educational_measures      Boolean      @default(false)
+  others                          Boolean      @default(false)
+  edcenso_city                    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
+  family                          family[]
 }
 
 model attendance {
@@ -173,10 +177,10 @@ model task {
 
 model benefits {
   id              Int               @id @default(autoincrement())
-  edcenso_city_fk Int
+  edcenso_city_fk Int?
   description     String
   canDelete       Boolean           @default(true)
-  edcenso_city    edcenso_city      @relation(fields: [edcenso_city_fk], references: [id])
+  edcenso_city    edcenso_city?     @relation(fields: [edcenso_city_fk], references: [id])
   family          family_benefits[]
   type            Benefits
 }
@@ -216,8 +220,10 @@ model edcenso_city {
 model attendance_unity {
   id                Int                 @id @default(autoincrement())
   edcenso_city_fk   Int
+  unity_number      Int?
   name              String
   address_fk        Int                 @unique
+  type              CadSUAS             @default(CRAS)
   edcenso_city      edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
   address           address             @relation(fields: [address_fk], references: [id])
   family            family[]
@@ -238,10 +244,12 @@ model condicionalities {
 model technician_visits {
   id                  Int              @id @default(autoincrement())
   technician_fk       Int
+  family_fk           Int
   attendance_unity_fk Int
   created_at          DateTime         @default(now())
   technician          technician       @relation(fields: [technician_fk], references: [id])
   attendance_unity    attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
+  family              family           @relation(fields: [family_fk], references: [id])
 }
 
 model forwarding {
@@ -250,14 +258,30 @@ model forwarding {
   isPAIF       Boolean      @default(false)
   isCREAS      Boolean      @default(false)
   isBPC        Boolean      @default(false)
+  isPAEFI      Boolean      @default(false)
   cadUnico     Boolean      @default(false)
   cadUnicoType Int?
   datePAIF     DateTime?
   dateCREAS    DateTime?
   dateBPC      DateTime?
+  datePAEFI    DateTime?
   dateCadUnico DateTime?
   family       family       @relation(fields: [family_fk], references: [id])
   attendances  attendance[]
+}
+
+model user_identify_vulnerability {
+  id                                Int           @id @default(autoincrement())
+  user_identify_fk                  Int
+  intrafamily_violence              Boolean       @default(false)
+  sexual_abuse                      Boolean       @default(false)
+  sexual_exploitation               Boolean       @default(false)
+  victims_neglect_abandonment       Boolean       @default(false)
+  child_work                        Boolean       @default(false)
+  human_trafficking                 Boolean       @default(false)
+  discrimination_sexual_orientation Boolean       @default(false)
+  street_situation                  Boolean       @default(false)
+  user_identify                     user_identify @relation(fields: [user_identify_fk], references: [id])
 }
 
 enum Benefits {
@@ -295,4 +319,9 @@ enum Situation {
   ATIVO
   BLOQUEADO
   SUSPENSO
+}
+
+enum CadSUAS {
+  CRAS
+  CREAS
 }
