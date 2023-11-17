@@ -39,8 +39,67 @@ export class SeedService implements OnModuleInit {
         },
       );
 
-      return tx.benefits.createMany({
+      await tx.benefits.createMany({
         data: benefitsToCreateFiltered,
+      });
+
+      const tasks = await tx.task.findMany({
+        where: {
+          edcenso_city_fk: null,
+        },
+      });
+
+      const tasksToCreate = [
+        {
+          name: 'Serviço de Convivência e Fortalecimento de Vínculos para crianças e/ou adolescentes',
+          description: `É um serviço realizado em grupos, 
+          organizado a partir de percursos, de modo a garantir aquisições progressivas a seus usuários,
+          de acordo com seu ciclo de vida, a fim de complementar o trabalho social com famílias e prevenir 
+          a ocorrência de situações de risco social.`,
+          canDelete: false,
+          isCollective: true,
+        },
+        {
+          name: 'Serviço de Convivência e Fortalecimento de Vínculos para Adultos',
+          description: `É um serviço realizado em grupos, 
+          organizado a partir de percursos, de modo a garantir aquisições progressivas a seus usuários,
+          de acordo com seu ciclo de vida, a fim de complementar o trabalho social com famílias e prevenir 
+          a ocorrência de situações de risco social.`,
+          canDelete: false,
+          isCollective: true,
+        },
+        {
+          name: 'Serviço de Convivência e Fortalecimento de Vínculos para Idosos',
+          description: `É um serviço realizado em grupos, 
+          organizado a partir de percursos, de modo a garantir aquisições progressivas a seus usuários,
+          de acordo com seu ciclo de vida, a fim de complementar o trabalho social com famílias e prevenir 
+          a ocorrência de situações de risco social.`,
+          canDelete: false,
+          isCollective: true,
+        },
+        {
+          name: 'Grupo desenvolvido pelo PAIF',
+          canDelete: false,
+          isCollective: true,
+        },
+        {
+          name: 'Grupo desenvolvido pelo PAEFI',
+          canDelete: false,
+          isCollective: true,
+        },
+        {
+          name: 'Palestras, oficinas e outras atividades coletivas de caráter não continuado',
+          canDelete: false,
+          isCollective: true,
+        },
+      ];
+
+      const tasksToCreateFiltered = tasksToCreate.filter((taskToCreate) => {
+        return !tasks.some((task) => task.name === taskToCreate.name);
+      });
+
+      await tx.task.createMany({
+        data: tasksToCreateFiltered,
       });
     });
   }

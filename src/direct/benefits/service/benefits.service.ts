@@ -41,7 +41,7 @@ export class BenefitsService {
       },
     });
 
-    return [ ...benefitsGeneral, ...allBenefits];
+    return [...benefitsGeneral, ...allBenefits];
   }
 
   async findOne(request: Request, id: string): Promise<benefits> {
@@ -81,7 +81,14 @@ export class BenefitsService {
   }
 
   async remove(request: Request, id: string) {
-    await this.findOne(request, id);
+    const benefit = await this.findOne(request, id);
+
+    if (benefit.canDelete === false) {
+      throw new HttpException(
+        'Benefits cannot be deleted',
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {

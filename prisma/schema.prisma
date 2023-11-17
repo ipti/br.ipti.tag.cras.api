@@ -66,6 +66,7 @@ model family {
   benefits                 family_benefits[]
   forwarding               forwarding[]
   technician_visits        technician_visits[]
+  group_attendance         group_attendance[]
 }
 
 model address {
@@ -104,9 +105,9 @@ model vulnerability {
 }
 
 model attendance {
-  id                  Int              @id @default(autoincrement())
+  id                  Int                @id @default(autoincrement())
   edcenso_city_fk     Int
-  user_identify_fk    Int
+  user_identify_fk    Int?
   technician_fk       Int
   task_fk             Int
   attendance_unity_fk Int
@@ -115,13 +116,14 @@ model attendance {
   providence          String
   result              Result
   description         String
-  date                DateTime         @default(now())
-  edcenso_city        edcenso_city     @relation(fields: [edcenso_city_fk], references: [id])
-  user_identify       user_identify    @relation(fields: [user_identify_fk], references: [id])
-  technician          technician       @relation(fields: [technician_fk], references: [id])
-  task                task             @relation(fields: [task_fk], references: [id])
-  attendance_unity    attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
-  forwading           forwarding?      @relation(fields: [forwading_fk], references: [id])
+  date                DateTime           @default(now())
+  edcenso_city        edcenso_city       @relation(fields: [edcenso_city_fk], references: [id])
+  user_identify       user_identify?     @relation(fields: [user_identify_fk], references: [id])
+  technician          technician         @relation(fields: [technician_fk], references: [id])
+  task                task               @relation(fields: [task_fk], references: [id])
+  attendance_unity    attendance_unity   @relation(fields: [attendance_unity_fk], references: [id])
+  forwading           forwarding?        @relation(fields: [forwading_fk], references: [id])
+  group_attendance    group_attendance[]
 }
 
 model user {
@@ -165,13 +167,15 @@ model technician {
 }
 
 model task {
-  id              Int          @id @default(autoincrement())
-  edcenso_city_fk Int
+  id              Int           @id @default(autoincrement())
+  edcenso_city_fk Int?
   name            String
   description     String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  edcenso_city    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
+  isCollective    Boolean       @default(false)
+  canDelete       Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  edcenso_city    edcenso_city? @relation(fields: [edcenso_city_fk], references: [id])
   attendances     attendance[]
 }
 
@@ -213,6 +217,7 @@ model edcenso_city {
   task             task[]
   benefits         benefits[]
   attendance_unity attendance_unity[]
+  group_attendance group_attendance[]
 
   @@index([edcenso_uf_fk], map: "edcenso_uf_fk")
 }
@@ -274,14 +279,27 @@ model user_identify_vulnerability {
   id                                Int           @id @default(autoincrement())
   user_identify_fk                  Int
   intrafamily_violence              Boolean       @default(false)
+  drug_users                        Boolean       @default(false)
   sexual_abuse                      Boolean       @default(false)
   sexual_exploitation               Boolean       @default(false)
   victims_neglect_abandonment       Boolean       @default(false)
   child_work                        Boolean       @default(false)
   human_trafficking                 Boolean       @default(false)
   discrimination_sexual_orientation Boolean       @default(false)
+  migrants                          Boolean       @default(false)
   street_situation                  Boolean       @default(false)
   user_identify                     user_identify @relation(fields: [user_identify_fk], references: [id])
+}
+
+model group_attendance {
+  id              Int          @id @default(autoincrement())
+  edcenso_city_fk Int
+  attendance_fk   Int
+  family_fk       Int
+  date            DateTime     @default(now())
+  edcenso_city    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
+  attendance      attendance   @relation(fields: [attendance_fk], references: [id])
+  family          family       @relation(fields: [family_fk], references: [id])
 }
 
 enum Benefits {
