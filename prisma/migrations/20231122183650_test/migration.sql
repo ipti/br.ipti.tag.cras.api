@@ -29,7 +29,9 @@ ALTER TABLE `family_benefits` ADD COLUMN `date` DATETIME(3) NOT NULL DEFAULT CUR
 -- AlterTable
 ALTER TABLE `task` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,
     ADD COLUMN `isCollective` BOOLEAN NOT NULL DEFAULT false,
-    MODIFY `edcenso_city_fk` INTEGER NULL;
+    MODIFY `edcenso_city_fk` INTEGER NULL,
+    MODIFY `name` TEXT NOT NULL,
+    MODIFY `description` TEXT NULL;
 
 -- AlterTable
 ALTER TABLE `user_identify` ADD COLUMN `bpc` BOOLEAN NOT NULL DEFAULT false;

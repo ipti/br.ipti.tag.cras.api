@@ -27,6 +27,7 @@ import { FamilyBffModule } from './bff/family-bff/family_bff.module';
 import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff.module';
 import { SeedService } from './prisma/seed.service';
 import { CondicionalitiesBffModule } from './bff/condicionalities-bff/condicionalities_bff.module';
+import { CRASRMAModule } from './bff/reports/CRAS/cras.module';
 
 @Module({
   imports: [
@@ -67,6 +68,10 @@ import { CondicionalitiesBffModule } from './bff/condicionalities-bff/condiciona
           {
             path: 'condicionalities',
             module: CondicionalitiesBffModule,
+          },
+          {
+            path: 'reports-cras',
+            module: CRASRMAModule,
           },
         ],
       },

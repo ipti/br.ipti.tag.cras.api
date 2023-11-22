@@ -169,8 +169,8 @@ model technician {
 model task {
   id              Int           @id @default(autoincrement())
   edcenso_city_fk Int?
-  name            String
-  description     String?
+  name            String        @db.Text
+  description     String?       @db.Text
   isCollective    Boolean       @default(false)
   canDelete       Boolean       @default(true)
   createdAt       DateTime      @default(now())
