@@ -38,11 +38,12 @@ model user_identify {
   final_date                  String?
   profission                  String?
   bpc                         Boolean                       @default(false)
+  paefi                       Boolean                       @default(false)
   signed_portfolio            Boolean?
   nuclear_family              String?
   income                      Int                           @default(0)
   kinship                     Kinship
-  family                      family?                       @relation(fields: [family_fk], references: [id])
+  family                      family?                       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   edcenso_city                edcenso_city                  @relation(fields: [edcenso_city_fk], references: [id])
   attendances                 attendance[]
   user_identify_vulnerability user_identify_vulnerability[]
@@ -56,6 +57,8 @@ model family {
   attendance_unity_fk      Int
   vulnerability_fk         Int
   condicionalities_fk      Int?
+  isPAIF                   Boolean             @default(false)
+  isPAEFI                  Boolean             @default(false)
   isActive                 Boolean             @default(true)
   edcenso_city             edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
   address                  address             @relation(fields: [address_fk], references: [id])
@@ -149,7 +152,7 @@ model family_benefits {
   situation       Situation    @default(ATIVO)
   date            DateTime     @default(now())
   edcenso_city    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
-  family          family       @relation(fields: [family_fk], references: [id])
+  family          family       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   benefits        benefits     @relation(fields: [benefits_fk], references: [id])
 }
 
@@ -169,14 +172,18 @@ model technician {
 model task {
   id              Int           @id @default(autoincrement())
   edcenso_city_fk Int?
+  task_fk         Int?
   name            String        @db.Text
   description     String?       @db.Text
   isCollective    Boolean       @default(false)
   canDelete       Boolean       @default(true)
+  type            CadSUAS       @default(CRAS)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   edcenso_city    edcenso_city? @relation(fields: [edcenso_city_fk], references: [id])
+  task            task?         @relation("selfTask", fields: [task_fk], references: [id])
   attendances     attendance[]
+  tasks           task[]        @relation("selfTask")
 }
 
 model benefits {
@@ -254,24 +261,22 @@ model technician_visits {
   created_at          DateTime         @default(now())
   technician          technician       @relation(fields: [technician_fk], references: [id])
   attendance_unity    attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
-  family              family           @relation(fields: [family_fk], references: [id])
+  family              family           @relation(fields: [family_fk], references: [id], onDelete: Cascade)
 }
 
 model forwarding {
   id           Int          @id @default(autoincrement())
   family_fk    Int
-  isPAIF       Boolean      @default(false)
+  isCRAS       Boolean      @default(false)
   isCREAS      Boolean      @default(false)
   isBPC        Boolean      @default(false)
-  isPAEFI      Boolean      @default(false)
   cadUnico     Boolean      @default(false)
   cadUnicoType Int?
-  datePAIF     DateTime?
+  dateCRAS     DateTime?
   dateCREAS    DateTime?
   dateBPC      DateTime?
-  datePAEFI    DateTime?
   dateCadUnico DateTime?
-  family       family       @relation(fields: [family_fk], references: [id])
+  family       family       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   attendances  attendance[]
 }
 
@@ -299,7 +304,7 @@ model group_attendance {
   date            DateTime     @default(now())
   edcenso_city    edcenso_city @relation(fields: [edcenso_city_fk], references: [id])
   attendance      attendance   @relation(fields: [attendance_fk], references: [id])
-  family          family       @relation(fields: [family_fk], references: [id])
+  family          family       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
 }
 
 enum Benefits {

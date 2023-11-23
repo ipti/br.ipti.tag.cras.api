@@ -5,7 +5,13 @@ ALTER TABLE `attendance` DROP FOREIGN KEY `attendance_user_identify_fk_fkey`;
 ALTER TABLE `benefits` DROP FOREIGN KEY `benefits_edcenso_city_fk_fkey`;
 
 -- DropForeignKey
+ALTER TABLE `family_benefits` DROP FOREIGN KEY `family_benefits_family_fk_fkey`;
+
+-- DropForeignKey
 ALTER TABLE `task` DROP FOREIGN KEY `task_edcenso_city_fk_fkey`;
+
+-- DropForeignKey
+ALTER TABLE `user_identify` DROP FOREIGN KEY `user_identify_family_fk_fkey`;
 
 -- AlterTable
 ALTER TABLE `attendance` ADD COLUMN `forwading_fk` INTEGER NULL,
@@ -20,7 +26,9 @@ ALTER TABLE `benefits` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,
     MODIFY `edcenso_city_fk` INTEGER NULL;
 
 -- AlterTable
-ALTER TABLE `family` ADD COLUMN `condicionalities_fk` INTEGER NULL;
+ALTER TABLE `family` ADD COLUMN `condicionalities_fk` INTEGER NULL,
+    ADD COLUMN `isPAEFI` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isPAIF` BOOLEAN NOT NULL DEFAULT false;
 
 -- AlterTable
 ALTER TABLE `family_benefits` ADD COLUMN `date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -29,12 +37,15 @@ ALTER TABLE `family_benefits` ADD COLUMN `date` DATETIME(3) NOT NULL DEFAULT CUR
 -- AlterTable
 ALTER TABLE `task` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,
     ADD COLUMN `isCollective` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `task_fk` INTEGER NULL,
+    ADD COLUMN `type` ENUM('CRAS', 'CREAS') NOT NULL DEFAULT 'CRAS',
     MODIFY `edcenso_city_fk` INTEGER NULL,
     MODIFY `name` TEXT NOT NULL,
     MODIFY `description` TEXT NULL;
 
 -- AlterTable
-ALTER TABLE `user_identify` ADD COLUMN `bpc` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `user_identify` ADD COLUMN `bpc` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `paefi` BOOLEAN NOT NULL DEFAULT false;
 
 -- AlterTable
 ALTER TABLE `vulnerability` ADD COLUMN `child_shelter_protection` BOOLEAN NOT NULL DEFAULT false,
@@ -68,16 +79,14 @@ CREATE TABLE `technician_visits` (
 CREATE TABLE `forwarding` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `family_fk` INTEGER NOT NULL,
-    `isPAIF` BOOLEAN NOT NULL DEFAULT false,
+    `isCRAS` BOOLEAN NOT NULL DEFAULT false,
     `isCREAS` BOOLEAN NOT NULL DEFAULT false,
     `isBPC` BOOLEAN NOT NULL DEFAULT false,
-    `isPAEFI` BOOLEAN NOT NULL DEFAULT false,
     `cadUnico` BOOLEAN NOT NULL DEFAULT false,
     `cadUnicoType` INTEGER NULL,
-    `datePAIF` DATETIME(3) NULL,
+    `dateCRAS` DATETIME(3) NULL,
     `dateCREAS` DATETIME(3) NULL,
     `dateBPC` DATETIME(3) NULL,
-    `datePAEFI` DATETIME(3) NULL,
     `dateCadUnico` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
@@ -113,6 +122,9 @@ CREATE TABLE `group_attendance` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
+ALTER TABLE `user_identify` ADD CONSTRAINT `user_identify_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `family` ADD CONSTRAINT `family_condicionalities_fk_fkey` FOREIGN KEY (`condicionalities_fk`) REFERENCES `condicionalities`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -122,7 +134,13 @@ ALTER TABLE `attendance` ADD CONSTRAINT `attendance_user_identify_fk_fkey` FOREI
 ALTER TABLE `attendance` ADD CONSTRAINT `attendance_forwading_fk_fkey` FOREIGN KEY (`forwading_fk`) REFERENCES `forwarding`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `family_benefits` ADD CONSTRAINT `family_benefits_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `task` ADD CONSTRAINT `task_edcenso_city_fk_fkey` FOREIGN KEY (`edcenso_city_fk`) REFERENCES `edcenso_city`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `task` ADD CONSTRAINT `task_task_fk_fkey` FOREIGN KEY (`task_fk`) REFERENCES `task`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `benefits` ADD CONSTRAINT `benefits_edcenso_city_fk_fkey` FOREIGN KEY (`edcenso_city_fk`) REFERENCES `edcenso_city`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -134,10 +152,10 @@ ALTER TABLE `technician_visits` ADD CONSTRAINT `technician_visits_technician_fk_
 ALTER TABLE `technician_visits` ADD CONSTRAINT `technician_visits_attendance_unity_fk_fkey` FOREIGN KEY (`attendance_unity_fk`) REFERENCES `attendance_unity`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `technician_visits` ADD CONSTRAINT `technician_visits_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `technician_visits` ADD CONSTRAINT `technician_visits_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `forwarding` ADD CONSTRAINT `forwarding_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `forwarding` ADD CONSTRAINT `forwarding_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `user_identify_vulnerability` ADD CONSTRAINT `user_identify_vulnerability_user_identify_fk_fkey` FOREIGN KEY (`user_identify_fk`) REFERENCES `user_identify`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -149,4 +167,4 @@ ALTER TABLE `group_attendance` ADD CONSTRAINT `group_attendance_edcenso_city_fk_
 ALTER TABLE `group_attendance` ADD CONSTRAINT `group_attendance_attendance_fk_fkey` FOREIGN KEY (`attendance_fk`) REFERENCES `attendance`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `group_attendance` ADD CONSTRAINT `group_attendance_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `group_attendance` ADD CONSTRAINT `group_attendance_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

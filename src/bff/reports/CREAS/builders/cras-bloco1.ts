@@ -82,7 +82,7 @@ export class CRASBloco1Builder {
             WHERE fw.isPAIF = true AND 
                 MONTH(fw.datePAIF) = ${this.month} AND 
                 YEAR(fw.datePAIF) = ${this.year} AND
-                b.description LIKE '%Bolsa Familia%';
+                b.description LIKE '%Bolsa Família%';
         `;
 
     this.bloco1.familyBolsaFamilia = Number(count[0].count);
@@ -95,7 +95,7 @@ export class CRASBloco1Builder {
             FROM family f
             INNER JOIN forwarding fw ON f.id = fw.family_fk
             INNER JOIN family_benefits fb ON f.id = fb.family_fk
-            INNER JOIN benefits b ON fb.benefits_fk = b.id AND b.description = 'Bolsa Familia'
+            INNER JOIN benefits b ON fb.benefits_fk = b.id AND b.description = 'Bolsa Família'
             INNER JOIN condicionalities c ON f.condicionalities_fk = c.id
             WHERE fw.isPAIF = true AND 
                 MONTH(fw.datePAIF) = 5 AND 

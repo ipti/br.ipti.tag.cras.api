@@ -15,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/shared/jwt-auth.guard';
@@ -47,5 +48,11 @@ export class FamilyBffController {
       request,
       attendance_unity_fk,
     );
+  }
+
+  @Delete('delete-family')
+  @ApiQuery({ name: 'familyId', required: true })
+  deleteFamily(@Req() request: Request, @Query('familyId') familyId: string) {
+    return this.FamilyBffService.deleteFamily(request, familyId);
   }
 }
