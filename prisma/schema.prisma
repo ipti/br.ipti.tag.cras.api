@@ -59,6 +59,8 @@ model family {
   condicionalities_fk      Int?
   isPAIF                   Boolean             @default(false)
   isPAEFI                  Boolean             @default(false)
+  datePAIF                 DateTime            @default(now())
+  datePAEFI                DateTime            @default(now())
   isActive                 Boolean             @default(true)
   edcenso_city             edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
   address                  address             @relation(fields: [address_fk], references: [id])
