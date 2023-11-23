@@ -39,6 +39,8 @@ model user_identify {
   profission                  String?
   bpc                         Boolean                       @default(false)
   paefi                       Boolean                       @default(false)
+  dateBPC                     DateTime?
+  datePAEFI                   DateTime?
   signed_portfolio            Boolean?
   nuclear_family              String?
   income                      Int                           @default(0)
@@ -271,12 +273,10 @@ model forwarding {
   family_fk    Int
   isCRAS       Boolean      @default(false)
   isCREAS      Boolean      @default(false)
-  isBPC        Boolean      @default(false)
   cadUnico     Boolean      @default(false)
   cadUnicoType Int?
   dateCRAS     DateTime?
   dateCREAS    DateTime?
-  dateBPC      DateTime?
   dateCadUnico DateTime?
   family       family       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   attendances  attendance[]
