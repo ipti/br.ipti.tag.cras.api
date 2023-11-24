@@ -20,6 +20,16 @@ export class SeedService implements OnModuleInit {
           canDelete: false,
         },
         {
+          description: "BPC",
+          type: Benefits.PERIODICO,
+          canDelete: false,
+        },
+        {
+          description: "PETI",
+          type: Benefits.PERIODICO,
+          canDelete: false,
+        },
+        {
           description: 'Auxilio-Natalidade',
           type: Benefits.EVENTUAL,
           canDelete: false,

@@ -37,10 +37,6 @@ model user_identify {
   initial_date                String
   final_date                  String?
   profission                  String?
-  bpc                         Boolean                       @default(false)
-  paefi                       Boolean                       @default(false)
-  dateBPC                     DateTime?
-  datePAEFI                   DateTime?
   signed_portfolio            Boolean?
   nuclear_family              String?
   income                      Int                           @default(0)
@@ -49,6 +45,7 @@ model user_identify {
   edcenso_city                edcenso_city                  @relation(fields: [edcenso_city_fk], references: [id])
   attendances                 attendance[]
   user_identify_vulnerability user_identify_vulnerability[]
+  forwarding                  forwarding[]
 }
 
 model family {
@@ -59,6 +56,7 @@ model family {
   attendance_unity_fk      Int
   vulnerability_fk         Int
   condicionalities_fk      Int?
+  ethnic                   Ethnic              @default(OUTROS)
   isPAIF                   Boolean             @default(false)
   isPAEFI                  Boolean             @default(false)
   datePAIF                 DateTime            @default(now())
@@ -269,17 +267,21 @@ model technician_visits {
 }
 
 model forwarding {
-  id           Int          @id @default(autoincrement())
-  family_fk    Int
-  isCRAS       Boolean      @default(false)
-  isCREAS      Boolean      @default(false)
-  cadUnico     Boolean      @default(false)
-  cadUnicoType Int?
-  dateCRAS     DateTime?
-  dateCREAS    DateTime?
-  dateCadUnico DateTime?
-  family       family       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
-  attendances  attendance[]
+  id               Int            @id @default(autoincrement())
+  family_fk        Int?
+  user_identify_fk Int?
+  isCRAS           Boolean        @default(false)
+  isCREAS          Boolean        @default(false)
+  isBPC            Boolean        @default(false)
+  isCadUnico       Boolean        @default(false)
+  type             ForwadingType  @default(ENCAMINHAMENTO)
+  dateCRAS         DateTime?
+  dateCREAS        DateTime?
+  dateBPC          DateTime?
+  dateCadUnico     DateTime?
+  family           family?        @relation(fields: [family_fk], references: [id], onDelete: Cascade)
+  user_identify    user_identify? @relation(fields: [user_identify_fk], references: [id])
+  attendances      attendance[]
 }
 
 model user_identify_vulnerability {
@@ -349,4 +351,21 @@ enum Situation {
 enum CadSUAS {
   CRAS
   CREAS
+}
+
+enum Ethnic {
+  SEMTETO
+  QUILOMBOLA
+  RIBEIRINHO
+  CIGANA
+  INDIGENA
+  INDIGENA_NAO_RESIDENTE
+  OUTROS
+}
+
+enum ForwadingType {
+  INCLUSAO
+  ATUALIZACAO
+  ACESSO
+  ENCAMINHAMENTO
 }
