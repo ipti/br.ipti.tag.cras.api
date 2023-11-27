@@ -17,15 +17,18 @@ export class CrasBloco3 {
 
 export class CrasBloco3Builder {
   private bloco3: CrasBloco3;
+  private attendance_unity: number;
   private month: number;
   private year: number;
 
   constructor(
     private readonly prisma: PrismaService,
+    attendance_unity: number,
     month: number,
     year: number,
   ) {
     this.bloco3 = new CrasBloco3();
+    this.attendance_unity = attendance_unity;
     this.month = month;
     this.year = year;
   }
@@ -44,6 +47,7 @@ export class CrasBloco3Builder {
             t.name = 'Grupo desenvolvido pelo PAIF' AND
             t.canDelete = false AND
             t.isCollective = true AND
+            au.id = ${this.attendance_unity} AND
             MONTH(ga.\`date\`) = ${this.month} AND 
             YEAR(ga.\`date\`) = ${this.year};
     `;
@@ -67,6 +71,7 @@ export class CrasBloco3Builder {
             t.name = 'Serviço de Convivência e Fortalecimento de Vínculos' AND
             t.canDelete = false AND
             t.isCollective = true AND
+            au.id = ${this.attendance_unity} AND
             MONTH(a.\`date\`) = ${this.month} AND 
             YEAR(a.\`date\`) = ${this.year};
     `;

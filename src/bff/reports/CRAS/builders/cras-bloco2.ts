@@ -18,15 +18,18 @@ export class CrasBloco2 {
 
 export class CrasBloco2Builder {
   private bloco2: CrasBloco2;
+  private attendance_unity: number;
   private month: number;
   private year: number;
 
   constructor(
     private readonly prisma: PrismaService,
+    attendance_unity: number,
     month: number,
     year: number,
   ) {
     this.bloco2 = new CrasBloco2();
+    this.attendance_unity = attendance_unity;
     this.month = month;
     this.year = year;
   }
@@ -37,8 +40,9 @@ export class CrasBloco2Builder {
         FROM attendance a
         INNER JOIN attendance_unity au ON au.id = a.attendance_unity_fk
         WHERE 
-            a.user_identify_fk != NULL AND
+            a.user_identify_fk IS NOT NULL AND
             au.\`type\` = "CRAS" AND
+            au.id = ${this.attendance_unity} AND
             MONTH(a.\`date\`) = ${this.month} AND 
             YEAR(a.\`date\`) = ${this.year};
     `;
@@ -56,6 +60,7 @@ export class CrasBloco2Builder {
         WHERE fw.isCadUnico = true AND
             au.\`type\` = 'CRAS' AND
             fw.\`type\` = "INCLUSAO" AND
+            au.id = ${this.attendance_unity} AND
             MONTH(fw.dateCadUnico) = ${this.month} AND 
             YEAR(fw.dateCadUnico) = ${this.year}
     `;
@@ -73,6 +78,7 @@ export class CrasBloco2Builder {
         WHERE fw.isCadUnico = true AND
             au.\`type\` = 'CRAS' AND
             fw.\`type\` = "ATUALIZACAO" AND
+            au.id = ${this.attendance_unity} AND
             MONTH(fw.dateCadUnico) = ${this.month} AND 
             YEAR(fw.dateCadUnico) = ${this.year}
     `;
@@ -91,6 +97,7 @@ export class CrasBloco2Builder {
         WHERE fw.isBPC = true AND
             au.\`type\` = 'CRAS' AND
             fw.\`type\` = "ACESSO" AND
+            au.id = ${this.attendance_unity} AND
             MONTH(fw.dateBPC) = ${this.month} AND 
             YEAR(fw.dateBPC) = ${this.year}
     `;
@@ -108,6 +115,7 @@ export class CrasBloco2Builder {
         WHERE fw.isCREAS = true AND
             au.\`type\` = 'CRAS' AND
             fw.\`type\` = "ENCAMINHAMENTO" AND
+            au.id = ${this.attendance_unity} AND
             MONTH(fw.dateCREAS) = ${this.month} AND 
             YEAR(fw.dateCREAS) = ${this.year}
     `;
@@ -123,6 +131,7 @@ export class CrasBloco2Builder {
         INNER JOIN attendance_unity au ON au.id = tv.attendance_unity_fk 
         WHERE 
             au.\`type\` = 'CRAS' AND
+            au.id = ${this.attendance_unity} AND
             MONTH(tv.created_at) = ${this.month} AND 
             YEAR(tv.created_at) = ${this.year}
     `;
@@ -142,6 +151,7 @@ export class CrasBloco2Builder {
             b.description = 'Auxilio-Natalidade' AND
             b.canDelete = false AND
             au.\`type\` = 'CRAS' AND
+            au.id = ${this.attendance_unity} AND
             MONTH(f.datePAIF) = ${this.month} AND 
             YEAR(f.datePAIF) = ${this.year}
     `;
@@ -161,6 +171,7 @@ export class CrasBloco2Builder {
             b.description = 'Auxilio-Funeral' AND
             b.canDelete = false AND
             au.\`type\` = 'CRAS' AND
+            au.id = ${this.attendance_unity} AND
             MONTH(f.datePAIF) = ${this.month} AND 
             YEAR(f.datePAIF) = ${this.year}
     `;
@@ -181,6 +192,7 @@ export class CrasBloco2Builder {
             b.description != 'Auxilio-Funeral' AND
             b.\`type\` = 'EVENTUAL' AND
             au.\`type\` = 'CRAS' AND
+            au.id = ${this.attendance_unity} AND
             MONTH(f.datePAIF) = ${this.month} AND 
             YEAR(f.datePAIF) = ${this.year}
     `;

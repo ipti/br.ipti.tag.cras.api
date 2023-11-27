@@ -6,12 +6,15 @@ import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class EdcensoBffService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  async getEdcensoCity(request: Request): Promise<edcenso_city> {
+  async getEdcensoCity(edcenso_city_fk: string): Promise<edcenso_city> {
     const edcensoCity = await this.prismaService.edcenso_city.findUnique({
       where: {
-        id: request.user.edcenso_city_fk,
+        id: parseInt(edcenso_city_fk),
+      },
+      include: {
+        edcenso_uf: true,
       },
     });
 
