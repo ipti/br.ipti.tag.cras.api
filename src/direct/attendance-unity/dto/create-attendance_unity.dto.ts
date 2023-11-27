@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { CadSUAS } from '@prisma/client';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateAttendanceUnityDto {
   @IsNotEmpty()
@@ -8,4 +15,12 @@ export class CreateAttendanceUnityDto {
   @IsNotEmpty()
   @IsNumber()
   address: number;
+
+  @IsNotEmpty()
+  @IsString()
+  unity_number: string;
+
+  @IsNotEmpty()
+  @IsEnum(CadSUAS)
+  type: CadSUAS;
 }

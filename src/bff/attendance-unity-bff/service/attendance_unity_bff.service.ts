@@ -44,6 +44,8 @@ export class AttendanceUnityBffService {
 
         const attendanceUnity = {
           name: createAttendanceAndAddress.name,
+          unity_number: createAttendanceAndAddress.unity_number,
+          type: createAttendanceAndAddress.type,
         };
 
         const attendanceUnityCreated = await tx.attendance_unity.create({
@@ -74,6 +76,11 @@ export class AttendanceUnityBffService {
         where: { id: parseInt(attendance_unity) },
         include: {
           address: true,
+          edcenso_city: {
+            include: {
+              edcenso_uf: true,
+            },
+          },
         },
       });
 
