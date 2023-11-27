@@ -112,10 +112,12 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
-            INNER JOIN user_identify ui ON f.id = ui.family_fk
+            INNER JOIN family_benefits fb ON fb.family_fk = f.id 
+            INNER JOIN benefits b ON b.id = fb.benefits_fk 
             WHERE 
                 f.isPAIF = true AND 
-                ui.bpc = true AND 
+                b.description = "BPC" AND 
+                b.canDelete = false AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year}
         `;

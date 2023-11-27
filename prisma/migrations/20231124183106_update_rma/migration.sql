@@ -29,6 +29,7 @@ ALTER TABLE `benefits` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,
 ALTER TABLE `family` ADD COLUMN `condicionalities_fk` INTEGER NULL,
     ADD COLUMN `datePAEFI` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     ADD COLUMN `datePAIF` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ADD COLUMN `ethnic` ENUM('SEMTETO', 'QUILOMBOLA', 'RIBEIRINHO', 'CIGANA', 'INDIGENA', 'INDIGENA_NAO_RESIDENTE', 'OUTROS') NOT NULL DEFAULT 'OUTROS',
     ADD COLUMN `isPAEFI` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `isPAIF` BOOLEAN NOT NULL DEFAULT false;
 
@@ -44,12 +45,6 @@ ALTER TABLE `task` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,
     MODIFY `edcenso_city_fk` INTEGER NULL,
     MODIFY `name` TEXT NOT NULL,
     MODIFY `description` TEXT NULL;
-
--- AlterTable
-ALTER TABLE `user_identify` ADD COLUMN `bpc` BOOLEAN NOT NULL DEFAULT false,
-    ADD COLUMN `dateBPC` DATETIME(3) NULL,
-    ADD COLUMN `datePAEFI` DATETIME(3) NULL,
-    ADD COLUMN `paefi` BOOLEAN NOT NULL DEFAULT false;
 
 -- AlterTable
 ALTER TABLE `vulnerability` ADD COLUMN `child_shelter_protection` BOOLEAN NOT NULL DEFAULT false,
@@ -82,13 +77,16 @@ CREATE TABLE `technician_visits` (
 -- CreateTable
 CREATE TABLE `forwarding` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `family_fk` INTEGER NOT NULL,
+    `family_fk` INTEGER NULL,
+    `user_identify_fk` INTEGER NULL,
     `isCRAS` BOOLEAN NOT NULL DEFAULT false,
     `isCREAS` BOOLEAN NOT NULL DEFAULT false,
-    `cadUnico` BOOLEAN NOT NULL DEFAULT false,
-    `cadUnicoType` INTEGER NULL,
+    `isBPC` BOOLEAN NOT NULL DEFAULT false,
+    `isCadUnico` BOOLEAN NOT NULL DEFAULT false,
+    `type` ENUM('INCLUSAO', 'ATUALIZACAO', 'ACESSO', 'ENCAMINHAMENTO') NOT NULL DEFAULT 'ENCAMINHAMENTO',
     `dateCRAS` DATETIME(3) NULL,
     `dateCREAS` DATETIME(3) NULL,
+    `dateBPC` DATETIME(3) NULL,
     `dateCadUnico` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
@@ -158,6 +156,9 @@ ALTER TABLE `technician_visits` ADD CONSTRAINT `technician_visits_family_fk_fkey
 
 -- AddForeignKey
 ALTER TABLE `forwarding` ADD CONSTRAINT `forwarding_family_fk_fkey` FOREIGN KEY (`family_fk`) REFERENCES `family`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `forwarding` ADD CONSTRAINT `forwarding_user_identify_fk_fkey` FOREIGN KEY (`user_identify_fk`) REFERENCES `user_identify`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `user_identify_vulnerability` ADD CONSTRAINT `user_identify_vulnerability_user_identify_fk_fkey` FOREIGN KEY (`user_identify_fk`) REFERENCES `user_identify`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -9,7 +9,8 @@ export default class CRASRMAService {
   public async getCRASRMA(month: number, year: number) {
     const crasRMA = await new CRASRMABuilder(this.prisma, month, year)
       .buildCRASBloco1()
-      .then((builder) => builder.build())
+      .then((builder) => builder.buildCRASBloco2())
+      .then((builder) => builder.build());
     return crasRMA;
   }
 }
