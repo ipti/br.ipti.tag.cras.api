@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BenefitsForFamily } from '../../../utils/types';
-import { Kinship } from '@prisma/client';
+import { CadSUAS, Kinship } from '@prisma/client';
 
 export class AttendanceUnityAndAddress {
   @ApiProperty()
@@ -26,4 +26,10 @@ export class AttendanceUnityAndAddress {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  unity_number: string;
+
+  @ApiProperty()
+  type: CadSUAS;
 }

@@ -31,7 +31,7 @@ export class EdcensoBffController {
 
   @Get('city')
   @ApiOkResponse({ description: 'Retorna a cidade do usuário logado' })
-  async getEdcensoCity(@Query() edcenso_city_fk: string): Promise<edcenso_city> {
+  async getEdcensoCity(@Query('edcenso_city_fk') edcenso_city_fk: string): Promise<edcenso_city> {
     return this.edcensoBffService.getEdcensoCityById(edcenso_city_fk);
   }
 }
