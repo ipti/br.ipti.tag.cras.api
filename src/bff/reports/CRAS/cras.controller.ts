@@ -11,13 +11,15 @@ export default class CRASRMAController {
   constructor(private readonly crasRMAService: CRASRMAService) {}
 
   @Get()
+  @ApiQuery({ name: 'attendance_unity', type: Number, required: true })
   @ApiQuery({ name: 'month', type: Number, required: true })
   @ApiQuery({ name: 'year', type: Number, required: true })
   async getCRASRMA(
     @Req() req: Request,
+    @Query('attendance_unity') attendance_unity: number,
     @Query('month') month: number,
     @Query('year') year: number,
   ) {
-    return await this.crasRMAService.getCRASRMA(month, year);
+    return await this.crasRMAService.getCRASRMA(attendance_unity, month, year);
   }
 }
