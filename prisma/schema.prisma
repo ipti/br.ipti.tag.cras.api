@@ -234,7 +234,7 @@ model edcenso_city {
 model attendance_unity {
   id                Int                 @id @default(autoincrement())
   edcenso_city_fk   Int
-  unity_number      Int?
+  unity_number      String?
   name              String
   address_fk        Int                 @unique
   type              CadSUAS             @default(CRAS)

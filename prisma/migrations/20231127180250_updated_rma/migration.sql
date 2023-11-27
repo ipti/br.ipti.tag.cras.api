@@ -19,7 +19,7 @@ ALTER TABLE `attendance` ADD COLUMN `forwading_fk` INTEGER NULL,
 
 -- AlterTable
 ALTER TABLE `attendance_unity` ADD COLUMN `type` ENUM('CRAS', 'CREAS') NOT NULL DEFAULT 'CRAS',
-    ADD COLUMN `unity_number` INTEGER NULL;
+    ADD COLUMN `unity_number` VARCHAR(191) NULL;
 
 -- AlterTable
 ALTER TABLE `benefits` ADD COLUMN `canDelete` BOOLEAN NOT NULL DEFAULT true,

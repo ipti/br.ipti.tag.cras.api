@@ -17,25 +17,30 @@ export class CRASBloco1 {
 
 export class CRASBloco1Builder {
   private bloco1: CRASBloco1;
+  private attendance_unity: number;
   private month: number;
   private year: number;
 
   constructor(
     private readonly prisma: PrismaService,
+    attendance_unity: number,
     month: number,
     year: number,
   ) {
     this.bloco1 = new CRASBloco1();
+    this.attendance_unity = attendance_unity;
     this.month = month;
     this.year = year;
   }
 
   public async withFamilyTotal(): Promise<CRASBloco1Builder> {
     const count: number = await this.prisma.$queryRaw`
-            SELECT COUNT(f.id) as count 
-            FROM family f
-            WHERE f.isPAIF = true;
-        `;
+      SELECT COUNT(f.id) as count 
+      FROM family f
+      INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
+      WHERE f.isPAIF = true AND
+      au.id = ${this.attendance_unity}
+      `;
 
     this.bloco1.familyTotal = Number(count[0].count);
     return this;
@@ -43,12 +48,14 @@ export class CRASBloco1Builder {
 
   public async withFamilyMonthy(): Promise<CRASBloco1Builder> {
     const count: number = await this.prisma.$queryRaw`
-            SELECT COUNT(f.id) as count 
-            FROM family f
-            WHERE f.isPAIF = true AND 
-                MONTH(f.datePAIF) = ${this.month} AND 
-                YEAR(f.datePAIF) = ${this.year};
-        `;
+      SELECT COUNT(f.id) as count 
+      FROM family f
+      INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
+      WHERE f.isPAIF = true AND 
+        au.id = ${this.attendance_unity} AND
+        MONTH(f.datePAIF) = ${this.month} AND 
+        YEAR(f.datePAIF) = ${this.year};
+      `;
 
     this.bloco1.familyMonthy = Number(count[0].count);
     return this;
@@ -58,9 +65,11 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
             WHERE f.isPAIF = true AND 
                 v.low_income = true AND 
+                au.id = ${this.attendance_unity} AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year};
         `;
@@ -73,9 +82,11 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN family_benefits fb ON f.id = fb.family_fk
             INNER JOIN benefits b ON fb.benefits_fk = b.id
             WHERE f.isPAIF = true AND 
+                au.id = ${this.attendance_unity} AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year} AND
                 b.description LIKE '%Bolsa Familia%';
@@ -89,10 +100,12 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN family_benefits fb ON f.id = fb.family_fk
             INNER JOIN benefits b ON fb.benefits_fk = b.id AND b.description = 'Bolsa Familia'
             INNER JOIN condicionalities c ON f.condicionalities_fk = c.id
             WHERE f.isPAIF = true AND 
+                au.id = ${this.attendance_unity} AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year} AND
                 (
@@ -112,12 +125,14 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN family_benefits fb ON fb.family_fk = f.id 
             INNER JOIN benefits b ON b.id = fb.benefits_fk 
             WHERE 
                 f.isPAIF = true AND 
                 b.description = "BPC" AND 
                 b.canDelete = false AND
+                au.id = ${this.attendance_unity} AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year}
         `;
@@ -130,10 +145,12 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
             WHERE 
                 f.isPAIF = true AND 
                 v.child_work = true AND
+                au.id = ${this.attendance_unity} AND
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year}
         `;
@@ -146,10 +163,12 @@ export class CRASBloco1Builder {
     const count: number = await this.prisma.$queryRaw`
             SELECT COUNT(f.id) as count
             FROM family f
+            INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
             WHERE 
                 f.isPAIF = true AND 
-                v.child_shelter_protection = true AND 
+                v.child_shelter_protection = true AND
+                au.id = ${this.attendance_unity} AND 
                 MONTH(f.datePAIF) = ${this.month} AND 
                 YEAR(f.datePAIF) = ${this.year}
         `;

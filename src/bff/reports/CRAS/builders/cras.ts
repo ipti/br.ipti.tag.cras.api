@@ -13,15 +13,18 @@ export class CRASRMA {
 
 export class CRASRMABuilder {
   private crasRMA: CRASRMA;
+  private attendance_unity: number;
   private month: number;
   private year: number;
 
   constructor(
     private readonly prisma: PrismaService,
+    attendance_unity: number,
     month: number,
     year: number,
   ) {
     this.crasRMA = new CRASRMA();
+    this.attendance_unity = attendance_unity;
     this.month = month;
     this.year = year;
   }
@@ -29,6 +32,7 @@ export class CRASRMABuilder {
   public async buildCRASBloco1(): Promise<CRASRMABuilder> {
     const crasBloco1 = await new CRASBloco1Builder(
       this.prisma,
+      this.attendance_unity,
       this.month,
       this.year,
     )
@@ -48,6 +52,7 @@ export class CRASRMABuilder {
   public async buildCRASBloco2(): Promise<CRASRMABuilder> {
     const crasBloco2 = await new CrasBloco2Builder(
       this.prisma,
+      this.attendance_unity,
       this.month,
       this.year,
     )
