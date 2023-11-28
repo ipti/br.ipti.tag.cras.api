@@ -28,6 +28,9 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
 import { SeedService } from './prisma/seed.service';
 import { CondicionalitiesBffModule } from './bff/condicionalities-bff/condicionalities_bff.module';
 import { CRASRMAModule } from './bff/reports/CRAS/cras.module';
+import { FOUIForwardingBffModule } from './bff/FOUIforwarding-bff/FOUIforwarding_bff.module';
+import { UserIdentifyVulnerabilityBffModule } from './bff/user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
+import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module';
 
 @Module({
   imports: [
@@ -72,6 +75,18 @@ import { CRASRMAModule } from './bff/reports/CRAS/cras.module';
           {
             path: 'reports-cras',
             module: CRASRMAModule,
+          },
+          {
+            path: 'foui-forwarding',
+            module: FOUIForwardingBffModule,
+          },
+          {
+            path: 'forwarding',
+            module: ForwardingBffModule,
+          },
+          {
+            path: 'user-identify-vulnerability',
+            module: UserIdentifyVulnerabilityBffModule,
           },
         ],
       },

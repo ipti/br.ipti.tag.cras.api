@@ -152,8 +152,8 @@ export class CrasBloco2Builder {
             b.canDelete = false AND
             au.\`type\` = 'CRAS' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(f.datePAIF) = ${this.month} AND 
-            YEAR(f.datePAIF) = ${this.year}
+            MONTH(fb.\`date\`) = ${this.month} AND 
+            YEAR(fb.\`date\`) = ${this.year}
     `;
 
     this.bloco2.bornBenefitsTotal = Number(count[0].count);
@@ -172,8 +172,8 @@ export class CrasBloco2Builder {
             b.canDelete = false AND
             au.\`type\` = 'CRAS' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(f.datePAIF) = ${this.month} AND 
-            YEAR(f.datePAIF) = ${this.year}
+            MONTH(fb.\`date\`) = ${this.month} AND 
+            YEAR(fb.\`date\`) = ${this.year}
     `;
 
     this.bloco2.deathBenefitsTotal = Number(count[0].count);
@@ -193,8 +193,8 @@ export class CrasBloco2Builder {
             b.\`type\` = 'EVENTUAL' AND
             au.\`type\` = 'CRAS' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(f.datePAIF) = ${this.month} AND 
-            YEAR(f.datePAIF) = ${this.year}
+            MONTH(fb.\`date\`) = ${this.month} AND 
+            YEAR(fb.\`date\`) = ${this.year}
     `;
 
     this.bloco2.otherBenefitsTotal = Number(count[0].count);

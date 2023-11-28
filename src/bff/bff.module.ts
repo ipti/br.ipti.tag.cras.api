@@ -7,6 +7,9 @@ import { FamilyBffModule } from './family-bff/family_bff.module';
 import { UserIdentifyBffModule } from './user-identify-bff/user_identify_bff.module';
 import { CondicionalitiesBffModule } from './condicionalities-bff/condicionalities_bff.module';
 import { CRASRMAModule } from './reports/CRAS/cras.module';
+import { FOUIForwardingBffModule } from './FOUIforwarding-bff/FOUIforwarding_bff.module';
+import { UserIdentifyVulnerabilityBffModule } from './user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
+import { ForwardingBffModule } from './forwarding-bff/forwarding_bff.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { CRASRMAModule } from './reports/CRAS/cras.module';
     UserIdentifyBffModule,
     CondicionalitiesBffModule,
     CRASRMAModule,
+    FOUIForwardingBffModule,
+    ForwardingBffModule,
+    UserIdentifyVulnerabilityBffModule,
   ],
 })
 export class BFFModule {}

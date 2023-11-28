@@ -7,6 +7,11 @@ import {
 } from 'class-validator';
 
 export class CreateCondicionalitiesBffDto {
+
+  @IsNotEmpty()
+  @IsNumber()
+  family: number;
+
   @IsNotEmpty()
   @IsBoolean()
   vaccination_schedule: boolean;
