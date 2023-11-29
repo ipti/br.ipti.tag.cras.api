@@ -84,6 +84,11 @@ export class CRASRMABuilder {
       .then((builder) => builder.withChildTeenStrengtheningServices())
       .then((builder) => builder.withTeenStrengtheningServices())
       .then((builder) => builder.withAdultStrengtheningServices())
+      .then((builder) => builder.withElderlyStrengtheningServices())
+      .then((builder) => builder.withPeopleOtherCollectiveActivities())
+      .then((builder) =>
+        builder.withPeopleWithDeficiencyStrengtheningServicesOrGroupsPAIF(),
+      )
       .then((builder) => builder.build());
     return this;
   }

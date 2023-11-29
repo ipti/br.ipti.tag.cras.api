@@ -92,22 +92,6 @@ export class CondicionalitiesBffService {
         );
       }
 
-      const condicionality = await tx.condicionalities.findUnique({
-        where: {
-          family_fk: family.id,
-        },
-      });
-
-      if (condicionality) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error: 'Essa familia já possui condicionalidade cadastrada.',
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       const condicionalities = await tx.condicionalities.update({
         where: {
           family_fk: family.id,
