@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
@@ -27,9 +28,21 @@ import { CreateFOUIForwardingDto } from './dto/create-FOUIforwarding.dto';
 @ApiBearerAuth('access-token')
 @Controller()
 export class FOUIForwardingBffController {
-  constructor(private readonly FOUIForwardingBffService: FOUIForwardingBffService) {}
+  constructor(
+    private readonly FOUIForwardingBffService: FOUIForwardingBffService,
+  ) {}
 
   @Post()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        family: { type: 'number' },
+        user_identify: { type: 'number' },
+        forwading: { type: 'number' },
+      },
+    },
+  })
   @ApiOkResponse({ isArray: true })
   createForwarding(@Body() forwardingCreate: CreateFOUIForwardingDto) {
     return this.FOUIForwardingBffService.createForwarding(forwardingCreate);

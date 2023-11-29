@@ -222,6 +222,7 @@ model edcenso_city {
   benefits         benefits[]
   attendance_unity attendance_unity[]
   group_attendance group_attendance[]
+  forwading        forwading[]
 
   @@index([edcenso_uf_fk], map: "edcenso_uf_fk")
 }
@@ -275,11 +276,13 @@ model family_or_user_forwarding {
 }
 
 model forwading {
-  id             Int                         @id @default(autoincrement())
-  name           String
-  canDelete      Boolean                     @default(true)
-  type           ForwadingType               @default(ENCAMINHAMENTO)
-  family_or_user family_or_user_forwarding[]
+  id              Int                         @id @default(autoincrement())
+  edcenso_city_fk Int?
+  name            String
+  canDelete       Boolean                     @default(true)
+  type            ForwadingType               @default(ENCAMINHAMENTO)
+  edcenso_city    edcenso_city?               @relation(fields: [edcenso_city_fk], references: [id])
+  family_or_user  family_or_user_forwarding[]
 }
 
 model user_identify_vulnerability {
