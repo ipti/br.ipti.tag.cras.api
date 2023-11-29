@@ -27,8 +27,4 @@ export class CreateCondicionalitiesBffDto {
   @IsNotEmpty()
   @IsBoolean()
   school_frequency: boolean;
-
-  @IsNotEmpty()
-  @IsString()
-  familyId: string;
 }

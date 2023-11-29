@@ -19,6 +19,7 @@ export class FamilyBffService {
         attendance_unity: true,
         vulnerability: true,
         user_identify: true,
+        condicionalities: true,
         benefits: {
           include: {
             benefits: true,
