@@ -55,14 +55,15 @@ export class CrasBloco2Builder {
     const count: number = await this.prisma.$queryRaw`
         SELECT COUNT(f.id) as count
         FROM family f
-        INNER JOIN forwarding fw ON fw.family_fk = f.id
+        INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk  = f.id
+        INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
         INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-        WHERE fw.isCadUnico = true AND
+        WHERE fw.name = 'CadUnico' AND
             au.\`type\` = 'CRAS' AND
-            fw.\`type\` = "INCLUSAO" AND
+            fw.\`type\` = 'INCLUSAO' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(fw.dateCadUnico) = ${this.month} AND 
-            YEAR(fw.dateCadUnico) = ${this.year}
+            MONTH(fouf.\`date\`) = ${this.month} AND 
+            YEAR(fouf.\`date\`) = ${this.year}
     `;
 
     this.bloco2.familyForwardCadUnicoAdd = Number(count[0].count);
@@ -73,14 +74,15 @@ export class CrasBloco2Builder {
     const count: number = await this.prisma.$queryRaw`
         SELECT COUNT(f.id) as count
         FROM family f
-        INNER JOIN forwarding fw ON fw.family_fk = f.id
+        INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk  = f.id
+        INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
         INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-        WHERE fw.isCadUnico = true AND
+        WHERE fw.name = 'CadUnico' AND
             au.\`type\` = 'CRAS' AND
-            fw.\`type\` = "ATUALIZACAO" AND
+            fw.\`type\` = 'ATUALIZACAO' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(fw.dateCadUnico) = ${this.month} AND 
-            YEAR(fw.dateCadUnico) = ${this.year}
+            MONTH(fouf.\`date\`) = ${this.month} AND 
+            YEAR(fouf.\`date\`) = ${this.year}
     `;
 
     this.bloco2.familyForwardCadUnicoUpdate = Number(count[0].count);
@@ -90,16 +92,17 @@ export class CrasBloco2Builder {
   public async withUserIdentifyForwardBPC(): Promise<CrasBloco2Builder> {
     const count: number = await this.prisma.$queryRaw`
         SELECT COUNT(ui.id) as count
-        FROM user_identify ui 
-        INNER JOIN forwarding fw ON fw.user_identify_fk = ui.id
+        FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
-        INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk 
-        WHERE fw.isBPC = true AND
+        INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk  = f.id
+        INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
+        INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
+        WHERE fw.name = 'BPC' AND
             au.\`type\` = 'CRAS' AND
-            fw.\`type\` = "ACESSO" AND
+            fw.\`type\` = 'ACESSO' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(fw.dateBPC) = ${this.month} AND 
-            YEAR(fw.dateBPC) = ${this.year}
+            MONTH(fouf.\`date\`) = ${this.month} AND 
+            YEAR(fouf.\`date\`) = ${this.year}
     `;
 
     this.bloco2.userIdentifyForwardBPC = Number(count[0].count);
@@ -110,14 +113,15 @@ export class CrasBloco2Builder {
     const count: number = await this.prisma.$queryRaw`
         SELECT COUNT(f.id) as count
         FROM family f
-        INNER JOIN forwarding fw ON fw.family_fk = f.id
+        INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk  = f.id
+        INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
         INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-        WHERE fw.isCREAS = true AND
+        WHERE fw.name = 'CREAS' AND
             au.\`type\` = 'CRAS' AND
-            fw.\`type\` = "ENCAMINHAMENTO" AND
+            fw.\`type\` = 'ENCAMINHAMENTO' AND
             au.id = ${this.attendance_unity} AND
-            MONTH(fw.dateCREAS) = ${this.month} AND 
-            YEAR(fw.dateCREAS) = ${this.year}
+            MONTH(fouf.\`date\`) = ${this.month} AND 
+            YEAR(fouf.\`date\`) = ${this.year}
     `;
 
     this.bloco2.familyForwardCREAS = Number(count[0].count);
