@@ -62,45 +62,51 @@ export class FOUIForwardingBffService {
     return forwarding;
   }
 
-  getFamilyForwarding(request: Request, familyId: string) {
-    return this.prismaService.family_or_user_forwarding.findMany({
-      where: {
-        family: {
-          id: +familyId,
+  async getFamilyForwarding(request: Request, familyId: string) {
+    const forwadings =
+      await this.prismaService.family_or_user_forwarding.findMany({
+        where: {
+          family: {
+            id: +familyId,
+          },
         },
-      },
-      include: {
-        family: {
-          include: {
-            user_identify: {
-              select: {
-                id: true,
-                name: true,
+        include: {
+          family: {
+            include: {
+              user_identify: {
+                select: {
+                  id: true,
+                  name: true,
+                },
               },
             },
           },
+          forwading: true,
         },
-        forwading: true,
-      },
-    });
+      });
+
+    return forwadings;
   }
 
-  getUserIdentifyForwarding(request: Request, userIdentifyId: string) {
-    return this.prismaService.family_or_user_forwarding.findMany({
-      where: {
-        user_identify: {
-          id: +userIdentifyId,
-        },
-      },
-      include: {
-        user_identify: {
-          select: {
-            id: true,
-            name: true,
+  async getUserIdentifyForwarding(request: Request, userIdentifyId: string) {
+    const forwadings =
+      await this.prismaService.family_or_user_forwarding.findMany({
+        where: {
+          user_identify: {
+            id: +userIdentifyId,
           },
         },
-        forwading: true,
-      },
-    });
+        include: {
+          user_identify: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          forwading: true,
+        },
+      });
+
+    return forwadings;
   }
 }
