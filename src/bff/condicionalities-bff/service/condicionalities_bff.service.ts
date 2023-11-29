@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCondicionalitiesBffDto } from '../dto/create-condicionalities_bff.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtPayload } from 'src/utils/jwt.interface';
+import { UpdateCondicionalitiesDto } from '../dto/update-condicionalities_bff.dto';
 
 @Injectable()
 export class CondicionalitiesBffService {
@@ -16,7 +17,7 @@ export class CondicionalitiesBffService {
     const transaction = await this.prismaService.$transaction(async (tx) => {
       const family = await tx.family.findUnique({
         where: {
-          id: parseInt(createCondicionalities.familyId),
+          id: createCondicionalities.family,
         },
       });
 
@@ -47,6 +48,71 @@ export class CondicionalitiesBffService {
               id: family.id,
             },
           },
+          vaccination_schedule: createCondicionalities.vaccination_schedule,
+          nutritional_status: createCondicionalities.nutritional_status,
+          prenatal: createCondicionalities.prenatal,
+          school_frequency: createCondicionalities.school_frequency,
+        },
+      });
+
+      return condicionalities;
+    });
+
+    return transaction;
+  }
+
+  async updateForFamily(
+    user: JwtPayload,
+    createCondicionalities: UpdateCondicionalitiesDto,
+  ) {
+    const transaction = await this.prismaService.$transaction(async (tx) => {
+      const family = await tx.family.findUnique({
+        where: {
+          id: createCondicionalities.family,
+        },
+      });
+
+      if (!family) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'Familia não encontrada',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (family.attendance_unity_fk !== user.attendance_unity_fk) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'Unidade de atendimento não pertence a familia',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const condicionality = await tx.condicionalities.findUnique({
+        where: {
+          family_fk: family.id,
+        },
+      });
+
+      if (condicionality) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'Essa familia já possui condicionalidade cadastrada.',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const condicionalities = await tx.condicionalities.update({
+        where: {
+          family_fk: family.id,
+        },
+        data: {
           vaccination_schedule: createCondicionalities.vaccination_schedule,
           nutritional_status: createCondicionalities.nutritional_status,
           prenatal: createCondicionalities.prenatal,
