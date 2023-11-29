@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCondicionalitiesBffDto } from '../dto/create-condicionalities_bff.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtPayload } from 'src/utils/jwt.interface';
-import { UpdateCondicionalitiesDto } from '../dto/update-condicionalities_bff.dto';
+import { UpdateCondicionalitiesBffDto } from '../dto/update-condicionalities_bff.dto';
 
 @Injectable()
 export class CondicionalitiesBffService {
@@ -63,7 +63,7 @@ export class CondicionalitiesBffService {
 
   async updateForFamily(
     user: JwtPayload,
-    createCondicionalities: UpdateCondicionalitiesDto,
+    createCondicionalities: UpdateCondicionalitiesBffDto,
   ) {
     const transaction = await this.prismaService.$transaction(async (tx) => {
       const family = await tx.family.findUnique({
