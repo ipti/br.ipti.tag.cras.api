@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Benefits, PrismaClient } from '@prisma/client';
+import { Benefits, ForwadingType, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,12 +20,12 @@ export class SeedService implements OnModuleInit {
           canDelete: false,
         },
         {
-          description: "BPC",
+          description: 'BPC',
           type: Benefits.PERIODICO,
           canDelete: false,
         },
         {
-          description: "PETI",
+          description: 'PETI',
           type: Benefits.PERIODICO,
           canDelete: false,
         },
@@ -87,6 +87,62 @@ export class SeedService implements OnModuleInit {
 
       await tx.task.createMany({
         data: tasksToCreateFiltered,
+      });
+
+      const forwadings = await tx.forwading.findMany({
+        where: {
+          canDelete: false,
+        },
+      });
+
+      const forwardingsToCreate = [
+        {
+          name: 'CRAS',
+          canDelete: false,
+          type: ForwadingType.ENCAMINHAMENTO,
+        },
+        {
+          name: 'CREAS',
+          canDelete: false,
+          type: ForwadingType.ENCAMINHAMENTO,
+        },
+        {
+          name: 'BPC',
+          canDelete: false,
+          type: ForwadingType.ACESSO,
+        },
+        {
+          name: 'PAIF',
+          canDelete: false,
+          type: ForwadingType.ACOMPANHAMENTO,
+        },
+        {
+          name: 'PAEFI',
+          canDelete: false,
+          type: ForwadingType.ACOMPANHAMENTO,
+        },
+        {
+          name: 'CadUnico',
+          canDelete: false,
+          type: ForwadingType.INCLUSAO,
+        },
+        {
+          name: 'CadUnico',
+          canDelete: false,
+          type: ForwadingType.ATUALIZACAO,
+        },
+      ];
+
+      const forwardingsToCreateFiltered = forwardingsToCreate.filter(
+        (forwardingToCreate) => {
+          return !forwadings.some(
+            (forwarding) => forwarding.name === forwardingToCreate.name,
+          );
+        },
+      );
+
+      await tx.forwading.createMany({
+        data: forwardingsToCreateFiltered,
       });
     });
   }

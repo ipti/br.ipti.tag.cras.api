@@ -12,7 +12,7 @@ datasource db {
 }
 
 model user_identify {
-  id                          Int                           @id @default(autoincrement())
+  id                          Int                          @id @default(autoincrement())
   family_fk                   Int?
   edcenso_city_fk             Int
   name                        String
@@ -39,39 +39,34 @@ model user_identify {
   profission                  String?
   signed_portfolio            Boolean?
   nuclear_family              String?
-  income                      Int                           @default(0)
+  income                      Int                          @default(0)
   kinship                     Kinship
-  family                      family?                       @relation(fields: [family_fk], references: [id], onDelete: Cascade)
-  edcenso_city                edcenso_city                  @relation(fields: [edcenso_city_fk], references: [id])
+  family                      family?                      @relation(fields: [family_fk], references: [id], onDelete: Cascade)
+  edcenso_city                edcenso_city                 @relation(fields: [edcenso_city_fk], references: [id])
   attendances                 attendance[]
-  user_identify_vulnerability user_identify_vulnerability[]
-  forwarding                  forwarding[]
+  forwarding                  family_or_user_forwarding[]
+  user_identify_vulnerability user_identify_vulnerability?
 }
 
 model family {
-  id                       Int                 @id @default(autoincrement())
+  id                       Int                         @id @default(autoincrement())
   edcenso_city_fk          Int
   family_representative_fk Int
   address_fk               Int
   attendance_unity_fk      Int
   vulnerability_fk         Int
-  condicionalities_fk      Int?
-  ethnic                   Ethnic              @default(OUTROS)
-  isPAIF                   Boolean             @default(false)
-  isPAEFI                  Boolean             @default(false)
-  datePAIF                 DateTime            @default(now())
-  datePAEFI                DateTime            @default(now())
-  isActive                 Boolean             @default(true)
-  edcenso_city             edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
-  address                  address             @relation(fields: [address_fk], references: [id])
-  attendance_unity         attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
-  vulnerability            vulnerability       @relation(fields: [vulnerability_fk], references: [id])
-  condicionalities         condicionalities?   @relation(fields: [condicionalities_fk], references: [id])
+  ethnic                   Ethnic                      @default(OUTROS)
+  isActive                 Boolean                     @default(true)
+  edcenso_city             edcenso_city                @relation(fields: [edcenso_city_fk], references: [id])
+  address                  address                     @relation(fields: [address_fk], references: [id])
+  attendance_unity         attendance_unity            @relation(fields: [attendance_unity_fk], references: [id])
+  vulnerability            vulnerability               @relation(fields: [vulnerability_fk], references: [id])
   user_identify            user_identify[]
   benefits                 family_benefits[]
-  forwarding               forwarding[]
+  forwarding               family_or_user_forwarding[]
   technician_visits        technician_visits[]
   group_attendance         group_attendance[]
+  condicionalities         condicionalities?
 }
 
 model address {
@@ -110,7 +105,7 @@ model vulnerability {
 }
 
 model attendance {
-  id                  Int                @id @default(autoincrement())
+  id                  Int                        @id @default(autoincrement())
   edcenso_city_fk     Int
   user_identify_fk    Int?
   technician_fk       Int
@@ -121,13 +116,13 @@ model attendance {
   providence          String
   result              Result
   description         String
-  date                DateTime           @default(now())
-  edcenso_city        edcenso_city       @relation(fields: [edcenso_city_fk], references: [id])
-  user_identify       user_identify?     @relation(fields: [user_identify_fk], references: [id])
-  technician          technician         @relation(fields: [technician_fk], references: [id])
-  task                task               @relation(fields: [task_fk], references: [id])
-  attendance_unity    attendance_unity   @relation(fields: [attendance_unity_fk], references: [id])
-  forwading           forwarding?        @relation(fields: [forwading_fk], references: [id])
+  date                DateTime                   @default(now())
+  edcenso_city        edcenso_city               @relation(fields: [edcenso_city_fk], references: [id])
+  user_identify       user_identify?             @relation(fields: [user_identify_fk], references: [id])
+  technician          technician                 @relation(fields: [technician_fk], references: [id])
+  task                task                       @relation(fields: [task_fk], references: [id])
+  attendance_unity    attendance_unity           @relation(fields: [attendance_unity_fk], references: [id])
+  forwading           family_or_user_forwarding? @relation(fields: [forwading_fk], references: [id])
   group_attendance    group_attendance[]
 }
 
@@ -247,12 +242,13 @@ model attendance_unity {
 }
 
 model condicionalities {
-  id                   Int      @id @default(autoincrement())
-  vaccination_schedule Boolean  @default(true)
-  nutritional_status   Boolean  @default(true)
-  prenatal             Boolean  @default(true)
-  school_frequency     Boolean  @default(true)
-  family               family[]
+  id                   Int     @id @default(autoincrement())
+  family_fk            Int     @unique
+  vaccination_schedule Boolean @default(true)
+  nutritional_status   Boolean @default(true)
+  prenatal             Boolean @default(true)
+  school_frequency     Boolean @default(true)
+  family               family  @relation(fields: [family_fk], references: [id], onDelete: Cascade)
 }
 
 model technician_visits {
@@ -266,27 +262,29 @@ model technician_visits {
   family              family           @relation(fields: [family_fk], references: [id], onDelete: Cascade)
 }
 
-model forwarding {
+model family_or_user_forwarding {
   id               Int            @id @default(autoincrement())
   family_fk        Int?
   user_identify_fk Int?
-  isCRAS           Boolean        @default(false)
-  isCREAS          Boolean        @default(false)
-  isBPC            Boolean        @default(false)
-  isCadUnico       Boolean        @default(false)
-  type             ForwadingType  @default(ENCAMINHAMENTO)
-  dateCRAS         DateTime?
-  dateCREAS        DateTime?
-  dateBPC          DateTime?
-  dateCadUnico     DateTime?
+  forwading_fk     Int
+  date             DateTime       @default(now())
   family           family?        @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   user_identify    user_identify? @relation(fields: [user_identify_fk], references: [id])
+  forwading        forwading      @relation(fields: [forwading_fk], references: [id])
   attendances      attendance[]
+}
+
+model forwading {
+  id             Int                         @id @default(autoincrement())
+  name           String
+  canDelete      Boolean                     @default(true)
+  type           ForwadingType               @default(ENCAMINHAMENTO)
+  family_or_user family_or_user_forwarding[]
 }
 
 model user_identify_vulnerability {
   id                                Int           @id @default(autoincrement())
-  user_identify_fk                  Int
+  user_identify_fk                  Int           @unique
   intrafamily_violence              Boolean       @default(false)
   drug_users                        Boolean       @default(false)
   sexual_abuse                      Boolean       @default(false)
@@ -368,4 +366,5 @@ enum ForwadingType {
   ATUALIZACAO
   ACESSO
   ENCAMINHAMENTO
+  ACOMPANHAMENTO
 }
