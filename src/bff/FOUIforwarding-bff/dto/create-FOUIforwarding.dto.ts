@@ -21,4 +21,8 @@ export class CreateFOUIForwardingDto {
   @IsNotEmpty()
   @IsString()
   forwading: number;
+
+  @IsOptional()
+  @IsString()
+  description: string
 }

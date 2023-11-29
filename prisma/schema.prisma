@@ -268,6 +268,7 @@ model family_or_user_forwarding {
   family_fk        Int?
   user_identify_fk Int?
   forwading_fk     Int
+  description      String?
   date             DateTime       @default(now())
   family           family?        @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   user_identify    user_identify? @relation(fields: [user_identify_fk], references: [id])
