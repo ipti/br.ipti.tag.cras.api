@@ -1,10 +1,12 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CRASBloco1, CRASBloco1Builder } from './cras-bloco1';
 import { CrasBloco2, CrasBloco2Builder } from './cras-bloco2';
+import { CrasBloco3, CrasBloco3Builder } from './cras-bloco3';
 
 export class CRASRMA {
   bloco1: CRASBloco1;
   bloco2: CrasBloco2;
+  bloco3: CrasBloco3;
 
   constructor(init?: Partial<CRASRMA>) {
     Object.assign(this, init);
@@ -67,6 +69,22 @@ export class CRASRMABuilder {
       .then((builder) => builder.withOtherBenefitsTotal())
       .then((builder) => builder.build());
     this.crasRMA.bloco2 = crasBloco2;
+    return this;
+  }
+
+  public async buildCRASBloco3(): Promise<CRASRMABuilder> {
+    const crasBloco3 = await new CrasBloco3Builder(
+      this.prisma,
+      this.attendance_unity,
+      this.month,
+      this.year,
+    )
+      .withFamilyGroupsPAIF()
+      .then((builder) => builder.withChildStrengtheningServices())
+      .then((builder) => builder.withChildTeenStrengtheningServices())
+      .then((builder) => builder.withTeenStrengtheningServices())
+      .then((builder) => builder.withAdultStrengtheningServices())
+      .then((builder) => builder.build());
     return this;
   }
 

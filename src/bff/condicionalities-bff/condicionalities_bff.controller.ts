@@ -21,6 +21,7 @@ import { CondicionalitiesBffService } from './service/condicionalities_bff.servi
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { CreateCondicionalitiesBffDto } from './dto/create-condicionalities_bff.dto';
+import { UpdateCondicionalitiesBffDto } from './dto/update-condicionalities_bff.dto';
 
 @ApiTags('CondicionalitiesBff')
 @UseGuards(JwtAuthGuard)
@@ -38,6 +39,18 @@ export class CondicionalitiesBffController {
     @Body() body: CreateCondicionalitiesBffDto,
   ) {
     return await this.CondicionalitiesBffService.createForFamily(
+      req.user,
+      body,
+    );
+  }
+
+  @Put()
+  @ApiOkResponse({ description: 'Atualizar condicionalities_bff' })
+  async update(
+    @Req() req: Request,
+    @Body() body: UpdateCondicionalitiesBffDto,
+  ) {
+    return await this.CondicionalitiesBffService.updateForFamily(
       req.user,
       body,
     );
