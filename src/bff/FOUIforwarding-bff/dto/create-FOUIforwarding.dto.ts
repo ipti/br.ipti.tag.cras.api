@@ -19,10 +19,14 @@ export class CreateFOUIForwardingDto {
   user_identify: number;
 
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   forwading: number;
 
   @IsOptional()
   @IsString()
   description: string
+
+  @IsNotEmpty()
+  @IsISO8601()
+  date: string;
 }
