@@ -65,7 +65,7 @@ export class ForwardingBffController {
   }
 
   @Get()
-  getForwardings(@Query('edcenso_city_fk') edcenso_city_fk: number) {
-    return this.ForwardingBffService.getforwardings(edcenso_city_fk);
+  getForwardings(@Req() request: Request) {
+    return this.ForwardingBffService.getforwardings(request.user);
   }
 }

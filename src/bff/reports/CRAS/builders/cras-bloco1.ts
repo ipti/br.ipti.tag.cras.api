@@ -38,8 +38,10 @@ export class CRASBloco1Builder {
       SELECT COUNT(f.id) as count 
       FROM family f
       INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-      INNER JOIN forwarding fw ON fw.family_fk = f.id
-      WHERE fw.isPAIF = true AND
+      INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+      INNER JOIN forwading f2 ON f2.id = fouf.forwading_fk 
+      WHERE f2.name = 'PAIF' AND
+      f2.canDelete = false AND
       au.id = ${this.attendance_unity}
       `;
 
@@ -52,11 +54,12 @@ export class CRASBloco1Builder {
       SELECT COUNT(f.id) as count 
       FROM family f
       INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-      INNER JOIN forwarding fw ON fw.family_fk = f.id
-      WHERE fw.isPAIF = true AND 
+      INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+      INNER JOIN forwading fw ON fw.id  = fouf.family_fk 
+      WHERE fw.name = 'PAIF' AND 
         au.id = ${this.attendance_unity} AND
-        MONTH(fw.datePAIF) = ${this.month} AND 
-        YEAR(fw.datePAIF) = ${this.year};
+        MONTH(fouf.\`date\`) = ${this.month} AND 
+        YEAR(fouf.\`date\`) = ${this.year};
       `;
 
     this.bloco1.familyMonthy = Number(count[0].count);
@@ -68,13 +71,14 @@ export class CRASBloco1Builder {
             SELECT COUNT(f.id) as count
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+            INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk 
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
-            WHERE fw.isPAIF = true AND 
+            WHERE fw.name = 'PAIF' AND 
                 v.low_income = true AND 
                 au.id = ${this.attendance_unity} AND
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year};
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year};
         `;
 
     this.bloco1.familyLowIncome = Number(count[0].count);
@@ -86,13 +90,14 @@ export class CRASBloco1Builder {
             SELECT COUNT(f.id) as count
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+            INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk  
             INNER JOIN family_benefits fb ON f.id = fb.family_fk
             INNER JOIN benefits b ON fb.benefits_fk = b.id
-            WHERE fw.isPAIF = true AND 
+            WHERE fw.name = 'PAIF' AND 
                 au.id = ${this.attendance_unity} AND
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year} AND
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year} AND
                 b.description LIKE '%Bolsa Familia%';
         `;
 
@@ -106,13 +111,14 @@ export class CRASBloco1Builder {
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN family_benefits fb ON f.id = fb.family_fk
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+            INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk 
             INNER JOIN benefits b ON fb.benefits_fk = b.id AND b.description = 'Bolsa Familia'
-            INNER JOIN condicionalities c ON f.condicionalities_fk = c.id
-            WHERE fw.isPAIF = true AND 
+            INNER JOIN condicionalities c ON c.family_fk  = f.id
+            WHERE fw.name = 'PAIF' AND 
                 au.id = ${this.attendance_unity} AND
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year} AND
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year} AND
                 (
                     c.vaccination_schedule = false OR 
                     c.nutritional_status = false OR 
@@ -132,15 +138,16 @@ export class CRASBloco1Builder {
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
             INNER JOIN family_benefits fb ON fb.family_fk = f.id
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+            INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk 
             INNER JOIN benefits b ON b.id = fb.benefits_fk 
             WHERE 
-                fw.isPAIF = true AND 
+                fw.name = 'PAIF' AND 
                 b.description = "BPC" AND 
                 b.canDelete = false AND
                 au.id = ${this.attendance_unity} AND
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year}
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year}
         `;
 
     this.bloco1.familyMembersWithBPC = Number(count[0].count);
@@ -152,14 +159,15 @@ export class CRASBloco1Builder {
             SELECT COUNT(f.id) as count
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id 
+            INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
             WHERE 
-                fw.isPAIF = true AND 
+                fw.name = 'PAIF' AND 
                 v.child_work = true AND
                 au.id = ${this.attendance_unity} AND
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year}
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year}
         `;
 
     this.bloco1.familyChildWork = Number(count[0].count);
@@ -171,14 +179,15 @@ export class CRASBloco1Builder {
             SELECT COUNT(f.id) as count
             FROM family f
             INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-            INNER JOIN forwarding fw ON fw.family_fk = f.id
+            INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
+            INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk 
             INNER JOIN vulnerability v ON f.vulnerability_fk = v.id
             WHERE 
-                fw.isPAIF = true AND 
+                fw.name = 'PAIF' AND 
                 v.child_shelter_protection = true AND
                 au.id = ${this.attendance_unity} AND 
-                MONTH(fw.datePAIF) = ${this.month} AND 
-                YEAR(fw.datePAIF) = ${this.year}
+                MONTH(fouf.\`date\`) = ${this.month} AND 
+                YEAR(fouf.\`date\`) = ${this.year}
         `;
 
     this.bloco1.familyChildShelterProtection = Number(count[0].count);

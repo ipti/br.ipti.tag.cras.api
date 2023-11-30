@@ -55,10 +55,10 @@ export class ForwardingBffService {
     return forwarding;
   }
 
-  async getforwardings(edcenso_city_fk: number) {
+  async getforwardings(user: JwtPayload) {
     const forwardings = await this.prismaService.forwading.findMany({
       where: {
-        edcenso_city_fk: edcenso_city_fk,
+        edcenso_city_fk: user.edcenso_city_fk,
       },
     });
 

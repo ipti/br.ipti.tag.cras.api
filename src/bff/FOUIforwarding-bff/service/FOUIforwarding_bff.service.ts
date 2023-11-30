@@ -53,6 +53,8 @@ export class FOUIForwardingBffService {
     const forwarding =
       await this.prismaService.family_or_user_forwarding.create({
         data: {
+          description: forwardingCreate.description,
+          date: forwardingCreate.date,
           family: familyOptional,
           user_identify: user_identifyOptional,
           forwading: forwardingOptional,
@@ -63,6 +65,25 @@ export class FOUIForwardingBffService {
   }
 
   async getFamilyForwarding(request: Request, familyId: string) {
+    const familyInformation = await this.prismaService.family.findUnique({
+      where: {
+        id: +familyId,
+      },
+      include: {
+        user_identify: {
+          select: {
+            id: true,
+            name: true,
+            kinship: true,
+          },
+        },
+      },
+    });
+
+    if (!familyInformation) {
+      throw new HttpException('Family not found', 404);
+    }
+
     const forwadings =
       await this.prismaService.family_or_user_forwarding.findMany({
         where: {
@@ -71,24 +92,28 @@ export class FOUIForwardingBffService {
           },
         },
         include: {
-          family: {
-            include: {
-              user_identify: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
           forwading: true,
         },
       });
 
-    return forwadings;
+    return { familyInformation, forwadings };
   }
 
   async getUserIdentifyForwarding(request: Request, userIdentifyId: string) {
+    const userInformation = await this.prismaService.user_identify.findUnique({
+      where: {
+        id: +userIdentifyId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!userInformation) {
+      throw new HttpException('User not found', 404);
+    }
+
     const forwadings =
       await this.prismaService.family_or_user_forwarding.findMany({
         where: {
@@ -97,16 +122,10 @@ export class FOUIForwardingBffService {
           },
         },
         include: {
-          user_identify: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
           forwading: true,
         },
       });
 
-    return forwadings;
+    return { userInformation, forwadings };
   }
 }

@@ -90,6 +90,7 @@ export class CRASRMABuilder {
         builder.withPeopleWithDeficiencyStrengtheningServicesOrGroupsPAIF(),
       )
       .then((builder) => builder.build());
+    this.crasRMA.bloco3 = crasBloco3;
     return this;
   }
 
