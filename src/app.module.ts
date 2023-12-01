@@ -31,6 +31,7 @@ import { CRASRMAModule } from './bff/reports/CRAS/cras.module';
 import { FOUIForwardingBffModule } from './bff/FOUIforwarding-bff/FOUIforwarding_bff.module';
 import { UserIdentifyVulnerabilityBffModule } from './bff/user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
 import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module';
+import { TechnicianVisitsBffModule } from './bff/technician-visits-bff/technician_visits.module';
 
 @Module({
   imports: [
@@ -87,6 +88,10 @@ import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module'
           {
             path: 'user-identify-vulnerability',
             module: UserIdentifyVulnerabilityBffModule,
+          },
+          {
+            path: 'technician-visits',
+            module: TechnicianVisitsBffModule,
           },
         ],
       },
