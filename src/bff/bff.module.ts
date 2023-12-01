@@ -10,6 +10,7 @@ import { CRASRMAModule } from './reports/CRAS/cras.module';
 import { FOUIForwardingBffModule } from './FOUIforwarding-bff/FOUIforwarding_bff.module';
 import { UserIdentifyVulnerabilityBffModule } from './user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
 import { ForwardingBffModule } from './forwarding-bff/forwarding_bff.module';
+import { TechnicianVisitsBffModule } from './technician-visits-bff/technician_visits.module';
 
 @Module({
   imports: [
@@ -24,6 +25,8 @@ import { ForwardingBffModule } from './forwarding-bff/forwarding_bff.module';
     FOUIForwardingBffModule,
     ForwardingBffModule,
     UserIdentifyVulnerabilityBffModule,
+    TechnicianVisitsBffModule,
+    
   ],
 })
 export class BFFModule {}

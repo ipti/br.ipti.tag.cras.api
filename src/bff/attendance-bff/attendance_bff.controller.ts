@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
@@ -20,6 +21,7 @@ import {
 import { AttendanceBffService } from './service/attendance_bff.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
+import { CreateMultiFamilyAttendanceDto } from './dto/create-multifamilyattendance.dto';
 
 @ApiTags('AttendanceBff')
 @UseGuards(JwtAuthGuard)
@@ -37,6 +39,19 @@ export class AttendanceBffController {
     return this.AttendanceBffService.getAttendance(
       request,
       attendance_unity_fk,
+    );
+  }
+
+  @Post()
+  @ApiBody({ schema: { type: 'array', items: { type: 'object' } } })
+  @ApiCreatedResponse({})
+  createAttendance(
+    @Req() request: Request,
+    @Body() createAttendanceDto: CreateMultiFamilyAttendanceDto,
+  ) {
+    return this.AttendanceBffService.createMultiFamilyAttendance(
+      request.user,
+      createAttendanceDto,
     );
   }
 }
