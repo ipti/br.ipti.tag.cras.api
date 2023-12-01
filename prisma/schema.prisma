@@ -231,6 +231,7 @@ model attendance_unity {
   id                Int                 @id @default(autoincrement())
   edcenso_city_fk   Int
   unity_number      String?
+  email             String?
   name              String
   address_fk        Int                 @unique
   type              CadSUAS             @default(CRAS)

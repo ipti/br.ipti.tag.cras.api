@@ -12,7 +12,6 @@ import { BenefitsForFamily } from '../../../utils/types';
 import { CadSUAS, Kinship } from '@prisma/client';
 
 export class CreateAttendanceUnityAndAddressDto {
-
   @IsNotEmpty()
   @IsString()
   address: string;
@@ -52,4 +51,8 @@ export class CreateAttendanceUnityAndAddressDto {
   @IsNotEmpty()
   @IsEnum(CadSUAS)
   type: CadSUAS;
+
+  @IsOptional()
+  @IsString()
+  email: string;
 }

@@ -84,19 +84,38 @@ export class FOUIForwardingBffService {
       throw new HttpException('Family not found', 404);
     }
 
-    const forwadings =
+    const familyForwadings =
       await this.prismaService.family_or_user_forwarding.findMany({
         where: {
           family: {
             id: +familyId,
           },
         },
-        include: {
+        select: {
           forwading: true,
         },
       });
 
-    return { familyInformation, forwadings };
+    const usersForwarding =
+      await this.prismaService.family_or_user_forwarding.findMany({
+        where: {
+          user_identify_fk: {
+            in: familyInformation.user_identify.map((user) => user.id),
+          },
+        },
+        include: {
+          forwading: true,
+          user_identify: {
+            select: {
+              id: true,
+              name: true,
+              kinship: true,
+            },
+          },
+        },
+      });
+
+    return { familyInformation, familyForwadings, usersForwarding };
   }
 
   async getUserIdentifyForwarding(request: Request, userIdentifyId: string) {
