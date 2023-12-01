@@ -21,6 +21,7 @@ export default class CRASRMAService {
       .then((builder) => builder.buildCRASBloco2())
       .then((builder) => builder.buildCRASBloco3())
       .then((builder) => builder.build());
+
     return crasRMA;
   }
 }
