@@ -58,7 +58,7 @@ export class CrasBloco3Builder {
 
   public async withChildStrengtheningServices(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -82,7 +82,7 @@ export class CrasBloco3Builder {
 
   public async withChildTeenStrengtheningServices(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -100,13 +100,13 @@ export class CrasBloco3Builder {
             YEAR(a.\`date\`) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.childTeenStrengtheningServices = Number(count[0].count);
     return this;
   }
 
   public async withTeenStrengtheningServices(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -124,13 +124,13 @@ export class CrasBloco3Builder {
             YEAR(a.\`date\`) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.teenStrengtheningServices = Number(count[0].count);
     return this;
   }
 
   public async withAdultStrengtheningServices(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -148,13 +148,13 @@ export class CrasBloco3Builder {
             YEAR(a.\`date\`) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.adultStrengtheningServices = Number(count[0].count);
     return this;
   }
 
   public async withElderlyStrengtheningServices(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -172,7 +172,7 @@ export class CrasBloco3Builder {
             YEAR(a.\`date\`) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.elderlyStrengtheningServices = Number(count[0].count);
     return this;
   }
 
@@ -195,13 +195,13 @@ export class CrasBloco3Builder {
             YEAR(t.createdAt) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.peopleOtherCollectiveActivities = Number(count[0].count);
     return this;
   }
 
   public async withPeopleWithDeficiencyStrengtheningServicesOrGroupsPAIF(): Promise<CrasBloco3Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(ui.id)
+        SELECT COUNT(ui.id) as count
         FROM user_identify ui
         INNER JOIN family f ON f.id = ui.family_fk 
         INNER JOIN attendance a ON a.user_identify_fk = ui.id 
@@ -222,7 +222,9 @@ export class CrasBloco3Builder {
             YEAR(a.\`date\`) = ${this.year};
     `;
 
-    this.bloco3.childStrengtheningServices = Number(count[0].count);
+    this.bloco3.peopleWithDeficiencyStrengtheningServicesOrGroupsPAIF = Number(
+      count[0].count,
+    );
     return this;
   }
 
