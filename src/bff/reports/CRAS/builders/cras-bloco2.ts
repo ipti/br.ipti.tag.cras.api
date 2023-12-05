@@ -53,9 +53,10 @@ export class CrasBloco2Builder {
 
   public async withFamilyForwardCadUnicoAdd(): Promise<CrasBloco2Builder> {
     const count: number = await this.prisma.$queryRaw`
-        SELECT COUNT(f.id) as count
+        SELECT COUNT(a.id) as count
         FROM family f
         INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk  = f.id
+        inner join attendance a on a.forwading_fk = fouf.id
         INNER JOIN forwading fw ON fw.id = fouf.forwading_fk 
         INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
         WHERE fw.name = 'CadUnico' AND

@@ -3,12 +3,17 @@ import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFOUIForwardingDto } from '../dto/create-FOUIforwarding.dto';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
+import { JwtPayload } from 'src/utils/jwt.interface';
+import { Result } from '@prisma/client';
 
 @Injectable()
 export class FOUIForwardingBffService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createForwarding(forwardingCreate: CreateFOUIForwardingDto) {
+  async createForwarding(
+    user: JwtPayload,
+    forwardingCreate: CreateFOUIForwardingDto,
+  ) {
     if (
       forwardingCreate.family === undefined &&
       forwardingCreate.user_identify === undefined
@@ -50,18 +55,83 @@ export class FOUIForwardingBffService {
       },
     );
 
-    const forwarding =
-      await this.prismaService.family_or_user_forwarding.create({
-        data: {
-          description: forwardingCreate.description,
-          date: forwardingCreate.date,
-          family: familyOptional,
-          user_identify: user_identifyOptional,
-          forwading: forwardingOptional,
-        },
-      });
+    const transactionResult = await this.prismaService.$transaction(
+      async (tx) => {
+        const forwarding = await tx.family_or_user_forwarding.create({
+          data: {
+            description: forwardingCreate.description,
+            date: forwardingCreate.date,
+            family: familyOptional,
+            user_identify: user_identifyOptional,
+            forwading: forwardingOptional,
+          },
+        });
 
-    return forwarding;
+        const technician = await tx.technician.findUnique({
+          where: {
+            user_fk: user.id,
+          },
+        });
+
+        if (!technician) {
+          throw new HttpException('Technician not found', 404);
+        }
+
+        const task = await tx.task.findFirst({
+          where: {
+            name: 'Encaminhamentos',
+            canDelete: false,
+            isCollective: false,
+          },
+        });
+
+        if (!task) {
+          throw new HttpException('Task not found', 404);
+        }
+
+        const attendance = await tx.attendance.create({
+          data: {
+            edcenso_city: {
+              connect: {
+                id: user.edcenso_city_fk,
+              },
+            },
+            user_identify: user_identifyOptional,
+            technician: {
+              connect: {
+                id: technician.id,
+              },
+            },
+            task: {
+              connect: {
+                id: task.id,
+              },
+            },
+            attendance_unity: {
+              connect: {
+                id: technician.attendance_unity_fk,
+              },
+            },
+            forwading: {
+              connect: {
+                id: forwarding.id,
+              },
+            },
+            solicitation: 'Encaminhamento',
+            providence: 'Encaminhamento',
+            result: Result.PENDENTE,
+            description: forwardingCreate.description
+              ? forwardingCreate.description
+              : 'Encaminhamento',
+            date: forwardingCreate.date,
+          },
+        });
+
+        return { forwarding, attendance };
+      },
+    );
+
+    return transactionResult;
   }
 
   async getFamilyForwarding(request: Request, familyId: string) {
