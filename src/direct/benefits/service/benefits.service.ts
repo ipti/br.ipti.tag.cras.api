@@ -45,9 +45,15 @@ export class BenefitsService {
   }
 
   async findOne(request: Request, id: string): Promise<benefits> {
-    const benefits = await this.prismaService.benefits.findUnique({
+    var benefits = await this.prismaService.benefits.findUnique({
       where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
+
+    if (!benefits) {
+      benefits = await this.prismaService.benefits.findUnique({
+        where: { id: +id, edcenso_city_fk: null },
+      });
+    }
 
     if (!benefits) {
       throw new HttpException('Benefits not found', HttpStatus.NOT_FOUND);
