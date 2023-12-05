@@ -55,7 +55,7 @@ export class CRASBloco1Builder {
       FROM family f
       INNER JOIN attendance_unity au ON au.id = f.attendance_unity_fk
       INNER JOIN family_or_user_forwarding fouf ON fouf.family_fk = f.id
-      INNER JOIN forwading fw ON fw.id  = fouf.family_fk 
+      INNER JOIN forwading fw ON fw.id  = fouf.forwading_fk
       WHERE fw.name = 'PAIF' AND 
         au.id = ${this.attendance_unity} AND
         MONTH(fouf.\`date\`) = ${this.month} AND 
