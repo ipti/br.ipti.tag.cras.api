@@ -79,6 +79,11 @@ export class SeedService implements OnModuleInit {
           canDelete: false,
           isCollective: true,
         },
+        {
+          name: 'Encaminhamentos',
+          canDelete: false,
+          isCollective: false,
+        }
       ];
 
       const tasksToCreateFiltered = tasksToCreate.filter((taskToCreate) => {
