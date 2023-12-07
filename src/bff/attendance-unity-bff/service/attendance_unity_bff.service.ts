@@ -46,6 +46,7 @@ export class AttendanceUnityBffService {
           name: createAttendanceAndAddress.name,
           unity_number: createAttendanceAndAddress.unity_number,
           type: createAttendanceAndAddress.type,
+          email: createAttendanceAndAddress.email,
         };
 
         const attendanceUnityCreated = await tx.attendance_unity.create({
