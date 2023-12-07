@@ -45,6 +45,9 @@ export class TaskService {
       where: {
         edcenso_city_fk: request.user.edcenso_city_fk,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
     return allTask;
@@ -83,7 +86,11 @@ export class TaskService {
   }
 
   async remove(request: Request, id: string) {
-    await this.findOne(request, id);
+    const task = await this.findOne(request, id);
+
+    if (task.canDelete === false) {
+      throw new HttpException('Task cannot be deleted', HttpStatus.BAD_REQUEST);
+    }
 
     const taskDeleted = await this.prismaService.task.delete({
       where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },

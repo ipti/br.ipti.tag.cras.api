@@ -33,15 +33,33 @@ export class BenefitsService {
       where: {
         edcenso_city_fk: request.user.edcenso_city_fk,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
-    return allBenefits;
+    const benefitsGeneral = await this.prismaService.benefits.findMany({
+      where: {
+        edcenso_city_fk: null,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    return [...benefitsGeneral, ...allBenefits];
   }
 
   async findOne(request: Request, id: string): Promise<benefits> {
-    const benefits = await this.prismaService.benefits.findUnique({
+    var benefits = await this.prismaService.benefits.findUnique({
       where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
     });
+
+    if (!benefits) {
+      benefits = await this.prismaService.benefits.findUnique({
+        where: { id: +id, edcenso_city_fk: null },
+      });
+    }
 
     if (!benefits) {
       throw new HttpException('Benefits not found', HttpStatus.NOT_FOUND);
@@ -75,7 +93,14 @@ export class BenefitsService {
   }
 
   async remove(request: Request, id: string) {
-    await this.findOne(request, id);
+    const benefit = await this.findOne(request, id);
+
+    if (benefit.canDelete === false) {
+      throw new HttpException(
+        'Benefits cannot be deleted',
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {

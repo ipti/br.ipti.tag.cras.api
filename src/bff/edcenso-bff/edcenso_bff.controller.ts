@@ -27,11 +27,11 @@ import { Request } from 'express';
 @ApiBearerAuth('access-token')
 @Controller()
 export class EdcensoBffController {
-  constructor(private readonly edcensoBffService: EdcensoBffService) {}
+  constructor(private readonly edcensoBffService: EdcensoBffService) { }
 
   @Get('city')
   @ApiOkResponse({ description: 'Retorna a cidade do usuário logado' })
-  async getEdcensoCity(@Req() request: Request): Promise<edcenso_city> {
-    return this.edcensoBffService.getEdcensoCity(request);
+  async getEdcensoCity(@Query('edcenso_city_fk') edcenso_city_fk: string): Promise<edcenso_city> {
+    return this.edcensoBffService.getEdcensoCityById(edcenso_city_fk);
   }
 }

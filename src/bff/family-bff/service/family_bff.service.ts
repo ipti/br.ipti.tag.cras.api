@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AttendanceUnityService } from '../../../direct/attendance-unity/service/attendance_unity.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class FamilyBffService {
@@ -18,6 +19,7 @@ export class FamilyBffService {
         attendance_unity: true,
         vulnerability: true,
         user_identify: true,
+        condicionalities: true,
         benefits: {
           include: {
             benefits: true,
@@ -61,6 +63,9 @@ export class FamilyBffService {
             },
           },
         },
+        orderBy: {
+          id: 'desc',
+        },
       });
     } else if (request.user.attendance_unity_fk !== null) {
       family = await this.prismaService.family.findMany({
@@ -77,6 +82,9 @@ export class FamilyBffService {
               initial_date: true,
             },
           },
+        },
+        orderBy: {
+          id: 'desc',
         },
       });
     } else {
@@ -95,6 +103,9 @@ export class FamilyBffService {
             },
           },
         },
+        orderBy: {
+          id: 'desc',
+        },
       });
     }
 
@@ -110,5 +121,52 @@ export class FamilyBffService {
     );
 
     return family;
+  }
+
+  async deleteFamily(request: Request, familyId: string): Promise<any> {
+    try {
+      if (request.user.role !== Role.SECRETARY) {
+        throw new HttpException(
+          {
+            status: HttpStatus.UNAUTHORIZED,
+            error: 'Você não tem permissão para deletar uma família',
+          },
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const family = await this.prismaService.family.findUnique({
+        where: {
+          id: +familyId,
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+      });
+
+      if (!family) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'Família não encontrada',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.prismaService.family.delete({
+        where: {
+          id: +familyId,
+        },
+      });
+
+      return family;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

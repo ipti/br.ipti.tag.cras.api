@@ -68,6 +68,9 @@ export class UserService {
       where: {
         edcenso_city_fk: request.user.edcenso_city_fk,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
     return allUser;

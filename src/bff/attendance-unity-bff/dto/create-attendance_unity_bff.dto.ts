@@ -9,10 +9,9 @@ import {
   IsString,
 } from 'class-validator';
 import { BenefitsForFamily } from '../../../utils/types';
-import { Kinship } from '@prisma/client';
+import { CadSUAS, Kinship } from '@prisma/client';
 
 export class CreateAttendanceUnityAndAddressDto {
-
   @IsNotEmpty()
   @IsString()
   address: string;
@@ -44,4 +43,16 @@ export class CreateAttendanceUnityAndAddressDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  unity_number: string;
+
+  @IsNotEmpty()
+  @IsEnum(CadSUAS)
+  type: CadSUAS;
+
+  @IsOptional()
+  @IsString()
+  email: string;
 }

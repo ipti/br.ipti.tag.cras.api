@@ -123,14 +123,9 @@ export class FamilyService {
   async update(request: Request, id: string, UpdateFamilyDto: UpdateFamilyDto) {
     await this.findOne(request, id);
 
-    const address = await this.address.findOne(
-      request,
-      UpdateFamilyDto.address.toString(),
-    );
-
-    const addressOptional = optionalKeyValidation(address.id, {
+    const addressOptional = optionalKeyValidation(UpdateFamilyDto.address, {
       connect: {
-        id: address.id,
+        id: UpdateFamilyDto.address,
       },
     });
 

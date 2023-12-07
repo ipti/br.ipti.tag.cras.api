@@ -25,6 +25,13 @@ import { AttendanceUnityBffModule } from './bff/attendance-unity-bff/attendance_
 import { EdcensoBffModule } from './bff/edcenso-bff/edcenso_bff.module';
 import { FamilyBffModule } from './bff/family-bff/family_bff.module';
 import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff.module';
+import { SeedService } from './prisma/seed.service';
+import { CondicionalitiesBffModule } from './bff/condicionalities-bff/condicionalities_bff.module';
+import { CRASRMAModule } from './bff/reports/CRAS/cras.module';
+import { FOUIForwardingBffModule } from './bff/FOUIforwarding-bff/FOUIforwarding_bff.module';
+import { UserIdentifyVulnerabilityBffModule } from './bff/user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
+import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module';
+import { TechnicianVisitsBffModule } from './bff/technician-visits-bff/technician_visits.module';
 
 @Module({
   imports: [
@@ -61,6 +68,30 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
           {
             path: 'user-identify',
             module: UserIdentifyBffModule,
+          },
+          {
+            path: 'condicionalities',
+            module: CondicionalitiesBffModule,
+          },
+          {
+            path: 'reports-cras',
+            module: CRASRMAModule,
+          },
+          {
+            path: 'foui-forwarding',
+            module: FOUIForwardingBffModule,
+          },
+          {
+            path: 'forwarding',
+            module: ForwardingBffModule,
+          },
+          {
+            path: 'user-identify-vulnerability',
+            module: UserIdentifyVulnerabilityBffModule,
+          },
+          {
+            path: 'technician-visits',
+            module: TechnicianVisitsBffModule,
           },
         ],
       },
@@ -117,7 +148,7 @@ import { UserIdentifyBffModule } from './bff/user-identify-bff/user_identify_bff
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
