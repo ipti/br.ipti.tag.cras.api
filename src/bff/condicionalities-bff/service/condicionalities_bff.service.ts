@@ -13,6 +13,7 @@ export class CondicionalitiesBffService {
   async createForFamily(
     user: JwtPayload,
     createCondicionalities: CreateCondicionalitiesBffDto,
+    attendance_unity: number,
   ) {
     const transaction = await this.prismaService.$transaction(async (tx) => {
       const family = await tx.family.findUnique({
@@ -31,7 +32,7 @@ export class CondicionalitiesBffService {
         );
       }
 
-      if (family.attendance_unity_fk !== user.attendance_unity_fk) {
+      if (family.attendance_unity_fk !== attendance_unity) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
@@ -64,6 +65,7 @@ export class CondicionalitiesBffService {
   async updateForFamily(
     user: JwtPayload,
     createCondicionalities: UpdateCondicionalitiesBffDto,
+    attendance_unity: number,
   ) {
     const transaction = await this.prismaService.$transaction(async (tx) => {
       const family = await tx.family.findUnique({
@@ -82,7 +84,7 @@ export class CondicionalitiesBffService {
         );
       }
 
-      if (family.attendance_unity_fk !== user.attendance_unity_fk) {
+      if (family.attendance_unity_fk !== attendance_unity) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
