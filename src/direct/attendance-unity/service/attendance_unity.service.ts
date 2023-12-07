@@ -48,6 +48,9 @@ export class AttendanceUnityService {
         where: {
           edcenso_city_fk: request.user.edcenso_city_fk,
         },
+        orderBy: {
+          id: 'desc',
+        },
       });
 
     return allAttendanceUnity;

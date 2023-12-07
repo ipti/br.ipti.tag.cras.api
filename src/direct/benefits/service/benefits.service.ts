@@ -33,11 +33,17 @@ export class BenefitsService {
       where: {
         edcenso_city_fk: request.user.edcenso_city_fk,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
     const benefitsGeneral = await this.prismaService.benefits.findMany({
       where: {
         edcenso_city_fk: null,
+      },
+      orderBy: {
+        id: 'desc',
       },
     });
 
