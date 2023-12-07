@@ -37,10 +37,12 @@ export class CondicionalitiesBffController {
   async create(
     @Req() req: Request,
     @Body() body: CreateCondicionalitiesBffDto,
+    @Body('attendance_unity') attendance_unity: number,
   ) {
     return await this.CondicionalitiesBffService.createForFamily(
       req.user,
       body,
+      attendance_unity,
     );
   }
 
@@ -49,10 +51,12 @@ export class CondicionalitiesBffController {
   async update(
     @Req() req: Request,
     @Body() body: UpdateCondicionalitiesBffDto,
+    @Body('attendance_unity') attendance_unity: number,
   ) {
     return await this.CondicionalitiesBffService.updateForFamily(
       req.user,
       body,
+      attendance_unity,
     );
   }
 }
