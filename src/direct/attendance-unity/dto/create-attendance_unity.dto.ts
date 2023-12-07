@@ -16,6 +16,10 @@ export class CreateAttendanceUnityDto {
   @IsNumber()
   address: number;
 
+  @IsOptional()
+  @IsString()
+  email: string;
+
   @IsNotEmpty()
   @IsString()
   unity_number: string;

@@ -22,6 +22,10 @@ export class CreateFOUIForwardingDto {
   @IsNumber()
   forwading: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  attendance_unity: number;
+
   @IsOptional()
   @IsString()
   description: string

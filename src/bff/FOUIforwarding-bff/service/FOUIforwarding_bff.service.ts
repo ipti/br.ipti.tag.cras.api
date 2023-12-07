@@ -109,7 +109,7 @@ export class FOUIForwardingBffService {
             },
             attendance_unity: {
               connect: {
-                id: technician.attendance_unity_fk,
+                id: forwardingCreate.attendance_unity,
               },
             },
             forwading: {
@@ -163,6 +163,8 @@ export class FOUIForwardingBffService {
         },
         select: {
           forwading: true,
+          date: true,
+          description: true,
         },
       });
 
