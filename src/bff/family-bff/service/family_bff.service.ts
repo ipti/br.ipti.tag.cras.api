@@ -63,6 +63,9 @@ export class FamilyBffService {
             },
           },
         },
+        orderBy: {
+          id: 'desc',
+        },
       });
     } else if (request.user.attendance_unity_fk !== null) {
       family = await this.prismaService.family.findMany({
@@ -80,6 +83,9 @@ export class FamilyBffService {
             },
           },
         },
+        orderBy: {
+          id: 'desc',
+        },
       });
     } else {
       family = await this.prismaService.family.findMany({
@@ -96,6 +102,9 @@ export class FamilyBffService {
               initial_date: true,
             },
           },
+        },
+        orderBy: {
+          id: 'desc',
         },
       });
     }

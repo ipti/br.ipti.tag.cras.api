@@ -81,6 +81,9 @@ export class TechnicianService {
         edcenso_city_fk: request.user.edcenso_city_fk,
         attendance_unity_fk: +attendance_unity_fk,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
     return allTechnician;

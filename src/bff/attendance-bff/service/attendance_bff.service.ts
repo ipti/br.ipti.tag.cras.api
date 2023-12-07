@@ -24,7 +24,7 @@ export class AttendanceBffService {
           technician: true,
         },
         orderBy: {
-          id: 'asc',
+          id: 'desc',
         },
       });
     } else if (request.user.attendance_unity_fk !== null) {
@@ -37,7 +37,7 @@ export class AttendanceBffService {
           technician: true,
         },
         orderBy: {
-          id: 'asc',
+          id: 'desc',
         },
       });
     } else {
@@ -50,7 +50,7 @@ export class AttendanceBffService {
           technician: true,
         },
         orderBy: {
-          id: 'asc',
+          id: 'desc',
         },
       });
     }
