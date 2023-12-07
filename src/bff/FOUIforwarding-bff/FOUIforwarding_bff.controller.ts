@@ -45,8 +45,8 @@ export class FOUIForwardingBffController {
     },
   })
   @ApiOkResponse({ isArray: true })
-  createForwarding(@Body() forwardingCreate: CreateFOUIForwardingDto) {
-    return this.FOUIForwardingBffService.createForwarding(forwardingCreate);
+  createForwarding(@Req() request: Request, @Body() forwardingCreate: CreateFOUIForwardingDto) {
+    return this.FOUIForwardingBffService.createForwarding(request.user, forwardingCreate);
   }
 
   @Get('family')
