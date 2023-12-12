@@ -124,6 +124,7 @@ model attendance {
   attendance_unity    attendance_unity           @relation(fields: [attendance_unity_fk], references: [id])
   forwading           family_or_user_forwarding? @relation(fields: [forwading_fk], references: [id])
   group_attendance    group_attendance[]
+  technician_visits   technician_visits?
 }
 
 model user {
@@ -258,10 +259,14 @@ model technician_visits {
   technician_fk       Int
   family_fk           Int
   attendance_unity_fk Int
+  attendance_fk       Int?             @unique
+  title               String?
+  description         String?          @db.Text
   created_at          DateTime         @default(now())
   technician          technician       @relation(fields: [technician_fk], references: [id])
   attendance_unity    attendance_unity @relation(fields: [attendance_unity_fk], references: [id])
   family              family           @relation(fields: [family_fk], references: [id], onDelete: Cascade)
+  attendance          attendance?      @relation(fields: [attendance_fk], references: [id])
 }
 
 model family_or_user_forwarding {
