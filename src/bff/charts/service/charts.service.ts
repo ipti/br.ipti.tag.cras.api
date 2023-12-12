@@ -72,11 +72,15 @@ export class ChartsService {
 
       if (attendance_unity_fk !== undefined) {
         const counter: Array<any> = await this.prismaService.$queryRaw`
-        SELECT COUNT(f.id) as count FROM family f 
-        JOIN user_identify ui ON ui.family_fk = f.id
-        WHERE f.attendance_unity_fk = ${attendance_unity_fk} AND f.isActive = true
-        GROUP BY f.id
-        HAVING count = 1;
+        SELECT SUM(total_families) AS count
+        FROM (
+          SELECT COUNT(*) AS total_families
+          FROM family
+          INNER JOIN user_identify ON family.id = user_identify.family_fk
+          WHERE family.attendance_unity_fk = ${attendance_unity_fk}
+          GROUP BY family.id
+          HAVING COUNT(*) = 1
+        ) AS subquery;
       `;
 
         var qnt_uni_family = 0;
@@ -88,11 +92,15 @@ export class ChartsService {
         result = qnt_uni_family;
       } else {
         const counter: Array<any> = await this.prismaService.$queryRaw`
-        SELECT COUNT(f.id) as count FROM family f 
-        JOIN user_identify ui ON ui.family_fk = f.id
-        WHERE f.attendance_unity_fk = ${request.user.attendance_unity_fk} AND f.isActive = true
-        GROUP BY f.id
-        HAVING count = 1;
+        SELECT SUM(total_families) AS count
+        FROM (
+          SELECT COUNT(*) AS total_families
+          FROM family
+          INNER JOIN user_identify ON family.id = user_identify.family_fk
+          WHERE family.attendance_unity_fk = ${request.user.attendance_unity_fk}
+          GROUP BY family.id
+          HAVING COUNT(*) = 1
+        ) AS subquery;
       `;
 
         var qnt_uni_family = 0;
