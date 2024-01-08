@@ -22,6 +22,7 @@ import { TechnicianVisitsBffService } from './service/technician_visits.service'
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { CreateTechnicianVisitsDto } from './dto/create-technician_visits.dto';
+import { UpdateTechnicianVisitsDto } from './dto/update-technician_visits.dto';
 
 @ApiTags('TechnicianVisitsBff')
 @UseGuards(JwtAuthGuard)
@@ -60,5 +61,16 @@ export class TechnicianVisitsBffController {
   @Get()
   getTechnicianVisitss(@Req() request: Request) {
     return this.TechnicianVisitsBffService.getTechnicianVisits(request.user);
+  }
+
+  @Put(':technicianVisitsId')
+  updateTechnicianVisits(
+    @Param('technicianVisitsId') technicianVisitsId: string,
+    @Body() technicianVisitsUpdate: UpdateTechnicianVisitsDto,
+  ) {
+    return this.TechnicianVisitsBffService.updateTechnicianVisits(
+      technicianVisitsId,
+      technicianVisitsUpdate,
+    );
   }
 }

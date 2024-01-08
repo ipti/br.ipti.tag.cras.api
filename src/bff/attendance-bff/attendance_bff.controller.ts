@@ -54,4 +54,16 @@ export class AttendanceBffController {
       createAttendanceDto,
     );
   }
+
+  @Get('group-attendance')
+  @ApiOkResponse({ isArray: true })
+  getGroupAttendance(
+    @Req() request: Request,
+    @Query('attendance_unity_fk') attendance_unity_fk: string,
+  ) {
+    return this.AttendanceBffService.getGroupAttendance(
+      request,
+      attendance_unity_fk,
+    );
+  }
 }

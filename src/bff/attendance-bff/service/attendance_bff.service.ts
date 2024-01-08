@@ -128,4 +128,100 @@ export class AttendanceBffService {
 
     return transactionResult;
   }
+
+  async getGroupAttendance(request: Request, attendance_unity_fk: string) {
+    var attendances = [];
+
+    if (attendance_unity_fk !== undefined) {
+      attendances = await this.prismaService.attendance.findMany({
+        where: {
+          attendance_unity_fk: +attendance_unity_fk,
+        },
+        include: {
+          group_attendance: {
+            select: {
+              family: {
+                select: {
+                  id: true,
+                  family_representative_fk: true,
+                  user_identify: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      });
+    } else if (request.user.attendance_unity_fk !== null) {
+      attendances = await this.prismaService.attendance.findMany({
+        where: {
+          attendance_unity_fk: request.user.attendance_unity_fk,
+        },
+        include: {
+          group_attendance: {
+            select: {
+              family: {
+                select: {
+                  id: true,
+                  family_representative_fk: true,
+                  user_identify: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      });
+    } else {
+      attendances = await this.prismaService.attendance.findMany({
+        where: {
+          edcenso_city_fk: request.user.edcenso_city_fk,
+        },
+        include: {
+          group_attendance: {
+            select: {
+              family: {
+                select: {
+                  id: true,
+                  family_representative_fk: true,
+                  user_identify: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      });
+    }
+
+    attendances = attendances.filter(
+      (attendance) => attendance.group_attendance.length > 0,
+    );
+
+    // transformar o array de user_identify em um objeto com somente o representante
+    attendances = attendances.map((attendance) => {
+      attendance.group_attendance = attendance.group_attendance.map(
+        (group_attendance) => {
+          group_attendance.family.user_identify =
+            group_attendance.family.user_identify.find(
+              (user_identify) =>
+                user_identify.id ===
+                group_attendance.family.family_representative_fk,
+            );
+
+          return group_attendance;
+        },
+      );
+
+      return attendance;
+    });
+
+    return attendances;
+  }
 }
