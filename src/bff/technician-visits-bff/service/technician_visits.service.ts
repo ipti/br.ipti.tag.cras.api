@@ -19,6 +19,15 @@ export class TechnicianVisitsBffService {
       },
     });
 
+    const attendanceOptional = optionalKeyValidation(
+      technicianVisists.attendance,
+      {
+        connect: {
+          id: technicianVisists.attendance,
+        },
+      },
+    );
+
     const technicianVisits = await this.prismaService.technician_visits.create({
       data: {
         technician: {
@@ -28,7 +37,7 @@ export class TechnicianVisitsBffService {
         },
         attendance_unity: {
           connect: {
-            id: technician.attendance_unity_fk,
+            id: technicianVisists.attendance_unity,
           },
         },
         family: {
@@ -36,6 +45,9 @@ export class TechnicianVisitsBffService {
             id: technicianVisists.family,
           },
         },
+        attendance: attendanceOptional,
+        title: technicianVisists.title,
+        description: technicianVisists.description,
         created_at: technicianVisists.created_at,
       },
     });
