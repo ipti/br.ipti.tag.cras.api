@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { JwtPayload } from 'src/utils/jwt.interface';
 import { CreateTechnicianVisitsDto } from '../dto/create-technician_visits.dto';
+import { UpdateTechnicianVisitsDto } from '../dto/update-technician_visits.dto';
 
 @Injectable()
 export class TechnicianVisitsBffService {
@@ -72,5 +73,41 @@ export class TechnicianVisitsBffService {
       });
 
     return technicianVisits;
+  }
+
+  async updateTechnicianVisits(
+    technicianVisitsId: string,
+    technicianVisits: UpdateTechnicianVisitsDto,
+  ) {
+    const technicianVisitsExists =
+      await this.prismaService.technician_visits.findUnique({
+        where: {
+          id: +technicianVisitsId,
+        },
+      });
+
+    if (!technicianVisitsExists) {
+      throw new HttpException(
+        'Visita técnica não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const technicianVisitsUpdated =
+      await this.prismaService.technician_visits.update({
+        where: {
+          id: technicianVisitsExists.id,
+        },
+        data: {
+          title: technicianVisits.title,
+          description: technicianVisits.description,
+          attendance: {},
+          attendance_unity: {},
+          family: {},
+          technician: {},
+        },
+      });
+
+    return technicianVisitsUpdated;
   }
 }
