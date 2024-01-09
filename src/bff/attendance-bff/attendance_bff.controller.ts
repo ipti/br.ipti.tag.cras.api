@@ -66,4 +66,10 @@ export class AttendanceBffController {
       attendance_unity_fk,
     );
   }
+
+  @Get('group-attendance/:id')
+  @ApiOkResponse({})
+  getGroupAttendanceById(@Req() request: Request, @Param('id') id: string) {
+    return this.AttendanceBffService.getOneGroupAttendance(request, id);
+  }
 }
