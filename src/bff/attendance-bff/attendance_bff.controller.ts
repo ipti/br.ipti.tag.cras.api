@@ -50,7 +50,7 @@ export class AttendanceBffController {
     @Body() createAttendanceDto: CreateMultiFamilyAttendanceDto,
   ) {
     return this.AttendanceBffService.createMultiFamilyAttendance(
-      request.user,
+      request,
       createAttendanceDto,
     );
   }
