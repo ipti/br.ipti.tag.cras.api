@@ -11,9 +11,17 @@ import {
 } from 'class-validator';
 
 export class CreateMultiFamilyAttendanceDto {
+  @IsOptional()
+  @IsNumber()
+  technician: number;
+
   @IsNotEmpty()
   @IsNumber()
   task: number;
+
+  @IsOptional()
+  @IsNumber()
+  attendance_unity: number;
 
   @IsOptional()
   @IsNumber()
