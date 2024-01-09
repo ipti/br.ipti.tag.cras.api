@@ -204,7 +204,6 @@ export class AttendanceBffService {
       (attendance) => attendance.group_attendance.length > 0,
     );
 
-    // transformar o array de user_identify em um objeto com somente o representante
     attendances = attendances.map((attendance) => {
       attendance.group_attendance = attendance.group_attendance.map(
         (group_attendance) => {
@@ -223,5 +222,41 @@ export class AttendanceBffService {
     });
 
     return attendances;
+  }
+
+  async getOneGroupAttendance(request: Request, id: string) {
+    var attendance: any = await this.prismaService.attendance.findUnique({
+      where: {
+        id: +id,
+      },
+      include: {
+        group_attendance: {
+          select: {
+            family: {
+              select: {
+                id: true,
+                family_representative_fk: true,
+                user_identify: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    attendance.group_attendance = attendance.group_attendance.map(
+      (group_attendance) => {
+        group_attendance.family.user_identify =
+          group_attendance.family.user_identify.find(
+            (user_identify) =>
+              user_identify.id ===
+              group_attendance.family.family_representative_fk,
+          );
+
+        return group_attendance;
+      },
+    );
+
+    return attendance;
   }
 }
