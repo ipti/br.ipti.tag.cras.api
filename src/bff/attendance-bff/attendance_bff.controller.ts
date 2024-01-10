@@ -72,4 +72,32 @@ export class AttendanceBffController {
   getGroupAttendanceById(@Req() request: Request, @Param('id') id: string) {
     return this.AttendanceBffService.getOneGroupAttendance(request, id);
   }
+
+  @Post('add-family-to-group-attendance')
+  @ApiCreatedResponse({})
+  addFamilyToGroupAttendance(
+    @Req() request: Request,
+    @Body('attendanceId') attendanceId: string,
+    @Body('familyId') familyId: string,
+  ) {
+    return this.AttendanceBffService.addFamilyToGroupAttendance(
+      request,
+      attendanceId,
+      familyId,
+    );
+  }
+
+  @Delete('remove-family-from-group-attendance')
+  @ApiCreatedResponse({})
+  removeFamilyFromGroupAttendance(
+    @Req() request: Request,
+    @Body('attendanceId') attendanceId: string,
+    @Body('familyId') familyId: string,
+  ) {
+    return this.AttendanceBffService.removeFamilyFromGroupAttendance(
+      request,
+      attendanceId,
+      familyId,
+    );
+  }
 }

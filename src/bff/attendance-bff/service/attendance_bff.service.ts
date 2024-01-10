@@ -297,4 +297,114 @@ export class AttendanceBffService {
 
     return attendance;
   }
+
+  async addFamilyToGroupAttendance(
+    request: Request,
+    attendanceId: string,
+    familyId: string,
+  ) {
+    const attendance = await this.prismaService.attendance.findUnique({
+      where: {
+        id: +attendanceId,
+      },
+      include: {
+        group_attendance: true,
+      },
+    });
+
+    if (!attendance) {
+      throw new HttpException('Attendance not found', HttpStatus.NOT_FOUND);
+    }
+
+    const family = await this.prismaService.family.findUnique({
+      where: {
+        id: +familyId,
+      },
+    });
+
+    if (!family) {
+      throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isFamilyInAttendance = attendance.group_attendance.find(
+      (group_attendance) => group_attendance.family_fk === family.id,
+    );
+
+    if (isFamilyInAttendance) {
+      throw new HttpException(
+        'Family already in attendance',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const groupAttendance = await this.prismaService.group_attendance.create({
+      data: {
+        attendance: {
+          connect: {
+            id: attendance.id,
+          },
+        },
+        family: {
+          connect: {
+            id: family.id,
+          },
+        },
+        edcenso_city: {
+          connect: {
+            id: request.user.edcenso_city_fk,
+          },
+        },
+      },
+    });
+
+    return groupAttendance;
+  }
+
+  async removeFamilyFromGroupAttendance(
+    request: Request,
+    attendanceId: string,
+    familyId: string,
+  ) {
+    const attendance = await this.prismaService.attendance.findUnique({
+      where: {
+        id: +attendanceId,
+      },
+      include: {
+        group_attendance: true,
+      },
+    });
+
+    if (!attendance) {
+      throw new HttpException('Attendance not found', HttpStatus.NOT_FOUND);
+    }
+
+    const family = await this.prismaService.family.findUnique({
+      where: {
+        id: +familyId,
+      },
+    });
+
+    if (!family) {
+      throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isFamilyInAttendance = attendance.group_attendance.find(
+      (group_attendance) => group_attendance.family_fk === family.id,
+    );
+
+    if (!isFamilyInAttendance) {
+      throw new HttpException(
+        'Family not in attendance',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const groupAttendance = await this.prismaService.group_attendance.delete({
+      where: {
+        id: isFamilyInAttendance.id,
+      },
+    });
+
+    return groupAttendance;
+  }
 }
