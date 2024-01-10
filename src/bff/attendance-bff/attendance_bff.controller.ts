@@ -88,11 +88,10 @@ export class AttendanceBffController {
   }
 
   @Delete('remove-family-from-group-attendance')
-  @ApiCreatedResponse({})
   removeFamilyFromGroupAttendance(
     @Req() request: Request,
-    @Body('attendanceId') attendanceId: string,
-    @Body('familyId') familyId: string,
+    @Query('attendanceId') attendanceId: string,
+    @Query('familyId') familyId: string,
   ) {
     return this.AttendanceBffService.removeFamilyFromGroupAttendance(
       request,
