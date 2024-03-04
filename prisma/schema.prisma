@@ -27,20 +27,20 @@ model user_identify {
   rg_date_emission            String?
   uf_rg                       String?
   emission_rg                 String?
-  cpf                         String
-  is_deficiency               Boolean
+  cpf                         String?                      @default("00000000000")
+  is_deficiency               Boolean?                     @default(false)
   deficiency                  String?
-  filiation_1                 String
+  filiation_1                 String?                      @default("Não declarado")
   filiation_2                 String?
-  marital_status              String
-  escolarity                  String
+  marital_status              String?                      @default("Não informada")
+  escolarity                  String?                      @default("Não informada")
   initial_date                String
   final_date                  String?
   profission                  String?
   signed_portfolio            Boolean?
   nuclear_family              String?
-  income                      Int                          @default(0)
-  kinship                     Kinship
+  income                      Int?                         @default(0)
+  kinship                     Kinship?                     @default(OUTRO)
   family                      family?                      @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   edcenso_city                edcenso_city                 @relation(fields: [edcenso_city_fk], references: [id])
   attendances                 attendance[]
