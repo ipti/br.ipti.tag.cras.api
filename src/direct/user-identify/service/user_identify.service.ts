@@ -33,14 +33,38 @@ export class UserIdentifyService {
     request: Request,
     createUserIdentify: CreateUserIdentifyDto,
   ): Promise<user_identify> {
-    const family = await this.family.findOne(
-      request,
-      createUserIdentify.family.toString(),
-    );
 
-    if (!family) {
-      throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
+    if (createUserIdentify.family) {
+      const family = await this.family.findOne(
+        request,
+        createUserIdentify.family?.toString(),
+      );
+
+      if (!family) {
+        throw new HttpException('Family not found', HttpStatus.NOT_FOUND);
+      }
+
+      const familyOptional = optionalKeyValidation(createUserIdentify.family, {
+        connect: {
+          id: createUserIdentify.family,
+        },
+      });
+
+      const createdUserIdentify = await this.prismaService.user_identify.create({
+        data: {
+          ...createUserIdentify,
+          family: familyOptional,
+          edcenso_city: {
+            connect: {
+              id: request.user.edcenso_city_fk,
+            },
+          },
+        },
+      });
+
+      return createdUserIdentify;
     }
+
 
     const familyOptional = optionalKeyValidation(createUserIdentify.family, {
       connect: {
@@ -48,19 +72,21 @@ export class UserIdentifyService {
       },
     });
 
-    const createdUserIdentify = await this.prismaService.user_identify.create({
+  
+
+  
+    const createdUser = await this.prismaService.user_identify.create({
       data: {
-        ...createUserIdentify,
-        family: familyOptional,
+        ...createUserIdentify, 
         edcenso_city: {
           connect: {
             id: request.user.edcenso_city_fk,
           },
         },
       },
+      ...familyOptional
     });
-
-    return createdUserIdentify;
+    return createdUser
   }
 
   async findAll(request: Request): Promise<user_identify[]> {

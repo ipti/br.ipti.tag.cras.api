@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user_identify` MODIFY `cpf` VARCHAR(191) NOT NULL DEFAULT '00000000000';
