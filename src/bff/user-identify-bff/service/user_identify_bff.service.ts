@@ -234,10 +234,8 @@ export class UserIdentifyBffService {
       : user.attendance_unity_fk.toString();
 
     const usersIdentify = await this.prismaService.$queryRaw`
-    SELECT ui.id, ui.name, ui.cpf, ui.birthday FROM family f 
-    JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-    JOIN user_identify ui ON ui.family_fk = f.id
-    WHERE au.id = ${attendance_unity}
+    SELECT ui.id, ui.name, ui.cpf, ui.birthday 
+    FROM user_identify ui 
     `;
 
     return usersIdentify;

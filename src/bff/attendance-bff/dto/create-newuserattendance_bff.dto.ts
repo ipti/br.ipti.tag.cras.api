@@ -9,9 +9,6 @@ import {
 } from 'class-validator';
 
 export class CreateAttendanceNewUserBffDto {
-  @IsNotEmpty()
-  @IsNumber()
-  user_identify: number;
 
   @IsNotEmpty()
   @IsNumber()
@@ -39,7 +36,7 @@ export class CreateAttendanceNewUserBffDto {
 
   @IsNotEmpty()
   @IsString()
-  nome: string;
+  name: string;
   
   @IsOptional()
   @IsString()
