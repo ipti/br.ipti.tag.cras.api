@@ -22,6 +22,7 @@ import { AttendanceBffService } from './service/attendance_bff.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { CreateMultiFamilyAttendanceDto } from './dto/create-multifamilyattendance.dto';
+import { CreateAttendanceNewUserBffDto } from './dto/create-newuserattendance_bff.dto';
 
 @ApiTags('AttendanceBff')
 @UseGuards(JwtAuthGuard)
@@ -50,6 +51,18 @@ export class AttendanceBffController {
     @Body() createAttendanceDto: CreateMultiFamilyAttendanceDto,
   ) {
     return this.AttendanceBffService.createMultiFamilyAttendance(
+      request,
+      createAttendanceDto,
+    );
+  }
+
+  @Post('new-user-attendance')
+  @ApiCreatedResponse({})
+  createNewUserAttendance(
+    @Req() request: Request,
+    @Body() createAttendanceDto: CreateAttendanceNewUserBffDto,
+  ) {
+    return this.AttendanceBffService.createAttendanceNewUser(
       request,
       createAttendanceDto,
     );
