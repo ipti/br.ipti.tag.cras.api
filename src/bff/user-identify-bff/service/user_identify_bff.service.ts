@@ -21,23 +21,24 @@ export class UserIdentifyBffService {
     private readonly edcensoService: EdcensoBffService,
   ) {}
 
-  searchUserByNameOrCPF(seatchUserByNameOrCPFDto: SeatchUserByNameOrCPFDto) {
+  searchUserByNameOrCPF(nameorcpf: string) {
     return this.prismaService.user_identify.findMany({
-      take: 10,
+      
       where: {
         OR: [
           {
             name: {
-              contains: seatchUserByNameOrCPFDto.name,
+              contains: nameorcpf,
             },
           },
-          {
-            cpf: {
-              contains: seatchUserByNameOrCPFDto.cpf,
-            },
-          }
+          // {
+          //   cpf: {
+          //     contains: nameorcpf,
+          //   },
+          // }
         ],
       },
+
     });
   }
 

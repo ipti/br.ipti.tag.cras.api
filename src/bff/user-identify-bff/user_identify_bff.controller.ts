@@ -74,17 +74,8 @@ export class UserIdentifyBffController {
     );
   }
 
-  @Post('search')
-  getUserIdentifyByNameOrCPF(
-    @Req() request: Request,
-    @Body() seatchUserByNameOrCPFDto : SeatchUserByNameOrCPFDto)
-  {
-    if(seatchUserByNameOrCPFDto.cpf == "" && seatchUserByNameOrCPFDto.name == ""){
-      throw new Error('CPF or Name is required');
-    }
-
-    return this.user_identifyBffService.searchUserByNameOrCPF(
-      seatchUserByNameOrCPFDto
-    );
+  @Get('search')
+  getById(@Req() request: Request, @Query('nameorcpf') nameorcpf: string) {
+    return this.user_identifyBffService.searchUserByNameOrCPF(nameorcpf);
   }
 }
