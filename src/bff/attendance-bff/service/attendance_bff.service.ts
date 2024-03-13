@@ -507,48 +507,4 @@ export class AttendanceBffService {
 
     return groupAttendance;
   }
-    // todo: fazer get para para buscar user identify por nome e por cpf
-    async getAttendanceUserByName( 
-      request: Request, 
-      attendance_unity_fk:string
-      ){
-      var attendances = [];
-
-      if (attendance_unity_fk !== undefined){
-        attendances = await this.prismaService.attendance.findMany({
-          where: {
-            attendance_unity_fk: +attendance_unity_fk,
-
-          },
-          include:{
-            id: true,
-            user_identify: true,
-            name: true,
-          }
-        })
-      }
-    }
-
-    async getAttendanceUserByCPF(
-      request:Request,
-      attendance_unity_fk:string,
-      cpf:string,
-      ){
-      var attendances = [];
-
-      if(attendance_unity_fk !== undefined){
-        attendances = await this.prismaService.attendance.findMany({
-          where: {
-            attendance_unity_fk: +attendance_unity_fk,
-          },
-          include:{
-            id: true,
-            user_identify: true,
-            name: true,
-          }
-        })
-      }
-      // filtro por cpf
-
-    }
 }

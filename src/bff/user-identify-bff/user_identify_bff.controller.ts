@@ -28,6 +28,7 @@ import {
   CreateUserIdentifyWithFamilyDto,
   CreateUserIdentifyWithoutFamilyDto,
 } from './dto/create-user_identify_bff.dto';
+import { SeatchUserByNameOrCPFDto } from './dto/search-user_identify-bff.dto';
 
 @ApiTags('UserIdentifyBff')
 @UseGuards(JwtAuthGuard)
@@ -70,6 +71,20 @@ export class UserIdentifyBffController {
     return this.user_identifyBffService.getUsersIdentify(
       request.user,
       attendance_unity_fk,
+    );
+  }
+
+  @Post('search')
+  getUserIdentifyByNameOrCPF(
+    @Req() request: Request,
+    @Body() seatchUserByNameOrCPFDto : SeatchUserByNameOrCPFDto)
+  {
+    if(seatchUserByNameOrCPFDto.cpf == "" && seatchUserByNameOrCPFDto.name == ""){
+      throw new Error('CPF or Name is required');
+    }
+
+    return this.user_identifyBffService.searchUserByNameOrCPF(
+      seatchUserByNameOrCPFDto
     );
   }
 }

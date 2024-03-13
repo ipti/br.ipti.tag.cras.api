@@ -113,32 +113,4 @@ export class AttendanceBffController {
       familyId,
     );
   }
-
-  // todo: fazer get para para buscar user identify por nome e por cpf
-  @Get('byName/:name')
-  @ApiOkResponse({ isArray: true })
-  getAttendanceUserByName(
-    @Req() request: Request,
-    @Query('name') name: string,
-    ) {
-    return  this.AttendanceBffService.getAttendanceUserByName(
-      request,
-      name
-    );
-  }
-
-  /* @Get('byCPF/:cpf')
-    @ApiOkResponse({ isArray: true })
-    getAttendanceUserByCPF(
-      @Req() request: Request,
-      @Query('cpf') cpf: string,
-      ) {
-      return  this.AttendanceBffService.getAttendanceUserByCPF(
-        request,
-        cpf
-        );
-    }
-  */
-  
-
 }

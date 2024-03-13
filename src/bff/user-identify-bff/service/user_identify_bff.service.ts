@@ -10,14 +10,36 @@ import {
   CreateUserIdentifyWithoutFamilyDto,
 } from '../dto/create-user_identify_bff.dto';
 import { JwtPayload } from 'src/utils/jwt.interface';
+import { SeatchUserByNameOrCPFDto } from '../dto/search-user_identify-bff.dto';
 
 @Injectable()
 export class UserIdentifyBffService {
+  
   constructor(
     private readonly prismaService: PrismaService,
     private readonly attendanceUnityService: AttendanceUnityService,
     private readonly edcensoService: EdcensoBffService,
   ) {}
+
+  searchUserByNameOrCPF(seatchUserByNameOrCPFDto: SeatchUserByNameOrCPFDto) {
+    return this.prismaService.user_identify.findMany({
+      take: 10,
+      where: {
+        OR: [
+          {
+            name: {
+              contains: seatchUserByNameOrCPFDto.name,
+            },
+          },
+          {
+            cpf: {
+              contains: seatchUserByNameOrCPFDto.cpf,
+            },
+          }
+        ],
+      },
+    });
+  }
 
   async createUserWithoutFamily(
     request: Request,
