@@ -17,7 +17,7 @@ export class CreateUserIdentifyDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   surname: string;
 
@@ -61,19 +61,19 @@ export class CreateUserIdentifyDto {
   @IsString()
   emission_rg: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   cpf: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
   is_deficiency: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   deficiency: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   filiation_1: string;
 
@@ -81,11 +81,11 @@ export class CreateUserIdentifyDto {
   @IsString()
   filiation_2: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   marital_status: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   escolarity: string;
 
@@ -101,11 +101,11 @@ export class CreateUserIdentifyDto {
   @IsString()
   profission: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   income: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Kinship)
   kinship: Kinship;
 

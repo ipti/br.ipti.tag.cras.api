@@ -28,6 +28,7 @@ import {
   CreateUserIdentifyWithFamilyDto,
   CreateUserIdentifyWithoutFamilyDto,
 } from './dto/create-user_identify_bff.dto';
+import { SeatchUserByNameOrCPFDto } from './dto/search-user_identify-bff.dto';
 
 @ApiTags('UserIdentifyBff')
 @UseGuards(JwtAuthGuard)
@@ -71,5 +72,10 @@ export class UserIdentifyBffController {
       request.user,
       attendance_unity_fk,
     );
+  }
+
+  @Get('search')
+  getById(@Req() request: Request, @Query('nameorcpf') nameorcpf: string) {
+    return this.user_identifyBffService.searchUserByNameOrCPF(nameorcpf);
   }
 }

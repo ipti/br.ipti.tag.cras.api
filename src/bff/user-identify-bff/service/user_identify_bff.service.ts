@@ -10,14 +10,37 @@ import {
   CreateUserIdentifyWithoutFamilyDto,
 } from '../dto/create-user_identify_bff.dto';
 import { JwtPayload } from 'src/utils/jwt.interface';
+import { SeatchUserByNameOrCPFDto } from '../dto/search-user_identify-bff.dto';
 
 @Injectable()
 export class UserIdentifyBffService {
+  
   constructor(
     private readonly prismaService: PrismaService,
     private readonly attendanceUnityService: AttendanceUnityService,
     private readonly edcensoService: EdcensoBffService,
   ) {}
+
+  searchUserByNameOrCPF(nameorcpf: string) {
+    return this.prismaService.user_identify.findMany({
+      
+      where: {
+        OR: [
+          {
+            name: {
+              contains: nameorcpf,
+            },
+          },
+          // {
+          //   cpf: {
+          //     contains: nameorcpf,
+          //   },
+          // }
+        ],
+      },
+
+    });
+  }
 
   async createUserWithoutFamily(
     request: Request,
@@ -234,10 +257,8 @@ export class UserIdentifyBffService {
       : user.attendance_unity_fk.toString();
 
     const usersIdentify = await this.prismaService.$queryRaw`
-    SELECT ui.id, ui.name, ui.cpf, ui.birthday FROM family f 
-    JOIN attendance_unity au ON au.id = f.attendance_unity_fk
-    JOIN user_identify ui ON ui.family_fk = f.id
-    WHERE au.id = ${attendance_unity}
+    SELECT ui.id, ui.name, ui.cpf, ui.birthday 
+    FROM user_identify ui 
     `;
 
     return usersIdentify;
