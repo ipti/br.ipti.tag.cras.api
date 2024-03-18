@@ -155,16 +155,18 @@ model family_benefits {
 }
 
 model technician {
-  id                  Int                 @id @default(autoincrement())
-  edcenso_city_fk     Int
-  attendance_unity_fk Int
-  user_fk             Int?                @unique
-  name                String
-  edcenso_city        edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
-  user                user?               @relation(fields: [user_fk], references: [id])
-  attendance_unity    attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
-  attendances         attendance[]
-  technician_visits   technician_visits[]
+  id                    Int                 @id @default(autoincrement())
+  edcenso_city_fk       Int
+  attendance_unity_fk   Int
+  user_fk               Int?                @unique
+  type                  TechnicianType?     @default(ASSISTENTE_SOCIAL)
+  professional_register String?
+  name                  String
+  edcenso_city          edcenso_city        @relation(fields: [edcenso_city_fk], references: [id])
+  user                  user?               @relation(fields: [user_fk], references: [id])
+  attendance_unity      attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
+  attendances           attendance[]
+  technician_visits     technician_visits[]
 }
 
 model task {
@@ -359,6 +361,11 @@ enum Situation {
 enum CadSUAS {
   CRAS
   CREAS
+}
+
+enum TechnicianType {
+  ASSISTENTE_SOCIAL
+  PSICOLOGO
 }
 
 enum Ethnic {
