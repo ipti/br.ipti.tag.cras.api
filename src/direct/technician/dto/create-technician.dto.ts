@@ -1,3 +1,4 @@
+import { TechnicianType } from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateTechnicianDto {
@@ -12,4 +13,12 @@ export class CreateTechnicianDto {
   @IsNotEmpty()
   @IsNumber()
   attendance_unity: number;
+
+  @IsOptional()
+  @IsString()
+  professional_register: string;
+
+  @IsOptional()
+  @IsString()
+  type: TechnicianType;
 }
