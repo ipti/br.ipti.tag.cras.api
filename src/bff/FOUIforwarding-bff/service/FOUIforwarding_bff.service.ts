@@ -219,4 +219,20 @@ export class FOUIForwardingBffService {
 
     return { userInformation, forwadings };
   }
+
+  getForwardingById(request:Request, forwardingId: string) {
+    return this.prismaService.family_or_user_forwarding.findUnique({
+      where: {
+        id: +forwardingId,
+      },
+      include: {
+        forwading: true,
+      },
+      select: {
+        id: true,
+        date: true,
+        description: true,
+      },
+    });
+  }
 }
