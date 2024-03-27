@@ -228,11 +228,6 @@ export class FOUIForwardingBffService {
       include: {
         forwading: true,
       },
-      select: {
-        id: true,
-        date: true,
-        description: true,
-      },
     });
   }
 }

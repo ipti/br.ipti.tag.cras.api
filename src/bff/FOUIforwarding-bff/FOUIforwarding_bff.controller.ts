@@ -69,4 +69,14 @@ export class FOUIForwardingBffController {
       userIdentifyId,
     );
   }
+
+  @Get('forwarding')
+  getForwardingById(
+    @Req() request: Request,
+    @Query('forwardingId') forwardingId: string,
+  ) {
+    return this.FOUIForwardingBffService.getForwardingById(request, forwardingId);
+  }
+  
+
 }
