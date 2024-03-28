@@ -64,6 +64,7 @@ export class FOUIForwardingBffService {
             family: familyOptional,
             user_identify: user_identifyOptional,
             forwading: forwardingOptional,
+            report: forwardingCreate.report,
           },
         });
 
@@ -165,6 +166,7 @@ export class FOUIForwardingBffService {
           forwading: true,
           date: true,
           description: true,
+          report: true,
         },
       });
 

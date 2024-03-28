@@ -30,6 +30,10 @@ export class CreateFOUIForwardingDto {
   @IsString()
   description: string
 
+  @IsOptional()
+  @IsString()
+  report: string;
+
   @IsNotEmpty()
   @IsISO8601()
   date: string;

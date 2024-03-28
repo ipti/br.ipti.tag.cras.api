@@ -315,6 +315,7 @@ model family_or_user_forwarding {
   forwading_fk     Int
   date             DateTime       @default(now())
   description      String?
+  report           String?
   attendances      attendance[]
   family           family?        @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   forwading        forwading      @relation(fields: [forwading_fk], references: [id])

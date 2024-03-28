@@ -40,7 +40,8 @@ export class FOUIForwardingBffController {
         family: { type: 'number' },
         user_identify: { type: 'number' },
         forwading: { type: 'number' },
-        description: { type: 'string' }
+        description: { type: 'string' },
+        report: { type: 'string' },
       },
     },
   })
