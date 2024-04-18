@@ -64,6 +64,7 @@ export class FOUIForwardingBffService {
             family: familyOptional,
             user_identify: user_identifyOptional,
             forwading: forwardingOptional,
+            report: forwardingCreate.report,
           },
         });
 
@@ -165,6 +166,7 @@ export class FOUIForwardingBffService {
           forwading: true,
           date: true,
           description: true,
+          report: true,
         },
       });
 
@@ -218,5 +220,16 @@ export class FOUIForwardingBffService {
       });
 
     return { userInformation, forwadings };
+  }
+
+  getForwardingById(request:Request, forwardingId: string) {
+    return this.prismaService.family_or_user_forwarding.findUnique({
+      where: {
+        id: +forwardingId,
+      },
+      include: {
+        forwading: true,
+      },
+    });
   }
 }

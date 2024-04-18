@@ -40,7 +40,8 @@ export class FOUIForwardingBffController {
         family: { type: 'number' },
         user_identify: { type: 'number' },
         forwading: { type: 'number' },
-        description: { type: 'string' }
+        description: { type: 'string' },
+        report: { type: 'string' },
       },
     },
   })
@@ -69,4 +70,14 @@ export class FOUIForwardingBffController {
       userIdentifyId,
     );
   }
+
+  @Get('forwarding')
+  getForwardingById(
+    @Req() request: Request,
+    @Query('forwardingId') forwardingId: string,
+  ) {
+    return this.FOUIForwardingBffService.getForwardingById(request, forwardingId);
+  }
+  
+
 }

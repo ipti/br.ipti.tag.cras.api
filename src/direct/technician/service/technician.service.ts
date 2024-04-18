@@ -29,7 +29,7 @@ export class TechnicianService {
       );
 
       if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
       }
     }
 
@@ -41,7 +41,7 @@ export class TechnicianService {
 
     if (isValidTechnician) {
       throw new HttpException(
-        'Technician with this user already exists',
+        'Já existe um técnico com este usuário',
         HttpStatus.CONFLICT,
       );
     }
