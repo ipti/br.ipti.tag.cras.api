@@ -69,13 +69,13 @@ export class ForwardingBffController {
     return this.ForwardingBffService.getforwardings(request.user);
   }
 
-  @Put('fowardingStatus/:forwardingId')
+  @Put('fowarding-status')
   @ApiOkResponse({ isArray: true })
   updateForwardingStatus(
-    @Param('forwardingId') forwardingId: string,
+    @Query('forwardingId') forwardingId: string,
     @Body('status') status: string,
   ) {
-    return this.ForwardingBffService.updateForwardingStatus(forwardingId, Status_document[status]);
+    return this.ForwardingBffService.updateForwardingStatus(forwardingId, status);
   }
 
 }

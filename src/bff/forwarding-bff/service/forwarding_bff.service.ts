@@ -58,11 +58,12 @@ export class ForwardingBffService {
 
   async updateForwardingStatus(
     forwardingId: string,
-    status: Status_document,
+    status: any,
   ) {
     const findForwarding = await this.prismaService.forwading.findUnique({
       where: { id: +forwardingId },
     });
+    console.log('status', status);
 
     if (!findForwarding) {
       throw new HttpException('Encaminhamento não encontrado', HttpStatus.NOT_FOUND);
