@@ -14,9 +14,7 @@ export class CreateForwardingDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsISO8601()
-  date: string;
+
 
   @IsOptional()
   @IsBoolean()

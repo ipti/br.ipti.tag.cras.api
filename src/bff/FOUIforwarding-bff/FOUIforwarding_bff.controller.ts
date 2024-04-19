@@ -78,6 +78,5 @@ export class FOUIForwardingBffController {
   ) {
     return this.FOUIForwardingBffService.getForwardingById(request, forwardingId);
   }
-  
 
 }

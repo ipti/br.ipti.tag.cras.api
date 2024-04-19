@@ -5,6 +5,7 @@ import { CreateForwardingDto } from '../dto/create-forwarding.dto';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { JwtPayload } from 'src/utils/jwt.interface';
 import { UpdateForwardingDto } from '../dto/update-forwarding.dto';
+import { Status_document } from '@prisma/client';
 
 @Injectable()
 export class ForwardingBffService {
@@ -37,12 +38,12 @@ export class ForwardingBffService {
     });
 
     if (!findForwarding) {
-      throw new HttpException('Forwarding not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Encaminhamento não encontrado', HttpStatus.NOT_FOUND);
     }
 
     if (findForwarding.canDelete === false) {
       throw new HttpException(
-        'Forwarding cannot be updated',
+        'Encaminhamento não pode ser alterado',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -50,6 +51,26 @@ export class ForwardingBffService {
     const forwarding = await this.prismaService.forwading.update({
       where: { id: +forwardingId },
       data: { ...forwardingUpdate },
+    });
+
+    return forwarding;
+  }
+
+  async updateForwardingStatus(
+    forwardingId: string,
+    status: Status_document,
+  ) {
+    const findForwarding = await this.prismaService.forwading.findUnique({
+      where: { id: +forwardingId },
+    });
+
+    if (!findForwarding) {
+      throw new HttpException('Encaminhamento não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const forwarding = await this.prismaService.forwading.update({
+      where: { id: +forwardingId },
+      data: { status: status}
     });
 
     return forwarding;
