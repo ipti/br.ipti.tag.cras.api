@@ -1,4 +1,4 @@
-import { ForwadingType } from '@prisma/client';
+import { ForwadingType, Status_document } from '@prisma/client';
 import {
   IsBoolean,
   IsEnum,
@@ -14,9 +14,7 @@ export class CreateForwardingDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsISO8601()
-  date: string;
+
 
   @IsOptional()
   @IsBoolean()
@@ -25,4 +23,8 @@ export class CreateForwardingDto {
   @IsNotEmpty()
   @IsEnum(ForwadingType)
   type: ForwadingType;
+
+  @IsNotEmpty()
+  @IsEnum(Status_document)
+  status: Status_document;
 }

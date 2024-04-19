@@ -332,6 +332,7 @@ model forwading {
   canDelete       Boolean                     @default(true)
   type            ForwadingType               @default(ENCAMINHAMENTO)
   edcenso_city_fk Int?
+  status          Status_document             @default(PENDENTE)
   family_or_user  family_or_user_forwarding[]
   edcenso_city    edcenso_city?               @relation(fields: [edcenso_city_fk], references: [id])
 
@@ -432,4 +433,13 @@ enum ForwadingType {
   ACESSO
   ENCAMINHAMENTO
   ACOMPANHAMENTO
+  SEGUNDA_VIA_NASCIMENTO
+  SEGUNDA_VIA_CASAMENTO
+  SEGUNDA_VIA_OBITO
+}
+
+enum Status_document {
+  PENDENTE 
+  DEFERIDO
+  INDEFERIDO
 }
