@@ -23,6 +23,7 @@ import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { CreateForwardingDto } from './dto/create-forwarding.dto';
 import { Status_document } from '@prisma/client';
+import { UpdateForwardingDto } from './dto/update-forwarding.dto';
 
 @ApiTags('ForwardingBff')
 @UseGuards(JwtAuthGuard)
@@ -46,6 +47,7 @@ export class ForwardingBffController {
     @Req() request: Request,
     @Body() forwardingCreate: CreateForwardingDto,
   ) {
+    console.log('forwardingCreate', forwardingCreate);
     return this.ForwardingBffService.createForwarding(
       request.user,
       forwardingCreate,
@@ -56,7 +58,7 @@ export class ForwardingBffController {
   @ApiOkResponse({ isArray: true })
   updateForwarding(
     @Param('forwardingId') forwardingId: string,
-    @Body() forwardingCreate: CreateForwardingDto,
+    @Body() forwardingCreate: UpdateForwardingDto,
   ) {
     return this.ForwardingBffService.updateForwarding(
       forwardingId,
@@ -67,15 +69,6 @@ export class ForwardingBffController {
   @Get()
   getForwardings(@Req() request: Request) {
     return this.ForwardingBffService.getforwardings(request.user);
-  }
-
-  @Put('fowarding-status')
-  @ApiOkResponse({ isArray: true })
-  updateForwardingStatus(
-    @Query('forwardingId') forwardingId: string,
-    @Body('status') status: string,
-  ) {
-    return this.ForwardingBffService.updateForwardingStatus(forwardingId, status);
   }
 
 }

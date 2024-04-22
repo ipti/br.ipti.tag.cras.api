@@ -56,27 +56,6 @@ export class ForwardingBffService {
     return forwarding;
   }
 
-  async updateForwardingStatus(
-    forwardingId: string,
-    status: any,
-  ) {
-    const findForwarding = await this.prismaService.forwading.findUnique({
-      where: { id: +forwardingId },
-    });
-    console.log('status', status);
-
-    if (!findForwarding) {
-      throw new HttpException('Encaminhamento não encontrado', HttpStatus.NOT_FOUND);
-    }
-
-    const forwarding = await this.prismaService.forwading.update({
-      where: { id: +forwardingId },
-      data: { status: status}
-    });
-
-    return forwarding;
-  }
-
   async getforwardings(user: JwtPayload) {
     const forwardings = await this.prismaService.forwading.findMany({
       where: {

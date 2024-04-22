@@ -309,17 +309,18 @@ model technician_visits {
 }
 
 model family_or_user_forwarding {
-  id               Int            @id @default(autoincrement())
+  id               Int             @id @default(autoincrement())
   family_fk        Int?
   user_identify_fk Int?
   forwading_fk     Int
-  date             DateTime       @default(now())
+  date             DateTime        @default(now())
   description      String?
   report           String?
+  status           Status_document @default(PENDENTE)
   attendances      attendance[]
-  family           family?        @relation(fields: [family_fk], references: [id], onDelete: Cascade)
-  forwading        forwading      @relation(fields: [forwading_fk], references: [id])
-  user_identify    user_identify? @relation(fields: [user_identify_fk], references: [id])
+  family           family?         @relation(fields: [family_fk], references: [id], onDelete: Cascade)
+  forwading        forwading       @relation(fields: [forwading_fk], references: [id])
+  user_identify    user_identify?  @relation(fields: [user_identify_fk], references: [id])
 
   @@index([family_fk], map: "family_or_user_forwarding_family_fk_fkey")
   @@index([forwading_fk], map: "family_or_user_forwarding_forwading_fk_fkey")
@@ -332,7 +333,6 @@ model forwading {
   canDelete       Boolean                     @default(true)
   type            ForwadingType               @default(ENCAMINHAMENTO)
   edcenso_city_fk Int?
-  status          Status_document             @default(PENDENTE)
   family_or_user  family_or_user_forwarding[]
   edcenso_city    edcenso_city?               @relation(fields: [edcenso_city_fk], references: [id])
 
@@ -439,7 +439,7 @@ enum ForwadingType {
 }
 
 enum Status_document {
-  PENDENTE 
+  PENDENTE
   DEFERIDO
   INDEFERIDO
 }
