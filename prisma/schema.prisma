@@ -370,6 +370,80 @@ model group_attendance {
   @@index([family_fk], map: "group_attendance_family_fk_fkey")
 }
 
+//novas tabelas
+model happychild_on_hc{
+  id                                Int @id @default(autoincrement())
+  user_identify_fk                  Int
+  genre                             Genre   
+  color_race                        Color_race
+  cns_number                        Int
+  //visiting_time                   Time 
+  visiting_day                      Days_of_week
+  has_rcn                           Boolean  
+  has_parents_on_rcn                Boolean 
+
+  primary_caregiver                 Kinship
+  primary_caregiver_education_level Level_education
+  currently_studying                Boolean
+  where_studying                    String
+  currently_working                 Boolean
+  where_working                     String
+  profession                        String
+  working_hours                     Int
+
+  cardeneta_saude_or_other          Cardeneta_saude_or_other
+  //testes de triagem ... todo: um campo para cada teste e um campo para cada doença e um para string doença nova
+  has_childs_weight                 Boolean 
+  updated_vaccine_schedule          Boolean
+  is_breastfed                      Is_breastfed
+  breastfeeding_age                 Breastfeeding_age
+
+  health_problem                    Boolean
+  health_problem_description        String //ou enum, vamos decidir
+
+  medical_monitoring                Boolean
+  medical_monitoring_description    String //ou enum, vamos decidir
+  medical_service                   Medical_service //tem a opção de outro para ser preenchido
+  has_disability                    Boolean
+  disability_type                   Disability_type
+
+  birth_type                        Birth_type
+  gestational_age_weeks             Int
+  gestational_age_days              Int
+  premature_birth                   Boolean
+  pregnancy_observations            String
+
+  is_in_childhood_education         Boolean
+  entry_year                        Int
+  diff_with_children                Boolean
+  diff_with_children_description    String
+
+  plays_more_with                   Plays_more_with
+  where_plays                       String //ou enum, vamos decidir
+  plays_with_eletronics             Boolean
+  eletronics_time                   Screen_time
+  watches_tv                        Boolean
+  tv_time                           Screen_time
+  sleep_time                        Int // vai ser enum mas nao sei se é a melhor opção
+
+  who_lives_with                    Kinship // tabela ou varios boolean
+  family_play_time                  Family_time
+  talk_to_the_child                 Frequencia
+  has_kids_book_at_home             Boolean
+  show_books                        Frequencia
+  tells_stories                     Frequencia
+  sings                             Frequencia
+  walks_with_child                  Frequencia
+
+  affection                         Affection
+
+  comments                          String
+
+}
+
+
+// ENUMS ================================================================================================================
+
 enum Benefits {
   PERIODICO
   EVENTUAL
@@ -442,4 +516,127 @@ enum Status_document {
   PENDENTE
   DEFERIDO
   INDEFERIDO
+}
+
+enum Genre {
+  MASCULINO
+  FEMININO
+  OUTRO
+}
+
+enum Color_race {
+  BRANCA
+  PRETA
+  PARDA
+  AMARELA
+  INDIGENA
+  NAO_DECLARADO
+}
+
+enum Days_of_week {
+  SEGUNDA
+  TERCA
+  QUARTA
+  QUINTA
+  SEXTA
+  SABADO
+}
+
+enum Level_education {
+  ANALFABETO
+  ANALFABETO_FUNCIONAL
+  ENSINO_FUNDAMENTAL_INCOMPLETO
+  ENSINO_FUNDAMENTAL_COMPLETO
+  ENSINO_MEDIO_INCOMPLETO
+  ENSINO_MEDIO_COMPLETO
+  ENSINO_SUPERIOR_INCOMPLETO
+  ENSINO_SUPERIOR_COMPLETO
+  NAO_INFORMADO
+}
+
+enum Cardeneta_saude_or_other {
+  CARDENETA
+  OUTRO
+  CARTAO_DE_VACINAS
+  NAO
+}
+
+enum Is_breastfed {
+  SIM_EXCLUSIVAMENTE
+  SIM_PREDOMINANTEMENTE
+  SIM_COMPLEMENTARMENTE
+  NAO
+}
+
+enum Breastfeeding_age {
+  UM_MES
+  DOIS_MESES
+  TRES_MESES
+  QUATRO_MESES
+  CINCO_MESES
+  SEIS_MESES
+  MAIS_SEIS_MESES
+  NUNCA_MAMOU
+}
+
+enum Medical_service {
+  AMBULATORIO_DE_ESPECIALIDADES_HOSPITAL_PUBLICO
+  CENTRO_DE_ESPECIALIDADES_SUS
+  UNIDADE_BASICA_DE_SAUDE_UBS
+  NUCLEO_DE_APOIO_A_SAUDE_DA_FAMILIA_NASF
+  SERVICO_DE_ATENDIMENTO_ESPECIALIZADO_EM_DST_AIDS
+  CENTRO_DE_ATENCAO_PSICOSSOCIAL_CAPS
+  APAE
+  FUNDACAO_ASSOCIACAO_INSTITUTO
+  CLINICA_OU_CONSULTORIO_PARTICULAR
+  OUTRO
+}
+
+enum Disability_type {
+  FISICA
+  INTELECTUAL
+  VISUAL
+  AUDITIVA
+  MULTIDEFICIENCIA
+  NAO_DECLARADA
+}
+
+enum Birth_type {
+  PARTO_NORMAL
+  PARTO_CESAREA
+  PARTO_FORCEPS
+  NAO_DECLARADO
+}
+
+enum Plays_more_with {
+  ADULTOS
+  CRIANCAS
+  SOZINHA
+}
+
+enum Screen_time {
+  NAO
+  ATE_2_HORAS
+  ATE_4_HORAS
+  MAIS_QUE_4_HORAS
+}
+
+enum Family_time {
+  TODOS_OS_DIAS
+  UMA_VEZ_POR_SEMANA
+  NAO
+}
+
+enum Frequencia {
+  FREQUENTEMENTE
+  RARAMENTE
+  NUNCA
+}
+
+enum Affection {
+  CARINHO
+  BEIJOS
+  ABRAÇOS
+  PALAVRAS_POSITIVAS
+  NENHUM
 }
