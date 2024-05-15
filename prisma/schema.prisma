@@ -441,6 +441,52 @@ model happychild_on_hc{
 
 }
 
+model pregnant_on_hc{
+  id                             Int @id @default(autoincrement())
+  nis_number                     Int
+  name                           String
+  cellphone_number               String
+  email                          String
+  birthday                       DateTime
+  age                            Int
+  filiation_1                    String?                      @default("Não declarado")
+  filiation_2                    String?
+  color_race                     Color_race
+  sus_number                     Int
+
+  //visiting_time                Time 
+  visiting_day                   Days_of_week
+
+  gestation_time                 Int
+  parents_location               Boolean //Mas tem 3 opções, Sim no mesmo bairro, sim em outro bairro e não. todo:ENUM
+  can_read_write                 Boolean
+  study_now                      Boolean
+  where_study                    String
+  work_now                       Boolean
+  where_work                     String
+  marital_status                 String?                      @default("Não informada") //todo:ENUM
+  lives_with                     Kinship // tabela ou varios boolean
+
+  prenatal_start                 DateTime // mas tem 4 opções de resposta, todo:ENUM
+  prenatal_number                Int
+  prenatal_partner               Boolean //todo:ENUM
+  gestational_period             Int //todo:ENUM para intervalos de semanas
+  planned_pregnancy              Boolean
+  sleep_good                     Boolean
+  physical_exercise              Boolean
+
+  medical_service                Medical_service //tem a opção de outro para ser preenchido
+  knows_maternity                Boolean
+  where_maternity                String
+  birth_type                     Birth_type 
+  birth_type_justification       String
+
+  pregnants_group                Boolean
+  pregnants_group_where          String
+
+  pregnant_questions             String
+  
+}
 
 // ENUMS ================================================================================================================
 
