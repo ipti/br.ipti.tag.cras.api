@@ -491,7 +491,7 @@ model pregnant_on_hc{
   support_pospartum_who          String
   
   want_partum_companion          Boolean
-  want_partum_companion_who           String
+  want_partum_companion_who      String
 
   knows_rn                       Boolean
 
@@ -542,17 +542,36 @@ model family_on_hc{
   address                           String
   cep                               String
   reference                         String
-  area                              String //todo: enum urbana, rural e outro ____
+  area                              Housing_area
   
-  home_walls                        String //todo enum : alvenaria, madeira tratada, madeira aproveitada, taipa,palha,lona/plastico, outro
+  house_walls                       House_walls
   rooms_number                      Int
   safe_space                        Boolean // todo: enum (olhar no documento)
   //water_supply                    Boolean // todo: enum (olhar no documento)
   treated_water                     Boolean
   has_bathroom                      Boolean
   has_electricity                   Boolean
-  //eletronics todo: varios booleans
+
+  //eletronics varios booleans
+  has_cellphone                     Boolean
+  has_cellphone_internet            Boolean
+  has_refrigerator                  Boolean
+  has_gas_stove                     Boolean
+  has_tv                            Boolean
+  has_radio                         Boolean
+  has_newspaper                     Boolean
+  has_computer                      Boolean
+  has_computer_internet             Boolean
+  has_other_eletronics              Boolean
+  other_eletronics                  String
+
   //transport_option  todo:varios booleans
+  has_car                           Boolean
+  has_motorcycle                    Boolean
+  has_bicycle                       Boolean
+  has_public_transport              Boolean
+  has_other_transport               Boolean
+  other_transport                   String
   
   social_benefits                   Boolean
   social_benefits_which             String
@@ -594,15 +613,16 @@ model family_on_hc{
   number_of_birds                   Int
   other_animals                     String
 
-  primary_caregiver_of_children     Kinship // ou nome, nao sei a resposta esperada
+  primary_caregiver_of_children     String // ou Kinship, nao sei a resposta esperada
   has_pregnant                      Boolean
 
   best_visit_period                 Day_period 
   best_visit_day                    Days_of_week
 
-  relatives_in_the_city             Boolean //todo: sim mesmo bairro, sim outro bairro, nao
+  relatives_in_the_city             Relatives_in_city
   family_participation_in_community Boolean
-  family_religion                   String //todo: enum, porem no doc so tinha opção catolco evangelico, outros __ string
+  family_religion                   Religions
+  family_religion_which             String // caso não tenha na opção religions
   expectation_pcf                   String
 
   family_health_care                String //todo: enum, ver opcoes do doc
@@ -815,8 +835,36 @@ enum Affection {
   NENHUM
 }
 
+enum House_walls {
+  ALVENARIA
+  MADEIRA_TRATADA
+  MADEIRA_APROVEITADA
+  TAIPA
+  PALHA
+  LONA_PLASTICO
+  OUTRO
+}
+
 enum Day_period {
   MANHA
   TARDE
   NOITE
+}
+
+enum Relatives_in_city {
+  MESMO_BAIRRO
+  OUTRO_BAIRRO
+  NAO
+}
+
+enum Religions {
+  CATOLICO
+  EVANGELICO
+  OUTROS
+}
+
+enum Housing_area {
+  URBANA
+  RURAL
+  OUTRO
 }
