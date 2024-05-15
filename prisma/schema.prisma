@@ -533,6 +533,89 @@ model pregnant_on_hc{
   conjugate_work_hours           Int
 }
 
+model family_on_hc{
+  id                                Int @id @default(autoincrement())
+  nis_number                        Int
+  uf                                String
+  city                              String
+  neighborhood                      String
+  address                           String
+  cep                               String
+  reference                         String
+  area                              String //todo: enum urbana, rural e outro ____
+  
+  home_walls                        String //todo enum : alvenaria, madeira tratada, madeira aproveitada, taipa,palha,lona/plastico, outro
+  rooms_number                      Int
+  safe_space                        Boolean // todo: enum (olhar no documento)
+  //water_supply                    Boolean // todo: enum (olhar no documento)
+  treated_water                     Boolean
+  has_bathroom                      Boolean
+  has_electricity                   Boolean
+  //eletronics todo: varios booleans
+  //transport_option  todo:varios booleans
+  
+  social_benefits                   Boolean
+  social_benefits_which             String
+  residents_number                  Int
+  family_speaks_other_lang          Boolean
+  family_speaks_other_lang_which    String
+
+  family_head                       Kinship
+  family_head_phone_number          String
+  family_head_ocupation             String
+
+  family_contribution               Boolean
+  family_contribution_who           String
+
+  residents_0_3                     Boolean
+  residents_4_6                     Boolean
+  residents_7_12                    Boolean
+  residents_13_18                   Boolean
+  residents_19_59                   Boolean
+  residents_60_more                 Boolean
+
+  residents_0_3_number              Int
+  residents_4_6_number              Int
+  residents_childrens_served        Boolean
+
+  people_with_disabilities          Boolean
+  alcool_abuse                      Boolean
+  drug_abuse                        Boolean
+  unemployed                        Boolean
+  inmate                            Boolean
+  inmate_open_regime                Boolean
+  inmate_socio_edu_measures         Boolean
+  mother_with_deceased_child        Boolean
+  mother_with_stillbirth            Boolean
+
+  domestic_animals                  Boolean
+  number_of_cats                    Int
+  number_of_dogs                    Int
+  number_of_birds                   Int
+  other_animals                     String
+
+  primary_caregiver_of_children     Kinship // ou nome, nao sei a resposta esperada
+  has_pregnant                      Boolean
+
+  best_visit_period                 Day_period 
+  best_visit_day                    Days_of_week
+
+  relatives_in_the_city             Boolean //todo: sim mesmo bairro, sim outro bairro, nao
+  family_participation_in_community Boolean
+  family_religion                   String //todo: enum, porem no doc so tinha opção catolco evangelico, outros __ string
+  expectation_pcf                   String
+
+  family_health_care                String //todo: enum, ver opcoes do doc
+  family_esf_attendance             Boolean
+  family_esf_attendance_which       String
+  family_health_agent_visit         Boolean
+  family_health_agent_visit_which   String
+
+  services_accompanying_family      String //todo: enum, ver opcoes do doc
+  initial_reception_method_pcf      String //todo: enum, ver opcoes do doc
+  
+}
+
 // ENUMS ================================================================================================================
 
 enum Benefits {
@@ -727,7 +810,13 @@ enum Frequencia {
 enum Affection {
   CARINHO
   BEIJOS
-  ABRAÇOS
+  ABRACOS
   PALAVRAS_POSITIVAS
   NENHUM
+}
+
+enum Day_period {
+  MANHA
+  TARDE
+  NOITE
 }
