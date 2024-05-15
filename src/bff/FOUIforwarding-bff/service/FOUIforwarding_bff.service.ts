@@ -1,13 +1,35 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFOUIForwardingDto } from '../dto/create-FOUIforwarding.dto';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { JwtPayload } from 'src/utils/jwt.interface';
 import { Result } from '@prisma/client';
+import { UpdateFOUIForwardingDto } from '../dto/update-FOUIforwarding.dto';
 
 @Injectable()
 export class FOUIForwardingBffService {
+  async updateForwarding(
+    forwardingId: string, 
+    forwardingUpdate: UpdateFOUIForwardingDto
+  ) {
+    const findForwarding = await this.prismaService.family_or_user_forwarding.findUnique({
+      where: { id: +forwardingId },
+    });
+
+    if (!findForwarding) {
+      throw new HttpException('Encaminhamento não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const forwarding = await this.prismaService.family_or_user_forwarding.update({
+      where: { id: +forwardingId },
+      data: { 
+        status: forwardingUpdate.status}
+    });
+
+    return forwarding;
+  
+  }
   constructor(private readonly prismaService: PrismaService) {}
 
   async createForwarding(
@@ -18,7 +40,7 @@ export class FOUIForwardingBffService {
       forwardingCreate.family === undefined &&
       forwardingCreate.user_identify === undefined
     ) {
-      throw new HttpException('Family or user_identify must be informed', 400);
+      throw new HttpException('Família ou Membro familia não foi informado', 400);
     }
 
     if (
@@ -232,4 +254,5 @@ export class FOUIForwardingBffService {
       },
     });
   }
+
 }

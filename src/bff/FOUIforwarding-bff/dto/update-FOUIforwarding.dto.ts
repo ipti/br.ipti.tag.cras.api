@@ -9,7 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateFOUIForwardingDto {
+export class UpdateFOUIForwardingDto {
   @IsOptional()
   @IsNumber()
   family: number;
@@ -18,11 +18,11 @@ export class CreateFOUIForwardingDto {
   @IsNumber()
   user_identify: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   forwading: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   attendance_unity: number;
 
@@ -38,7 +38,7 @@ export class CreateFOUIForwardingDto {
   @IsEnum(Status_document)
   status: Status_document;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsISO8601()
   date: string;
 }

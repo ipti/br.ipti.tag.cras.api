@@ -22,6 +22,7 @@ import { FOUIForwardingBffService } from './service/FOUIforwarding_bff.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { CreateFOUIForwardingDto } from './dto/create-FOUIforwarding.dto';
+import { UpdateFOUIForwardingDto } from './dto/update-FOUIforwarding.dto';
 
 @ApiTags('FOUIForwardingBff')
 @UseGuards(JwtAuthGuard)
@@ -78,6 +79,14 @@ export class FOUIForwardingBffController {
   ) {
     return this.FOUIForwardingBffService.getForwardingById(request, forwardingId);
   }
-  
+
+  @Put(':forwardingId')
+  @ApiOkResponse({ isArray: true })
+  updateForwarding(
+    @Param('forwardingId') forwardingId: string,
+    @Body() forwardingUpdateStatus: UpdateFOUIForwardingDto,
+  ) {
+    return this.FOUIForwardingBffService.updateForwarding(forwardingId, forwardingUpdateStatus);
+  }
 
 }

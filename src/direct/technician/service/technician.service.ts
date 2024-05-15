@@ -95,7 +95,7 @@ export class TechnicianService {
     });
 
     if (!technician) {
-      throw new HttpException('Technician not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Tecnico não encontrado', HttpStatus.NOT_FOUND);
     }
 
     return technician;
