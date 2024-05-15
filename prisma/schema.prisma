@@ -491,13 +491,46 @@ model pregnant_on_hc{
   support_pospartum_who          String
   
   want_partum_companion          Boolean
-  partum_companion_who           String
+  want_partum_companion_who           String
 
   knows_rn                       Boolean
 
   baby_layette                   Boolean //todo:ENUM, tem 3 opções
-  
-  
+
+  continue_pcf                   Boolean
+  expectation_pcf                String
+
+  previously_pregnant            Boolean //todo:ENUM tem 4 opções
+  // sobre a gravidez anterior
+
+  partum_date                    DateTime
+  partum_result                  String //todo:ENUM tem 3 opções (vivo, morto, aborto)
+  partum_premature               Boolean
+  partum_premature_weeks         Int
+  partum_type                    Birth_type
+
+  had_partum_companion           Boolean
+  had_partum_companion_who       String
+
+  postpartum_appointment         Boolean
+  postpartum_appointment_date    DateTime
+
+  family_planning                Boolean
+
+  inactivation_reason            String //todo:ENUM 
+  observations                   String
+
+  live_with_conjugate            Boolean
+  conjugate_is_father            Boolean
+  conjugate_full_name            String
+  conjugate_birth_date           DateTime
+  conjugate_cns_number           String
+  conjugate_nis_number           String
+  conjugate_instruction_level    Level_education
+  conjugate_currently_studing    Boolean
+  conjugate_work_now             Boolean
+  conjugate_profession           String
+  conjugate_work_hours           Int
 }
 
 // ENUMS ================================================================================================================
