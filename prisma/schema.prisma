@@ -485,6 +485,18 @@ model pregnant_on_hc{
   pregnants_group_where          String
 
   pregnant_questions             String
+
+  family_support                 Boolean
+  support_pospartum              Boolean
+  support_pospartum_who          String
+  
+  want_partum_companion          Boolean
+  partum_companion_who           String
+
+  knows_rn                       Boolean
+
+  baby_layette                   Boolean //todo:ENUM, tem 3 opções
+  
   
 }
 
