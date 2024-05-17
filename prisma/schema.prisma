@@ -392,25 +392,66 @@ model happychild_on_hc{
   working_hours                     Int
 
   cardeneta_saude_or_other          Cardeneta_saude_or_other
-  //testes de triagem ... todo: um campo para cada teste e um campo para cada doença e um para string doença nova
+  lil_feet_test                     Lil_tests
+  lil_eye_test                      Lil_tests
+  lil_heart_test                    Boolean
+  lil_ear_test                      Lil_tests
+
   has_childs_weight                 Boolean 
   updated_vaccine_schedule          Boolean
   is_breastfed                      Is_breastfed
   breastfeeding_age                 Breastfeeding_age
 
-  health_problem                    Boolean
-  health_problem_description        String //ou enum, vamos decidir
+  health_problem                    Boolean @default(false)
+  sickleCellDisease                 Boolean @default(false)
+  anemia                            Boolean @default(false)
+  asthma                            Boolean @default(false)
+  diabetes                          Boolean @default(false)
+  hypertension                      Boolean @default(false)
+  gastroesophagealRefluxDisease     Boolean @default(false)
+  cardiovascularDiseases            Boolean @default(false)
+  hivExposure                       Boolean @default(false)
+  otherSTIExposure                  Boolean @default(false)
+  congenitalSyphilis                Boolean @default(false)
+  epilepsySeizures                  Boolean @default(false)
+  cleftLipPalate                    Boolean @default(false)
+  mouthBreather                     Boolean @default(false)
+  hyperactivityAttentionDeficit     Boolean @default(false)
+  lactoseIntolerance                Boolean @default(false)
+  proteinIntolerance                Boolean @default(false)
+  glutenIntolerance                 Boolean @default(false)
+  health_otherCondition             String
 
   medical_monitoring                Boolean
-  medical_monitoring_description    String //ou enum, vamos decidir
-  medical_service                   Medical_service //tem a opção de outro para ser preenchido
+  cardiology                        Boolean @default(false)
+  endocrinology                     Boolean @default(false)
+  physiotherapy                     Boolean @default(false)
+  speechTherapy                     Boolean @default(false)
+  pediatrics                        Boolean @default(false)
+  pulmonology                       Boolean @default(false)
+  neuropediatrics                   Boolean @default(false)
+  ophthalmology                     Boolean @default(false)
+  psychology                        Boolean @default(false)
+  gastroenterology                  Boolean @default(false)
+  infectiology                      Boolean @default(false)
+  dentistry                         Boolean @default(false)
+  psychopedagogy                    Boolean @default(false)
+  occupationalTherapy               Boolean @default(false)
+  musicTherapy                      Boolean @default(false)
+  equotherapy                       Boolean @default(false)
+  proteinIntoleranceSpecialist      Boolean @default(false)
+  glutenIntoleranceSpecialist       Boolean @default(false)
+  otherDoctor                       String
+  notBeingFollowed                  Boolean @default(false)
+ 
+  medical_service                   Medical_service  
   has_disability                    Boolean
   disability_type                   Disability_type
 
   birth_type                        Birth_type
   gestational_age_weeks             Int
   gestational_age_days              Int
-  premature_birth                   Boolean
+  premature_birth                   Boolean 
   pregnancy_observations            String
 
   is_in_childhood_education         Boolean
@@ -419,12 +460,12 @@ model happychild_on_hc{
   diff_with_children_description    String
 
   plays_more_with                   Plays_more_with
-  where_plays                       String //ou enum, vamos decidir
+  where_plays                       String 
   plays_with_eletronics             Boolean
   eletronics_time                   Screen_time
   watches_tv                        Boolean
   tv_time                           Screen_time
-  sleep_time                        Int // vai ser enum mas nao sei se é a melhor opção
+  sleep_time                        Sleep_Time
 
   who_lives_with                    Kinship // tabela ou varios boolean
   family_play_time                  Family_time
@@ -438,7 +479,6 @@ model happychild_on_hc{
   affection                         Affection
 
   comments                          String
-
 }
 
 model pregnant_on_hc{
@@ -449,7 +489,7 @@ model pregnant_on_hc{
   email                          String
   birthday                       DateTime
   age                            Int
-  filiation_1                    String?                      @default("Não declarado")
+  filiation_1                    String?                 @default("Não declarado")
   filiation_2                    String?
   color_race                     Color_race
   sus_number                     Int
@@ -458,24 +498,25 @@ model pregnant_on_hc{
   visiting_day                   Days_of_week
 
   gestation_time                 Int
-  parents_location               Boolean //Mas tem 3 opções, Sim no mesmo bairro, sim em outro bairro e não. todo:ENUM
+  parents_location               Parents_location
   can_read_write                 Boolean
   study_now                      Boolean
   where_study                    String
   work_now                       Boolean
   where_work                     String
-  marital_status                 String?                      @default("Não informada") //todo:ENUM
-  lives_with                     Kinship // tabela ou varios boolean
+  marital_status                 Marital_status             
+  lives_with                     Kinship // tabela, ou varios boolean, ou array de kinship
 
-  prenatal_start                 DateTime // mas tem 4 opções de resposta, todo:ENUM
+  prenatal_init                  Prenatal_init
   prenatal_number                Int
-  prenatal_partner               Boolean //todo:ENUM
-  gestational_period             Int //todo:ENUM para intervalos de semanas
+  prenatal_partner               Prenatal_partner
+  gestational_period             Gestational_period
   planned_pregnancy              Boolean
   sleep_good                     Boolean
   physical_exercise              Boolean
 
-  medical_service                Medical_service //tem a opção de outro para ser preenchido
+  medical_service                Medical_service 
+  medical_service_other          String
   knows_maternity                Boolean
   where_maternity                String
   birth_type                     Birth_type 
@@ -495,16 +536,18 @@ model pregnant_on_hc{
 
   knows_rn                       Boolean
 
-  baby_layette                   Boolean //todo:ENUM, tem 3 opções
+  baby_layette                   Baby_layette 
 
   continue_pcf                   Boolean
   expectation_pcf                String
 
-  previously_pregnant            Boolean //todo:ENUM tem 4 opções
-  // sobre a gravidez anterior
+  previously_pregnant            Previously_pregnant 
+  livebirths_number              Count_3_or_more
+  stillbirths_number             Count_3_or_more
+  abortion_number                Count_3_or_more
 
   partum_date                    DateTime
-  partum_result                  String //todo:ENUM tem 3 opções (vivo, morto, aborto)
+  partum_result                  Partum_result
   partum_premature               Boolean
   partum_premature_weeks         Int
   partum_type                    Birth_type
@@ -517,7 +560,7 @@ model pregnant_on_hc{
 
   family_planning                Boolean
 
-  inactivation_reason            String //todo:ENUM 
+  inactivation_reason            Inactivation_reason  
   observations                   String
 
   live_with_conjugate            Boolean
@@ -546,13 +589,13 @@ model family_on_hc{
   
   house_walls                       House_walls
   rooms_number                      Int
-  safe_space                        Boolean // todo: enum (olhar no documento)
-  //water_supply                    Boolean // todo: enum (olhar no documento)
+  safe_space                        Safe_space
+  water_supply                      Water_supply
+  water_supply_other                String
   treated_water                     Boolean
   has_bathroom                      Boolean
   has_electricity                   Boolean
 
-  //eletronics varios booleans
   has_cellphone                     Boolean
   has_cellphone_internet            Boolean
   has_refrigerator                  Boolean
@@ -565,7 +608,6 @@ model family_on_hc{
   has_other_eletronics              Boolean
   other_eletronics                  String
 
-  //transport_option  todo:varios booleans
   has_car                           Boolean
   has_motorcycle                    Boolean
   has_bicycle                       Boolean
@@ -613,7 +655,7 @@ model family_on_hc{
   number_of_birds                   Int
   other_animals                     String
 
-  primary_caregiver_of_children     String // ou Kinship, nao sei a resposta esperada
+  primary_caregiver_of_children     String //perguntar se é Kinship ou Nome do responsável
   has_pregnant                      Boolean
 
   best_visit_period                 Day_period 
@@ -622,17 +664,17 @@ model family_on_hc{
   relatives_in_the_city             Relatives_in_city
   family_participation_in_community Boolean
   family_religion                   Religions
-  family_religion_which             String // caso não tenha na opção religions
+  family_religion_which             String 
   expectation_pcf                   String
 
-  family_health_care                String //todo: enum, ver opcoes do doc
+  family_health_care                Family_health_care
   family_esf_attendance             Boolean
   family_esf_attendance_which       String
   family_health_agent_visit         Boolean
   family_health_agent_visit_which   String
 
-  services_accompanying_family      String //todo: enum, ver opcoes do doc
-  initial_reception_method_pcf      String //todo: enum, ver opcoes do doc
+  services_accompanying_family      Services_accompanying_family 
+  initial_reception_method_pcf      Reception_method 
   
 }
 
@@ -669,6 +711,28 @@ enum Kinship {
   NAO_PARENTE
 }
 
+enum Safe_space {
+  ESPACO_PARA_BRINCAR
+  SEM_ESPACO_PARA_BRINCAR
+  ESPACO_SEGURO_PARA_CRIANCA
+  ESPACO_SEM_SEGURANCA_PARA_CRIANCA
+}
+
+enum Water_supply {
+  REDE_PUBLICA
+  POCO_NASCENTE
+  CISTERNA
+  CARRO_PIPA
+  CACIMBA
+  CHAFARIZ
+  OUTRA
+}
+
+enum Lil_tests {
+  SIM
+  NAO
+  AGENDADO
+}
 enum Situation {
   ATIVO
   BLOQUEADO
@@ -725,6 +789,84 @@ enum Color_race {
   AMARELA
   INDIGENA
   NAO_DECLARADO
+}
+
+enum Parents_location {
+  MESMO_BAIRRO
+  OUTRO_BAIRRO
+  NAO
+}
+
+enum Marital_status {
+  SOLTEIRO_A
+  CASADO_A
+  UNIAO_ESTAVEL
+  DIVORCIADO_A
+  VIUVO_A
+  DIVORCIADO
+  SEPARADO
+  NAO_INFORMADA
+}
+
+enum Prenatal_init {
+  NAO_INICIOU
+  ATE_12_SEMANAS
+  ENTRE_13_24_SEMANAS
+  ENTRE_25_36_SEMANAS
+}
+
+enum Prenatal_partner {
+  SIM_EVENTUALMENTE
+  SIM_SEMPRE
+  APENAS_QUANDO_SOLICITADO
+  NAO_ACOMPANHA
+}
+
+enum Gestational_period {
+  MENOS_DE_22_SEMANAS
+  DE_22_A_27_SEMANAS
+  DE_28_A_31_SEMANAS
+  DE_32_A_36_SEMANAS
+}
+
+enum Baby_layette {
+  POR_CONTA_PROPRIA
+  BENEFICIO_SOCIAL
+  AINDA_NAO_ESTA_FAZENDO
+}
+
+enum Previously_pregnant {
+  NENHUMA_VEZ
+  UMA_VEZ
+  DUAS_VEZES
+  TRES_OU_MAIS_VEZES
+}
+
+enum Count_3_or_more {
+  UM
+  DOIS
+  TRES_OU_MAIS
+}
+
+enum Partum_result {
+  VIVO
+  MORTO
+  ABORTO
+}
+
+enum Inactivation_reason {
+  FINAL_DE_GESTACAO
+  MUDANCA_DE_ENDERECO
+  DESISTENCIA_DO_PCF
+  FALECIMENTO
+}
+
+enum Reception_method {
+  PARTICULARIZADA_CRAS
+  COLETIVA_GRUPOS_CRAS
+  DOMICILIO_VISITADOR_SUPERVISOR
+  COLETIVA_OFICINAS_PAIF
+  ENCONTRO_REUNIAO_INTERSETORIAL
 }
 
 enum Days_of_week {
@@ -786,6 +928,30 @@ enum Medical_service {
   OUTRO
 }
 
+enum Family_health_care {
+  UBS
+  UPA
+  ESF
+  CENTRO_DE_SAUDE
+  HOSPITAL
+  FARMACIA
+  BENZEDEIRA
+  SAMU
+  OUTRO
+}
+
+enum Services_accompanying_family {
+  CAPS
+  SAE
+  CRAS
+  CREAS
+  CENTRO_CONVIVENCIA_CRIANCAS_0_6_ANOS
+  CENTRO_CONVIVENCIA_DEMAIS_CICLOS_VIDA
+  CONSELHO_TUTELAR
+  OUTROS
+  NENHUM_DESES
+}
+
 enum Disability_type {
   FISICA
   INTELECTUAL
@@ -813,6 +979,13 @@ enum Screen_time {
   ATE_2_HORAS
   ATE_4_HORAS
   MAIS_QUE_4_HORAS
+}
+
+enum Sleep_Time {
+  ATE_10_HORAS_DIARIAS
+  ENTRE_10_E_11_HORAS_DIARIAS
+  ENTRE_12_E_15_HORAS_DIARIAS
+  ENTRE_15_E_16_HORAS_DIARIAS
 }
 
 enum Family_time {
