@@ -371,13 +371,15 @@ model group_attendance {
 }
 
 //novas tabelas
-model happychild_on_hc{
+model happychild_on_hc {
   id                                Int @id @default(autoincrement())
+  canDelete                         Boolean @default(true)
   user_identify_fk                  Int
   genre                             Genre   
   color_race                        Color_race
   cns_number                        Int
-  //visiting_time                   Time 
+
+  visiting_time                     String // Supondo que seja uma string, pode ser ajustado para DateTime se necessário
   visiting_day                      Days_of_week
   has_rcn                           Boolean  
   has_parents_on_rcn                Boolean 
@@ -385,17 +387,17 @@ model happychild_on_hc{
   primary_caregiver                 Kinship
   primary_caregiver_education_level Level_education
   currently_studying                Boolean
-  where_studying                    String
+  where_studying                    String @default("")
   currently_working                 Boolean
-  where_working                     String
-  profession                        String
-  working_hours                     Int
+  where_working                     String @default("")
+  profession                        String @default("")
+  working_hours                     Int @default(0)
 
   cardeneta_saude_or_other          Cardeneta_saude_or_other
-  lil_feet_test                     Lil_tests
-  lil_eye_test                      Lil_tests
-  lil_heart_test                    Boolean
-  lil_ear_test                      Lil_tests
+  lil_feet_test                     Lil_tests @default(NAO)
+  lil_eye_test                      Lil_tests @default(NAO)
+  lil_heart_test                    Boolean 
+  lil_ear_test                      Lil_tests @default(NAO)
 
   has_childs_weight                 Boolean 
   updated_vaccine_schedule          Boolean
@@ -420,9 +422,9 @@ model happychild_on_hc{
   lactoseIntolerance                Boolean @default(false)
   proteinIntolerance                Boolean @default(false)
   glutenIntolerance                 Boolean @default(false)
-  health_otherCondition             String
+  health_otherCondition             String @default("")
 
-  medical_monitoring                Boolean
+  medical_monitoring                Boolean @default(false)
   cardiology                        Boolean @default(false)
   endocrinology                     Boolean @default(false)
   physiotherapy                     Boolean @default(false)
@@ -441,33 +443,33 @@ model happychild_on_hc{
   equotherapy                       Boolean @default(false)
   proteinIntoleranceSpecialist      Boolean @default(false)
   glutenIntoleranceSpecialist       Boolean @default(false)
-  otherDoctor                       String
+  otherDoctor                       String @default("")
   notBeingFollowed                  Boolean @default(false)
  
   medical_service                   Medical_service  
-  has_disability                    Boolean
+  has_disability                    Boolean @default(false)
   disability_type                   Disability_type
 
   birth_type                        Birth_type
-  gestational_age_weeks             Int
-  gestational_age_days              Int
-  premature_birth                   Boolean 
-  pregnancy_observations            String
+  gestational_age_weeks             Int @default(0)
+  gestational_age_days              Int @default(0)
+  premature_birth                   Boolean @default(false)
+  pregnancy_observations            String @default("")
 
   is_in_childhood_education         Boolean
-  entry_year                        Int
+  entry_year                        Int @default(0)
   diff_with_children                Boolean
-  diff_with_children_description    String
+  diff_with_children_description    String @default("")
 
   plays_more_with                   Plays_more_with
-  where_plays                       String 
-  plays_with_eletronics             Boolean
+  where_plays                       String @default("")
+  plays_with_eletronics             Boolean 
   eletronics_time                   Screen_time
   watches_tv                        Boolean
   tv_time                           Screen_time
   sleep_time                        Sleep_Time
 
-  who_lives_with                    Kinship // tabela ou varios boolean
+  who_lives_with                    Kinship // ou alterar para array de Kinship ou campos booleanos
   family_play_time                  Family_time
   talk_to_the_child                 Frequencia
   has_kids_book_at_home             Boolean
@@ -477,83 +479,86 @@ model happychild_on_hc{
   walks_with_child                  Frequencia
 
   affection                         Affection
+  affection_other                   String @default("")
 
-  comments                          String
+  comments                          String @default("")
 }
 
-model pregnant_on_hc{
+
+model pregnant_on_hc {
   id                             Int @id @default(autoincrement())
-  nis_number                     Int
+  canDelete                      Boolean @default(true)
+  nis_number                     String
   name                           String
   cellphone_number               String
   email                          String
   birthday                       DateTime
   age                            Int
-  filiation_1                    String?                 @default("Não declarado")
-  filiation_2                    String?
+  filiation_1                    String? @default("Não declarado")
+  filiation_2                    String? @default("")
   color_race                     Color_race
   sus_number                     Int
 
-  //visiting_time                Time 
+  visiting_time                  String // Supondo que seja uma string, pode ser ajustado para DateTime se necessário
   visiting_day                   Days_of_week
 
   gestation_time                 Int
   parents_location               Parents_location
   can_read_write                 Boolean
   study_now                      Boolean
-  where_study                    String
+  where_study                    String @default("")
   work_now                       Boolean
-  where_work                     String
+  where_work                     String @default("")
   marital_status                 Marital_status             
-  lives_with                     Kinship // tabela, ou varios boolean, ou array de kinship
+  lives_with                     Kinship // ou alterar para array de Kinship ou campos booleanos
 
   prenatal_init                  Prenatal_init
   prenatal_number                Int
   prenatal_partner               Prenatal_partner
   gestational_period             Gestational_period
-  planned_pregnancy              Boolean
+  planned_pregnancy              Boolean 
   sleep_good                     Boolean
   physical_exercise              Boolean
 
   medical_service                Medical_service 
-  medical_service_other          String
-  knows_maternity                Boolean
-  where_maternity                String
+  medical_service_other          String @default("")
+  knows_maternity                Boolean 
+  where_maternity                String @default("")
   birth_type                     Birth_type 
-  birth_type_justification       String
+  birth_type_justification       String @default("")
 
   pregnants_group                Boolean
-  pregnants_group_where          String
+  pregnants_group_where          String @default("")
 
-  pregnant_questions             String
+  pregnant_questions             String @default("")
 
   family_support                 Boolean
   support_pospartum              Boolean
-  support_pospartum_who          String
+  support_pospartum_who          String @default("")
   
   want_partum_companion          Boolean
-  want_partum_companion_who      String
+  want_partum_companion_who      String @default("")
 
   knows_rn                       Boolean
 
   baby_layette                   Baby_layette 
 
   continue_pcf                   Boolean
-  expectation_pcf                String
+  expectation_pcf                String @default("")
 
   previously_pregnant            Previously_pregnant 
   livebirths_number              Count_3_or_more
   stillbirths_number             Count_3_or_more
-  abortion_number                Count_3_or_more
+  abortion_number                Count_3_or_more 
 
   partum_date                    DateTime
   partum_result                  Partum_result
   partum_premature               Boolean
-  partum_premature_weeks         Int
+  partum_premature_weeks         Int @default(0)
   partum_type                    Birth_type
 
   had_partum_companion           Boolean
-  had_partum_companion_who       String
+  had_partum_companion_who       String @default("")
 
   postpartum_appointment         Boolean
   postpartum_appointment_date    DateTime
@@ -561,7 +566,7 @@ model pregnant_on_hc{
   family_planning                Boolean
 
   inactivation_reason            Inactivation_reason  
-  observations                   String
+  observations                   String @default("")
 
   live_with_conjugate            Boolean
   conjugate_is_father            Boolean
@@ -572,13 +577,14 @@ model pregnant_on_hc{
   conjugate_instruction_level    Level_education
   conjugate_currently_studing    Boolean
   conjugate_work_now             Boolean
-  conjugate_profession           String
-  conjugate_work_hours           Int
+  conjugate_profession           String @default("")
+  conjugate_work_hours           Int @default(0)
 }
 
-model family_on_hc{
+model family_on_hc {
   id                                Int @id @default(autoincrement())
-  nis_number                        Int
+  canDelete                         Boolean @default(true)
+  nis_number                        String 
   uf                                String
   city                              String
   neighborhood                      String
@@ -591,7 +597,7 @@ model family_on_hc{
   rooms_number                      Int
   safe_space                        Safe_space
   water_supply                      Water_supply
-  water_supply_other                String
+  water_supply_other                String @default("")
   treated_water                     Boolean
   has_bathroom                      Boolean
   has_electricity                   Boolean
@@ -605,28 +611,28 @@ model family_on_hc{
   has_newspaper                     Boolean
   has_computer                      Boolean
   has_computer_internet             Boolean
-  has_other_eletronics              Boolean
-  other_eletronics                  String
+  has_other_eletronics              Boolean 
+  other_eletronics                  String @default("")
 
   has_car                           Boolean
   has_motorcycle                    Boolean
   has_bicycle                       Boolean
   has_public_transport              Boolean
-  has_other_transport               Boolean
-  other_transport                   String
+  has_other_transport               Boolean 
+  other_transport                   String @default("")
   
   social_benefits                   Boolean
-  social_benefits_which             String
+  social_benefits_which             String @default("")
   residents_number                  Int
   family_speaks_other_lang          Boolean
-  family_speaks_other_lang_which    String
+  family_speaks_other_lang_which    String @default("")
 
   family_head                       Kinship
   family_head_phone_number          String
-  family_head_ocupation             String
+  family_head_ocupation             String @default("")
 
   family_contribution               Boolean
-  family_contribution_who           String
+  family_contribution_who           String @default("")
 
   residents_0_3                     Boolean
   residents_4_6                     Boolean
@@ -635,8 +641,8 @@ model family_on_hc{
   residents_19_59                   Boolean
   residents_60_more                 Boolean
 
-  residents_0_3_number              Int
-  residents_4_6_number              Int
+  residents_0_3_number              Int @default(0)
+  residents_4_6_number              Int @default(0)
   residents_childrens_served        Boolean
 
   people_with_disabilities          Boolean
@@ -650,12 +656,12 @@ model family_on_hc{
   mother_with_stillbirth            Boolean
 
   domestic_animals                  Boolean
-  number_of_cats                    Int
-  number_of_dogs                    Int
-  number_of_birds                   Int
-  other_animals                     String
+  number_of_cats                    Int @default(0)
+  number_of_dogs                    Int @default(0)
+  number_of_birds                   Int @default(0)
+  other_animals                     String @default("")
 
-  primary_caregiver_of_children     String //perguntar se é Kinship ou Nome do responsável
+  primary_caregiver_of_children     String // Perguntar se é Kinship ou Nome do responsável
   has_pregnant                      Boolean
 
   best_visit_period                 Day_period 
@@ -664,19 +670,19 @@ model family_on_hc{
   relatives_in_the_city             Relatives_in_city
   family_participation_in_community Boolean
   family_religion                   Religions
-  family_religion_which             String 
-  expectation_pcf                   String
+  family_religion_other             String @default("")
+  expectation_pcf                   String @default("")
 
   family_health_care                Family_health_care
   family_esf_attendance             Boolean
-  family_esf_attendance_which       String
+  family_esf_attendance_which       String @default("")
   family_health_agent_visit         Boolean
-  family_health_agent_visit_which   String
+  family_health_agent_visit_which   String @default("")
 
   services_accompanying_family      Services_accompanying_family 
-  initial_reception_method_pcf      Reception_method 
-  
+  initial_reception_method_pcf      Reception_method
 }
+
 
 // ENUMS ================================================================================================================
 
@@ -703,10 +709,12 @@ enum Kinship {
   NETO_A
   PAI
   MAE
+  AVO
   SOGRO_A
   IRMAO_A
   GENRO
   NORA
+  PRIMO_A
   OUTRO
   NAO_PARENTE
 }
@@ -843,6 +851,7 @@ enum Previously_pregnant {
 }
 
 enum Count_3_or_more {
+  NENHUM
   UM
   DOIS
   TRES_OU_MAIS
@@ -1031,8 +1040,16 @@ enum Relatives_in_city {
 }
 
 enum Religions {
+  NENHUMA
+  ATEU
   CATOLICO
   EVANGELICO
+  ESPIRITA
+  UMBANDISTA
+  CANDOMBLECISTA
+  BUDISTA
+  JUDEU
+  ISLAMICO
   OUTROS
 }
 
