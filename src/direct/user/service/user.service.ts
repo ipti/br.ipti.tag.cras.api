@@ -20,14 +20,14 @@ export class UserService {
 
     if (userRegistered) {
       throw new HttpException(
-        'Username already exists',
+        'O nome de usuário já existe, tente utilizar outro',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (request.user === undefined && createUser.edcenso_city === undefined) {
       throw new HttpException(
-        'YOU MUST PUT THE CITY ID IN THE BODY IF YOU ARE NOT LOGGED IN AS A SECRETARY',
+        'VOCÊ DEVE COLOCAR O ID DA CIDADE NO CORPO SE NÃO ESTIVER LOGADO COMO SECRETÁRIO',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -85,7 +85,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
     }
 
     return user;
