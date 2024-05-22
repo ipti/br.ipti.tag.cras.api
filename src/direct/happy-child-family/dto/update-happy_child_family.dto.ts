@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateHappyChildFamilyDto } from './create-happy_child_family.dto';
+import { CreateFamilyOnHcDto } from './create-happy_child_family.dto';
 
-export class UpdateFamilyBenefitsDto extends PartialType(CreateHappyChildFamilyDto) {}
+export class UpdateFamilyOnHcDto extends PartialType(CreateFamilyOnHcDto) {}

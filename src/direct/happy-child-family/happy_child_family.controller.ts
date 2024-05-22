@@ -18,7 +18,7 @@ import {
     ApiTags,
   } from '@nestjs/swagger';
   import { JwtAuthGuard } from '../../auth/shared/jwt-auth.guard';
-  import { CreateHappyChildFamilyDto } from '../dto/create-happy_child_family.dto'
+  import { CreateHappyChildFamilyDto } from '../dto/create-happy_child_family.dto';
   import { UpdateHappyChildFamilyDto } from '../dto/update-happy_child_family.dto'
   import { HappyChildFamilyService } from '../service/happy_child_family.service'
   import { HappyChildFamilyDocument } from '../doc/happy_child_family'
