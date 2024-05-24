@@ -18,24 +18,25 @@ import {
     ApiTags,
   } from '@nestjs/swagger';
   import { JwtAuthGuard } from '../../auth/shared/jwt-auth.guard';
-  import { CreateHappyChildFamilyDto } from '../dto/create-happy_child_family.dto';
-  import { UpdateHappyChildFamilyDto } from '../dto/update-happy_child_family.dto'
-  import { HappyChildFamilyService } from '../service/happy_child_family.service'
-  import { HappyChildFamilyDocument } from '../doc/happy_child_family'
+  import { HappyChildFamilyService } from './service/happy_child.service';
+import { HappyChildFamilyDocument } from './doc/happy_child_family';
+import { CreateFamilyOnHcDto } from './dto/create-happy_child_family.dto';
+import { UpdateFamilyOnHcDto } from './dto/update-happy_child_family.dto';
+
   
-  @ApiTags('FamilyBenefits')
+  @ApiTags('HappyChildFamily')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   @Controller()
-  export class FamilyBenefitsController {
+  export class HappyChildFamilyController {
     constructor(
       private readonly happyChildFamilyService: HappyChildFamilyService,
     ) {}
   
     @Post()
     @ApiCreatedResponse({ type: HappyChildFamilyDocument })
-    create(@Req() request, @Body() createTechnician: CreateHappyChildFamilyDto) {
-      return this.happyChildFamilyService.create(request, createTechnician);
+    create(@Req() request, @Body() createFamilyOnHcDto: CreateFamilyOnHcDto) {
+      return this.happyChildFamilyService.create(createFamilyOnHcDto);
     }
   
     @Get()
@@ -47,7 +48,7 @@ import {
     @Get(':id')
     @ApiOkResponse({ type: HappyChildFamilyDocument })
     findOne(@Req() request, @Param('id') id: string) {
-      return this.happyChildFamilyService.findOne(request, id);
+      return this.happyChildFamilyService.findOne(request, +id);
     }
   
     @Put(':id')
@@ -55,7 +56,7 @@ import {
     update(
       @Req() request,
       @Param('id') id: string,
-      @Body() updateTechnician: UpdateHappyChildFamilyDto,
+      @Body() updateTechnician: UpdateFamilyOnHcDto,
     ) {
       return this.happyChildFamilyService.update(request, id, updateTechnician);
     }

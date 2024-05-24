@@ -12,6 +12,7 @@ import { TechnicianModule } from './technician/technician.module';
 import { UserModule } from './user/user.module';
 import { UserIdentifyModule } from './user-identify/user_identify.module';
 import { VulnerabilityModule } from './vulnerability/vulnerability.module';
+import { HappyChildFamilyModule } from './happy-child-family/happy_child_family.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { VulnerabilityModule } from './vulnerability/vulnerability.module';
     BenefitsModule,
     FamilyModule,
     FamilyBenefitsModule,
+    HappyChildFamilyModule,
     TaskModule,
     TechnicianModule,
     UserModule,

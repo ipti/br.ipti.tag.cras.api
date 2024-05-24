@@ -39,9 +39,6 @@ model user_identify {
   income                      Int?                         @default(0)
   kinship                     Kinship?                     @default(OUTRO)
   attendances                 attendance[]
-  family_on_hc                family_on_hc[]
-  happychild_on_hc            happychild_on_hc[]
-  pregnant_on_hc              pregnant_on_hc[]
   forwarding                  family_or_user_forwarding[]
   edcenso_city                edcenso_city                 @relation(fields: [edcenso_city_fk], references: [id])
   family                      family?                      @relation(fields: [family_fk], references: [id], onDelete: Cascade)
@@ -472,8 +469,7 @@ model happychild_on_hc {
   affection                         Affection
   affection_other                   String                   @default("")
   comments                          String                   @default("")
-  id_user_identify                  Int?
-  user_identify                     user_identify?           @relation(fields: [id_user_identify], references: [id])
+
 }
 
 model pregnant_on_hc {
@@ -552,8 +548,6 @@ model pregnant_on_hc {
   conjugate_work_now          Boolean
   conjugate_profession        String              @default("")
   conjugate_work_hours        Int                 @default(0)
-  id_user_identify            Int?
-  user_identify               user_identify?      @relation(fields: [id_user_identify], references: [id])
 }
 
 model family_on_hc {
@@ -641,8 +635,6 @@ model family_on_hc {
   family_health_agent_visit_which   String                       @default("")
   services_accompanying_family      Services_accompanying_family
   initial_reception_method_pcf      Reception_method
-  id_user_identify                  Int?
-  user_identify                     user_identify?               @relation(fields: [id_user_identify], references: [id])
 }
 
 enum Benefits {

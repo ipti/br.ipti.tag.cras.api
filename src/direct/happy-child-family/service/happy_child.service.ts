@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFamilyOnHcDto } from '../dto/create-happy_child_family.dto'
 import { UpdateFamilyOnHcDto } from '../dto/update-happy_child_family.dto'
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -7,17 +7,21 @@ import { Request } from 'express';
 
 
 @Injectable()
-export class FamilyBenefitsService {
+export class HappyChildFamilyService {
+  async remove(request: any, id: string) {
+    await this.prismaService.family_on_hc.delete({
+      where: {
+        id: +id,
+      },
+    });
+  }
+
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createFamilyOnHcDto: CreateFamilyOnHcDto): Promise<family_on_hc> {
     const family_on_hc = await this.prismaService.family_on_hc.create({
       data: {
         canDelete: createFamilyOnHcDto.canDelete ?? true,
-        nis_number: createFamilyOnHcDto.nis_number,
-        uf: createFamilyOnHcDto.uf,
-        city: createFamilyOnHcDto.city,
-        neighborhood: createFamilyOnHcDto.neighborhood,
         ...createFamilyOnHcDto,
       },
         });
@@ -28,7 +32,7 @@ export class FamilyBenefitsService {
         return this.prismaService.family_on_hc.findMany();
     }
 
-    async findOne(id: number): Promise<family_on_hc> {
+    async findOne(request: any, id: number): Promise<family_on_hc> {
         const family_on_hc = await this.prismaService.family_on_hc.findUnique({
           where: { id },
         });
@@ -41,14 +45,13 @@ export class FamilyBenefitsService {
     }
 
     async update(request: Request, id: string, updateFamilyOnHcDto: UpdateFamilyOnHcDto): Promise<family_on_hc> {
-        const { family_id, happy_child_id } = updateFamilyOnHcDto;
+        //const { happy_child_id } = updateFamilyOnHcDto;
         const family_on_hc = await this.prismaService.family_on_hc.update({
             where: {
-                id: id,
+                id: +id,
             },
             data: {
-                family_id,
-                happy_child_id,
+                ...updateFamilyOnHcDto,
             },
         });
         return family_on_hc;
