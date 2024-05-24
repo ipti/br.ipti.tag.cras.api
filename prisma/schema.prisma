@@ -39,10 +39,14 @@ model user_identify {
   income                      Int?                         @default(0)
   kinship                     Kinship?                     @default(OUTRO)
   attendances                 attendance[]
+  family_on_hc                family_on_hc[]
+  happychild_on_hc            happychild_on_hc[]
+  pregnant_on_hc              pregnant_on_hc[]
   forwarding                  family_or_user_forwarding[]
   edcenso_city                edcenso_city                 @relation(fields: [edcenso_city_fk], references: [id])
   family                      family?                      @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   user_identify_vulnerability user_identify_vulnerability?
+
 
   @@index([edcenso_city_fk], map: "user_identify_edcenso_city_fk_fkey")
   @@index([family_fk], map: "user_identify_family_fk_fkey")
@@ -370,106 +374,94 @@ model group_attendance {
   @@index([family_fk], map: "group_attendance_family_fk_fkey")
 }
 
-//novas tabelas
 model happychild_on_hc {
-  id                                Int @id @default(autoincrement())
-  canDelete                         Boolean @default(true)
+  id                                Int                      @id @default(autoincrement())
+  canDelete                         Boolean                  @default(true)
   user_identify_fk                  Int
-  genre                             Genre   
+  genre                             Genre
   color_race                        Color_race
   cns_number                        Int
-
-  visiting_time                     String // Supondo que seja uma string, pode ser ajustado para DateTime se necessário
+  visiting_time                     String
   visiting_day                      Days_of_week
-  has_rcn                           Boolean  
-  has_parents_on_rcn                Boolean 
-
+  has_rcn                           Boolean
+  has_parents_on_rcn                Boolean
   primary_caregiver                 Kinship
   primary_caregiver_education_level Level_education
   currently_studying                Boolean
-  where_studying                    String @default("")
+  where_studying                    String                   @default("")
   currently_working                 Boolean
-  where_working                     String @default("")
-  profession                        String @default("")
-  working_hours                     Int @default(0)
-
+  where_working                     String                   @default("")
+  profession                        String                   @default("")
+  working_hours                     Int                      @default(0)
   cardeneta_saude_or_other          Cardeneta_saude_or_other
-  lil_feet_test                     Lil_tests @default(NAO)
-  lil_eye_test                      Lil_tests @default(NAO)
-  lil_heart_test                    Boolean 
-  lil_ear_test                      Lil_tests @default(NAO)
-
-  has_childs_weight                 Boolean 
+  lil_feet_test                     Lil_tests                @default(NAO)
+  lil_eye_test                      Lil_tests                @default(NAO)
+  lil_heart_test                    Boolean
+  lil_ear_test                      Lil_tests                @default(NAO)
+  has_childs_weight                 Boolean
   updated_vaccine_schedule          Boolean
   is_breastfed                      Is_breastfed
   breastfeeding_age                 Breastfeeding_age
-
-  health_problem                    Boolean @default(false)
-  sickleCellDisease                 Boolean @default(false)
-  anemia                            Boolean @default(false)
-  asthma                            Boolean @default(false)
-  diabetes                          Boolean @default(false)
-  hypertension                      Boolean @default(false)
-  gastroesophagealRefluxDisease     Boolean @default(false)
-  cardiovascularDiseases            Boolean @default(false)
-  hivExposure                       Boolean @default(false)
-  otherSTIExposure                  Boolean @default(false)
-  congenitalSyphilis                Boolean @default(false)
-  epilepsySeizures                  Boolean @default(false)
-  cleftLipPalate                    Boolean @default(false)
-  mouthBreather                     Boolean @default(false)
-  hyperactivityAttentionDeficit     Boolean @default(false)
-  lactoseIntolerance                Boolean @default(false)
-  proteinIntolerance                Boolean @default(false)
-  glutenIntolerance                 Boolean @default(false)
-  health_otherCondition             String @default("")
-
-  medical_monitoring                Boolean @default(false)
-  cardiology                        Boolean @default(false)
-  endocrinology                     Boolean @default(false)
-  physiotherapy                     Boolean @default(false)
-  speechTherapy                     Boolean @default(false)
-  pediatrics                        Boolean @default(false)
-  pulmonology                       Boolean @default(false)
-  neuropediatrics                   Boolean @default(false)
-  ophthalmology                     Boolean @default(false)
-  psychology                        Boolean @default(false)
-  gastroenterology                  Boolean @default(false)
-  infectiology                      Boolean @default(false)
-  dentistry                         Boolean @default(false)
-  psychopedagogy                    Boolean @default(false)
-  occupationalTherapy               Boolean @default(false)
-  musicTherapy                      Boolean @default(false)
-  equotherapy                       Boolean @default(false)
-  proteinIntoleranceSpecialist      Boolean @default(false)
-  glutenIntoleranceSpecialist       Boolean @default(false)
-  otherDoctor                       String @default("")
-  notBeingFollowed                  Boolean @default(false)
- 
-  medical_service                   Medical_service  
-  has_disability                    Boolean @default(false)
+  health_problem                    Boolean                  @default(false)
+  sickleCellDisease                 Boolean                  @default(false)
+  anemia                            Boolean                  @default(false)
+  asthma                            Boolean                  @default(false)
+  diabetes                          Boolean                  @default(false)
+  hypertension                      Boolean                  @default(false)
+  gastroesophagealRefluxDisease     Boolean                  @default(false)
+  cardiovascularDiseases            Boolean                  @default(false)
+  hivExposure                       Boolean                  @default(false)
+  otherSTIExposure                  Boolean                  @default(false)
+  congenitalSyphilis                Boolean                  @default(false)
+  epilepsySeizures                  Boolean                  @default(false)
+  cleftLipPalate                    Boolean                  @default(false)
+  mouthBreather                     Boolean                  @default(false)
+  hyperactivityAttentionDeficit     Boolean                  @default(false)
+  lactoseIntolerance                Boolean                  @default(false)
+  proteinIntolerance                Boolean                  @default(false)
+  glutenIntolerance                 Boolean                  @default(false)
+  health_otherCondition             String                   @default("")
+  medical_monitoring                Boolean                  @default(false)
+  cardiology                        Boolean                  @default(false)
+  endocrinology                     Boolean                  @default(false)
+  physiotherapy                     Boolean                  @default(false)
+  speechTherapy                     Boolean                  @default(false)
+  pediatrics                        Boolean                  @default(false)
+  pulmonology                       Boolean                  @default(false)
+  neuropediatrics                   Boolean                  @default(false)
+  ophthalmology                     Boolean                  @default(false)
+  psychology                        Boolean                  @default(false)
+  gastroenterology                  Boolean                  @default(false)
+  infectiology                      Boolean                  @default(false)
+  dentistry                         Boolean                  @default(false)
+  psychopedagogy                    Boolean                  @default(false)
+  occupationalTherapy               Boolean                  @default(false)
+  musicTherapy                      Boolean                  @default(false)
+  equotherapy                       Boolean                  @default(false)
+  proteinIntoleranceSpecialist      Boolean                  @default(false)
+  glutenIntoleranceSpecialist       Boolean                  @default(false)
+  otherDoctor                       String                   @default("")
+  notBeingFollowed                  Boolean                  @default(false)
+  medical_service                   Medical_service
+  has_disability                    Boolean                  @default(false)
   disability_type                   Disability_type
-
   birth_type                        Birth_type
-  gestational_age_weeks             Int @default(0)
-  gestational_age_days              Int @default(0)
-  premature_birth                   Boolean @default(false)
-  pregnancy_observations            String @default("")
-
+  gestational_age_weeks             Int                      @default(0)
+  gestational_age_days              Int                      @default(0)
+  premature_birth                   Boolean                  @default(false)
+  pregnancy_observations            String                   @default("")
   is_in_childhood_education         Boolean
-  entry_year                        Int @default(0)
+  entry_year                        Int                      @default(0)
   diff_with_children                Boolean
-  diff_with_children_description    String @default("")
-
+  diff_with_children_description    String                   @default("")
   plays_more_with                   Plays_more_with
-  where_plays                       String @default("")
-  plays_with_eletronics             Boolean 
+  where_plays                       String                   @default("")
+  plays_with_eletronics             Boolean
   eletronics_time                   Screen_time
   watches_tv                        Boolean
   tv_time                           Screen_time
   sleep_time                        Sleep_Time
-
-  who_lives_with                    Kinship // ou alterar para array de Kinship ou campos booleanos
+  who_lives_with                    Kinship
   family_play_time                  Family_time
   talk_to_the_child                 Frequencia
   has_kids_book_at_home             Boolean
@@ -477,114 +469,97 @@ model happychild_on_hc {
   tells_stories                     Frequencia
   sings                             Frequencia
   walks_with_child                  Frequencia
-
   affection                         Affection
-  affection_other                   String @default("")
-
-  comments                          String @default("")
+  affection_other                   String                   @default("")
+  comments                          String                   @default("")
+  id_user_identify                  Int?
+  user_identify                     user_identify?           @relation(fields: [id_user_identify], references: [id])
 }
 
-
 model pregnant_on_hc {
-  id                             Int @id @default(autoincrement())
-  canDelete                      Boolean @default(true)
-  nis_number                     String
-  name                           String
-  cellphone_number               String
-  email                          String
-  birthday                       DateTime
-  age                            Int
-  filiation_1                    String? @default("Não declarado")
-  filiation_2                    String? @default("")
-  color_race                     Color_race
-  sus_number                     Int
-
-  visiting_time                  String // Supondo que seja uma string, pode ser ajustado para DateTime se necessário
-  visiting_day                   Days_of_week
-
-  gestation_time                 Int
-  parents_location               Parents_location
-  can_read_write                 Boolean
-  study_now                      Boolean
-  where_study                    String @default("")
-  work_now                       Boolean
-  where_work                     String @default("")
-  marital_status                 Marital_status             
-  lives_with                     Kinship // ou alterar para array de Kinship ou campos booleanos
-
-  prenatal_init                  Prenatal_init
-  prenatal_number                Int
-  prenatal_partner               Prenatal_partner
-  gestational_period             Gestational_period
-  planned_pregnancy              Boolean 
-  sleep_good                     Boolean
-  physical_exercise              Boolean
-
-  medical_service                Medical_service 
-  medical_service_other          String @default("")
-  knows_maternity                Boolean 
-  where_maternity                String @default("")
-  birth_type                     Birth_type 
-  birth_type_justification       String @default("")
-
-  pregnants_group                Boolean
-  pregnants_group_where          String @default("")
-
-  pregnant_questions             String @default("")
-
-  family_support                 Boolean
-  support_pospartum              Boolean
-  support_pospartum_who          String @default("")
-  
-  want_partum_companion          Boolean
-  want_partum_companion_who      String @default("")
-
-  knows_rn                       Boolean
-
-  baby_layette                   Baby_layette 
-
-  continue_pcf                   Boolean
-  expectation_pcf                String @default("")
-
-  previously_pregnant            Previously_pregnant 
-  livebirths_number              Count_3_or_more
-  stillbirths_number             Count_3_or_more
-  abortion_number                Count_3_or_more 
-
-  partum_date                    DateTime
-  partum_result                  Partum_result
-  partum_premature               Boolean
-  partum_premature_weeks         Int @default(0)
-  partum_type                    Birth_type
-
-  had_partum_companion           Boolean
-  had_partum_companion_who       String @default("")
-
-  postpartum_appointment         Boolean
-  postpartum_appointment_date    DateTime
-
-  family_planning                Boolean
-
-  inactivation_reason            Inactivation_reason  
-  observations                   String @default("")
-
-  live_with_conjugate            Boolean
-  conjugate_is_father            Boolean
-  conjugate_full_name            String
-  conjugate_birth_date           DateTime
-  conjugate_cns_number           String
-  conjugate_nis_number           String
-  conjugate_instruction_level    Level_education
-  conjugate_currently_studing    Boolean
-  conjugate_work_now             Boolean
-  conjugate_profession           String @default("")
-  conjugate_work_hours           Int @default(0)
+  id                          Int                 @id @default(autoincrement())
+  canDelete                   Boolean             @default(true)
+  nis_number                  String
+  name                        String
+  cellphone_number            String
+  email                       String
+  birthday                    DateTime
+  age                         Int
+  filiation_1                 String?             @default("Não declarado")
+  filiation_2                 String?             @default("")
+  color_race                  Color_race
+  sus_number                  Int
+  visiting_time               String
+  visiting_day                Days_of_week
+  gestation_time              Int
+  parents_location            Parents_location
+  can_read_write              Boolean
+  study_now                   Boolean
+  where_study                 String              @default("")
+  work_now                    Boolean
+  where_work                  String              @default("")
+  marital_status              Marital_status
+  lives_with                  Kinship
+  prenatal_init               Prenatal_init
+  prenatal_number             Int
+  prenatal_partner            Prenatal_partner
+  gestational_period          Gestational_period
+  planned_pregnancy           Boolean
+  sleep_good                  Boolean
+  physical_exercise           Boolean
+  medical_service             Medical_service
+  medical_service_other       String              @default("")
+  knows_maternity             Boolean
+  where_maternity             String              @default("")
+  birth_type                  Birth_type
+  birth_type_justification    String              @default("")
+  pregnants_group             Boolean
+  pregnants_group_where       String              @default("")
+  pregnant_questions          String              @default("")
+  family_support              Boolean
+  support_pospartum           Boolean
+  support_pospartum_who       String              @default("")
+  want_partum_companion       Boolean
+  want_partum_companion_who   String              @default("")
+  knows_rn                    Boolean
+  baby_layette                Baby_layette
+  continue_pcf                Boolean
+  expectation_pcf             String              @default("")
+  previously_pregnant         Previously_pregnant
+  livebirths_number           Count_3_or_more
+  stillbirths_number          Count_3_or_more
+  abortion_number             Count_3_or_more
+  partum_date                 DateTime
+  partum_result               Partum_result
+  partum_premature            Boolean
+  partum_premature_weeks      Int                 @default(0)
+  partum_type                 Birth_type
+  had_partum_companion        Boolean
+  had_partum_companion_who    String              @default("")
+  postpartum_appointment      Boolean
+  postpartum_appointment_date DateTime
+  family_planning             Boolean
+  inactivation_reason         Inactivation_reason
+  observations                String              @default("")
+  live_with_conjugate         Boolean
+  conjugate_is_father         Boolean
+  conjugate_full_name         String
+  conjugate_birth_date        DateTime
+  conjugate_cns_number        String
+  conjugate_nis_number        String
+  conjugate_instruction_level Level_education
+  conjugate_currently_studing Boolean
+  conjugate_work_now          Boolean
+  conjugate_profession        String              @default("")
+  conjugate_work_hours        Int                 @default(0)
+  id_user_identify            Int?
+  user_identify               user_identify?      @relation(fields: [id_user_identify], references: [id])
 }
 
 model family_on_hc {
-  id                                Int @id @default(autoincrement())
-  canDelete                         Boolean @default(true)
-  nis_number                        String 
+  id                                Int                          @id @default(autoincrement())
+  canDelete                         Boolean                      @default(true)
+  nis_number                        String
   uf                                String
   city                              String
   neighborhood                      String
@@ -592,16 +567,14 @@ model family_on_hc {
   cep                               String
   reference                         String
   area                              Housing_area
-  
   house_walls                       House_walls
   rooms_number                      Int
   safe_space                        Safe_space
   water_supply                      Water_supply
-  water_supply_other                String @default("")
+  water_supply_other                String                       @default("")
   treated_water                     Boolean
   has_bathroom                      Boolean
   has_electricity                   Boolean
-
   has_cellphone                     Boolean
   has_cellphone_internet            Boolean
   has_refrigerator                  Boolean
@@ -611,40 +584,33 @@ model family_on_hc {
   has_newspaper                     Boolean
   has_computer                      Boolean
   has_computer_internet             Boolean
-  has_other_eletronics              Boolean 
-  other_eletronics                  String @default("")
-
+  has_other_eletronics              Boolean
+  other_eletronics                  String                       @default("")
   has_car                           Boolean
   has_motorcycle                    Boolean
   has_bicycle                       Boolean
   has_public_transport              Boolean
-  has_other_transport               Boolean 
-  other_transport                   String @default("")
-  
+  has_other_transport               Boolean
+  other_transport                   String                       @default("")
   social_benefits                   Boolean
-  social_benefits_which             String @default("")
+  social_benefits_which             String                       @default("")
   residents_number                  Int
   family_speaks_other_lang          Boolean
-  family_speaks_other_lang_which    String @default("")
-
+  family_speaks_other_lang_which    String                       @default("")
   family_head                       Kinship
   family_head_phone_number          String
-  family_head_ocupation             String @default("")
-
+  family_head_ocupation             String                       @default("")
   family_contribution               Boolean
-  family_contribution_who           String @default("")
-
+  family_contribution_who           String                       @default("")
   residents_0_3                     Boolean
   residents_4_6                     Boolean
   residents_7_12                    Boolean
   residents_13_18                   Boolean
   residents_19_59                   Boolean
   residents_60_more                 Boolean
-
-  residents_0_3_number              Int @default(0)
-  residents_4_6_number              Int @default(0)
+  residents_0_3_number              Int                          @default(0)
+  residents_4_6_number              Int                          @default(0)
   residents_childrens_served        Boolean
-
   people_with_disabilities          Boolean
   alcool_abuse                      Boolean
   drug_abuse                        Boolean
@@ -654,37 +620,30 @@ model family_on_hc {
   inmate_socio_edu_measures         Boolean
   mother_with_deceased_child        Boolean
   mother_with_stillbirth            Boolean
-
   domestic_animals                  Boolean
-  number_of_cats                    Int @default(0)
-  number_of_dogs                    Int @default(0)
-  number_of_birds                   Int @default(0)
-  other_animals                     String @default("")
-
-  primary_caregiver_of_children     String // Perguntar se é Kinship ou Nome do responsável
+  number_of_cats                    Int                          @default(0)
+  number_of_dogs                    Int                          @default(0)
+  number_of_birds                   Int                          @default(0)
+  other_animals                     String                       @default("")
+  primary_caregiver_of_children     String
   has_pregnant                      Boolean
-
-  best_visit_period                 Day_period 
+  best_visit_period                 Day_period
   best_visit_day                    Days_of_week
-
   relatives_in_the_city             Relatives_in_city
   family_participation_in_community Boolean
   family_religion                   Religions
-  family_religion_other             String @default("")
-  expectation_pcf                   String @default("")
-
+  family_religion_other             String                       @default("")
+  expectation_pcf                   String                       @default("")
   family_health_care                Family_health_care
   family_esf_attendance             Boolean
-  family_esf_attendance_which       String @default("")
+  family_esf_attendance_which       String                       @default("")
   family_health_agent_visit         Boolean
-  family_health_agent_visit_which   String @default("")
-
-  services_accompanying_family      Services_accompanying_family 
+  family_health_agent_visit_which   String                       @default("")
+  services_accompanying_family      Services_accompanying_family
   initial_reception_method_pcf      Reception_method
+  id_user_identify                  Int?
+  user_identify                     user_identify?               @relation(fields: [id_user_identify], references: [id])
 }
-
-
-// ENUMS ================================================================================================================
 
 enum Benefits {
   PERIODICO
@@ -741,6 +700,7 @@ enum Lil_tests {
   NAO
   AGENDADO
 }
+
 enum Situation {
   ATIVO
   BLOQUEADO
