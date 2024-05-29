@@ -276,6 +276,7 @@ model attendance_unity {
   family            family[]
   technician        technician[]
   technician_visits technician_visits[]
+  family_on_hc      family_on_hc[]
 
   @@index([edcenso_city_fk], map: "attendance_unity_edcenso_city_fk_fkey")
 }
@@ -635,6 +636,9 @@ model family_on_hc {
   family_health_agent_visit_which   String                       @default("")
   services_accompanying_family      Services_accompanying_family
   initial_reception_method_pcf      Reception_method
+
+  attendance_unity      attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
+  attendance_unity_fk   Int  @unique
 }
 
 enum Benefits {

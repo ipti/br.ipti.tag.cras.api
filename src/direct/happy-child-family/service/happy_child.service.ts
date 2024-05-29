@@ -32,6 +32,18 @@ export class HappyChildFamilyService {
         return this.prismaService.family_on_hc.findMany();
     }
 
+    async getFamilyOnHcById(request: Request, id: number): Promise<family_on_hc> {
+        const family_on_hc = await this.prismaService.family_on_hc.findUnique({
+          where: { id },
+        });
+        
+        if (!family_on_hc) {
+          throw new NotFoundException(`FamilyOnHc with ID ${id} not found`);
+        }
+        
+        return family_on_hc;
+    }
+
     async findOne(request: any, id: number): Promise<family_on_hc> {
         const family_on_hc = await this.prismaService.family_on_hc.findUnique({
           where: { id },

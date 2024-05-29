@@ -354,5 +354,7 @@ import {
     @IsNotEmpty()
     @IsEnum(Reception_method)
     initial_reception_method_pcf: Reception_method;
+
+    //todo: colocar o campo da fk de attendance unity
   }
   
