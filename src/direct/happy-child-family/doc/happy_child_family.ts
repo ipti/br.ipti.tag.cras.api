@@ -22,7 +22,7 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class CreateFamilyOnHcDto {
+export class HappyChildFamilyDocument {
     @ApiPropertyOptional({ type: Boolean })
     canDelete?: boolean;
 

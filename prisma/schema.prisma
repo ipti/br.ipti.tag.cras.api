@@ -553,7 +553,7 @@ model pregnant_on_hc {
 
 model family_on_hc {
   id                                Int                           @id @default(autoincrement())
-  canDelete                         Boolean?                      @default(true)
+  canDelete                         Boolean                       @default(true)
   nis_number                        String
   uf                                String
   city                              String
@@ -605,7 +605,7 @@ model family_on_hc {
   residents_60_more                 Boolean
   residents_0_3_number              Int?                          @default(0)
   residents_4_6_number              Int?                          @default(0)
-  residents_childrens_served        Boolean?
+  residents_childrens_served        Boolean
   people_with_disabilities          Boolean
   alcool_abuse                      Boolean
   drug_abuse                        Boolean
@@ -638,7 +638,7 @@ model family_on_hc {
   initial_reception_method_pcf      Reception_method
  
   attendance_unity      attendance_unity    @relation(fields: [attendance_unity_fk], references: [id])
-  attendance_unity_fk   Int  @unique
+  attendance_unity_fk   Int
 }
 
 enum Benefits {
