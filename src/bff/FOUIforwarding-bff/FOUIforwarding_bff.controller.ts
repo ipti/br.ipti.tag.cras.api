@@ -53,11 +53,12 @@ export class FOUIForwardingBffController {
 
   @Get('family')
   @ApiOkResponse({ isArray: true })
-  getFamilyForwarding(
+  async getFamilyForwarding(
     @Req() request: Request,
     @Query('familyId') familyId: string,
   ) {
-    return this.FOUIForwardingBffService.getFamilyForwarding(request, familyId);
+    const forwardings = await this.FOUIForwardingBffService.getFamilyForwarding(request, familyId);
+    return forwardings;
   }
 
   @Get('user-identify')

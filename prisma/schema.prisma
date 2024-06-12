@@ -318,7 +318,7 @@ model family_or_user_forwarding {
   date             DateTime        @default(now())
   description      String?
   report           String?
-  status           Status_document @default(PENDENTE)
+  status           Status_document @default(NAO_SE_APLICA)
   attendances      attendance[]
   family           family?         @relation(fields: [family_fk], references: [id], onDelete: Cascade)
   forwading        forwading       @relation(fields: [forwading_fk], references: [id])
@@ -735,6 +735,7 @@ enum ForwadingType {
 }
 
 enum Status_document {
+  NAO_SE_APLICA
   PENDENTE
   DEFERIDO
   INDEFERIDO
