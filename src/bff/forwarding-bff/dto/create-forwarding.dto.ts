@@ -14,8 +14,6 @@ export class CreateForwardingDto {
   @IsString()
   name: string;
 
-
-
   @IsOptional()
   @IsBoolean()
   canDelete: boolean;
@@ -23,8 +21,4 @@ export class CreateForwardingDto {
   @IsNotEmpty()
   @IsEnum(ForwadingType)
   type: ForwadingType;
-
-  @IsNotEmpty()
-  @IsEnum(Status_document)
-  status: Status_document;
 }

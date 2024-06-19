@@ -32,6 +32,7 @@ import { FOUIForwardingBffModule } from './bff/FOUIforwarding-bff/FOUIforwarding
 import { UserIdentifyVulnerabilityBffModule } from './bff/user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
 import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module';
 import { TechnicianVisitsBffModule } from './bff/technician-visits-bff/technician_visits.module';
+import { HappyChildFamilyModule } from './direct/happy-child-family/happy_child_family.module';
 
 @Module({
   imports: [
@@ -122,6 +123,10 @@ import { TechnicianVisitsBffModule } from './bff/technician-visits-bff/technicia
           {
             path: 'family-benefits',
             module: FamilyBenefitsModule,
+          },
+          {
+            path:'happy-child-family',
+            module: HappyChildFamilyModule,
           },
           {
             path: 'task',
