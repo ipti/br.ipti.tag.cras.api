@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `family_or_user_forwarding` MODIFY `status` ENUM('NAO_SE_APLICA', 'PENDENTE', 'DEFERIDO', 'INDEFERIDO') NOT NULL DEFAULT 'NAO_SE_APLICA';
