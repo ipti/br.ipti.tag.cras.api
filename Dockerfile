@@ -1,4 +1,4 @@
-FROM node:latest AS development
+FROM node:20 AS development
 
 WORKDIR /home/api
 
@@ -6,21 +6,21 @@ COPY --from=builder /home/api ./
 
 CMD [ "npm", "run", "start:dev" ]
 
-FROM node:latest AS builder
+FROM node:20 AS builder
 
 WORKDIR /home/api
 
 COPY package*.json ./
 COPY prisma ./prisma
 
-RUN npx prisma generate
 RUN npm ci
+RUN npx prisma generate
 
 COPY . .
 
 RUN npm run build
 
-FROM node:latest as production
+FROM node:20 AS production
 
 WORKDIR /home/api
 
