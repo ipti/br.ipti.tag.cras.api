@@ -28,4 +28,4 @@ COPY --from=builder /home/api ./
 
 EXPOSE 3000
 
-CMD [  "npm", "run", "start:migrate:prod" ]
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]

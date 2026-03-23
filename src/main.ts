@@ -45,6 +45,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
+  
+  app.enableShutdownHooks();
   await app.listen(process.env.PORT || process.env.APP_PORT || 3000, '0.0.0.0');
   if (module.hot) {
     module.hot.accept();
