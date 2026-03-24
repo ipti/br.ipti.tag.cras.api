@@ -2,16 +2,16 @@ version: '3'
 
 services:
   db:
-    image: mariadb
-    container_name: cras-db
+    image: mysql:8.0
+    container_name: mysql-db
     restart: always
-    command: --max_allowed_packet=32505856 --memlock=1
-    ports:
+    command: mysqld --sql_mode="" --max_allowed_packet=32505856
+    ports: 
       - 3306:3306
     environment:
-      MARIADB_ROOT_USER: root
-      MARIADB_ROOT_PASSWORD: root
-      MARIADB_USER: admin
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cras-db
     volumes:
       - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
     networks:
@@ -50,7 +50,7 @@ services:
       context: .
       target: production
       dockerfile: ./Dockerfile
-    command: npm run start:prod
+    command: npm run start:migrate:prod
     expose:
       - 587
     env_file:
