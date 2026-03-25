@@ -24,8 +24,10 @@ FROM node:20 AS production
 
 WORKDIR /home/api
 
+ENV PORT=80
+
 COPY --from=builder /home/api ./
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
