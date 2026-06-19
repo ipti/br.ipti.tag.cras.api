@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './shared/auth.service';
 import { JwtStrategy } from './shared/jwt.strategy';
 import { LocalStrategy } from './shared/local.strategy';
+import { PermissionsGuard } from './shared/permissions.guard';
 import { PrismaModule } from 'src/prisma/prisma.module';
 require('dotenv').config();
 
@@ -18,7 +19,7 @@ require('dotenv').config();
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, PermissionsGuard],
+  exports: [AuthService, PermissionsGuard],
 })
 export class AuthModule {}

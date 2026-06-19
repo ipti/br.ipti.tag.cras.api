@@ -3,6 +3,7 @@ import { AttendanceUnityService } from '../../../direct/attendance-unity/service
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Role } from '@prisma/client';
+import { Permission, hasPermission } from 'src/auth/permissions';
 
 @Injectable()
 export class FamilyBffService {
@@ -125,13 +126,13 @@ export class FamilyBffService {
 
   async deleteFamily(request: Request, familyId: string): Promise<any> {
     try {
-      if (request.user.role !== Role.SECRETARY) {
+      if (!hasPermission(request.user.role, Permission.FAMILY_DELETE)) {
         throw new HttpException(
           {
-            status: HttpStatus.UNAUTHORIZED,
+            status: HttpStatus.FORBIDDEN,
             error: 'Você não tem permissão para deletar uma família',
           },
-          HttpStatus.UNAUTHORIZED,
+          HttpStatus.FORBIDDEN,
         );
       }
 

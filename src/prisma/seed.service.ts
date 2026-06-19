@@ -1,11 +1,15 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Benefits, ForwadingType, PrismaClient } from '@prisma/client';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Benefits, ForwadingType, PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 @Injectable()
 export class SeedService implements OnModuleInit {
+  private readonly logger = new Logger(SeedService.name);
+
   async onModuleInit() {
+    await this.seedAdminUser();
     const seed = await prisma.$transaction(async (tx) => {
       const benefits = await tx.benefits.findMany({
         where: {
@@ -150,5 +154,30 @@ export class SeedService implements OnModuleInit {
         data: forwardingsToCreateFiltered,
       });
     });
+  }
+
+  private async seedAdminUser() {
+    const existing = await prisma.user.findUnique({
+      where: { username: 'admin' },
+    });
+
+    if (existing) return;
+
+    const password = await bcrypt.hash('admin@cras', 12);
+
+    await prisma.user.create({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: {
+        name: 'Administrador',
+        username: 'admin',
+        email: 'admin@cras.gov.br',
+        password,
+        role: Role.ADMIN,
+      } as any,
+    });
+
+    this.logger.log(
+      'Usuário admin criado. Login: admin | Senha: admin@cras',
+    );
   }
 }

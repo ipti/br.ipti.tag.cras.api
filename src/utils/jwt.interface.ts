@@ -5,7 +5,7 @@ export interface JwtPayload {
   username: string;
   id: number;
   role: Role;
-  edcenso_city_fk: number;
+  edcenso_city_fk: number | null;
   attendance_unity_fk?: number;
 }
 
