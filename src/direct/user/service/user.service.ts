@@ -3,9 +3,8 @@ import * as crypto from 'crypto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Request } from 'express';
-import { Role, user } from '@prisma/client';
+import { user } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 
 @Injectable()
 export class UserService {
@@ -25,36 +24,14 @@ export class UserService {
       );
     }
 
-    if (request.user === undefined && createUser.edcenso_city === undefined) {
-      throw new HttpException(
-        'VOCÊ DEVE COLOCAR O ID DA CIDADE NO CORPO SE NÃO ESTIVER LOGADO COMO SECRETÁRIO',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    var edcenso_city: number;
-
-    try {
-      if (request.user.role === Role.SECRETARY) {
-        edcenso_city = request.user.edcenso_city_fk;
-      } else {
-        edcenso_city = createUser.edcenso_city;
-      }
-    } catch (error) {
-      edcenso_city = createUser.edcenso_city;
-    }
-
     const cryptoPassword = this.encryptedMd5Password(createUser.password);
+
+    const { edcenso_city: _city, ...userDataWithoutCity } = createUser as any;
 
     const createdUser = await this.prismaService.user.create({
       data: {
-        ...createUser,
+        ...userDataWithoutCity,
         password: cryptoPassword,
-        edcenso_city: {
-          connect: {
-            id: edcenso_city,
-          },
-        },
       },
     });
 
@@ -65,9 +42,6 @@ export class UserService {
 
   async findAll(request: Request): Promise<user[]> {
     const allUser = await this.prismaService.user.findMany({
-      where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
-      },
       orderBy: {
         id: 'desc',
       },
@@ -80,7 +54,6 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: +id,
-        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -100,15 +73,9 @@ export class UserService {
       );
     }
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const userUpdated = await this.prismaService.user.update({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
-      data: { ...UpdateUserDto, edcenso_city: cityOptional },
+      where: { id: +id },
+      data: { ...UpdateUserDto },
     });
 
     return userUpdated;
@@ -118,7 +85,7 @@ export class UserService {
     await this.findOne(request, id);
 
     const userDeleted = await this.prismaService.user.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return userDeleted;

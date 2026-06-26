@@ -55,11 +55,6 @@ export class TechnicianService {
     const createdTechnician = await this.prismaService.technician.create({
       data: {
         ...createTechnician,
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
         attendance_unity: {
           connect: {
             id: createTechnician.attendance_unity,
@@ -78,7 +73,6 @@ export class TechnicianService {
   ): Promise<technician[]> {
     const allTechnician = await this.prismaService.technician.findMany({
       where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
         attendance_unity_fk: +attendance_unity_fk,
       },
       orderBy: {
@@ -91,7 +85,7 @@ export class TechnicianService {
 
   async findOne(request: Request, id: string): Promise<technician> {
     const technician = await this.prismaService.technician.findUnique({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     if (!technician) {
@@ -114,12 +108,6 @@ export class TechnicianService {
       },
     });
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const attendance_unityOptional = optionalKeyValidation(
       UpdateTechnicianDto.attendance_unity,
       {
@@ -130,10 +118,9 @@ export class TechnicianService {
     );
 
     const technicianUpdated = await this.prismaService.technician.update({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
       data: {
         ...UpdateTechnicianDto,
-        edcenso_city: cityOptional,
         user: userOptional,
         attendance_unity: attendance_unityOptional,
       },
@@ -146,7 +133,7 @@ export class TechnicianService {
     await this.findOne(request, id);
 
     const technicianDeleted = await this.prismaService.technician.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return technicianDeleted;

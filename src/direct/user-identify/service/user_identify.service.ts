@@ -54,11 +54,6 @@ export class UserIdentifyService {
         data: {
           ...createUserIdentify,
           family: familyOptional,
-          edcenso_city: {
-            connect: {
-              id: request.user.edcenso_city_fk,
-            },
-          },
         },
       });
 
@@ -72,17 +67,12 @@ export class UserIdentifyService {
       },
     });
 
-  
 
-  
+
+
     const createdUser = await this.prismaService.user_identify.create({
       data: {
-        ...createUserIdentify, 
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
+        ...createUserIdentify,
       },
       ...familyOptional
     });
@@ -90,11 +80,7 @@ export class UserIdentifyService {
   }
 
   async findAll(request: Request): Promise<user_identify[]> {
-    const allUserIdentify = await this.prismaService.user_identify.findMany({
-      where: {
-        edcenso_city_fk: request.user.edcenso_city_fk,
-      },
-    });
+    const allUserIdentify = await this.prismaService.user_identify.findMany();
 
     return allUserIdentify;
   }
@@ -103,7 +89,6 @@ export class UserIdentifyService {
     const user_identify = await this.prismaService.user_identify.findUnique({
       where: {
         id: +id,
-        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -127,18 +112,11 @@ export class UserIdentifyService {
       },
     });
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const user_identifyUpdated = await this.prismaService.user_identify.update({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
       data: {
         ...UpdateUserIdentifyDto,
         family: familyOptional,
-        edcenso_city: cityOptional,
       },
     });
 
@@ -149,7 +127,7 @@ export class UserIdentifyService {
     await this.findOne(request, id);
 
     const user_identifyDeleted = await this.prismaService.user_identify.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return user_identifyDeleted;

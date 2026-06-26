@@ -11,6 +11,7 @@ import { FOUIForwardingBffModule } from './FOUIforwarding-bff/FOUIforwarding_bff
 import { UserIdentifyVulnerabilityBffModule } from './user_identify_vulnerability-bff/user_identify_vulnerability_bff.module';
 import { ForwardingBffModule } from './forwarding-bff/forwarding_bff.module';
 import { TechnicianVisitsBffModule } from './technician-visits-bff/technician_visits.module';
+import { UserBffModule } from './user-bff/user_bff.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { TechnicianVisitsBffModule } from './technician-visits-bff/technician_vi
     ForwardingBffModule,
     UserIdentifyVulnerabilityBffModule,
     TechnicianVisitsBffModule,
-    
+    UserBffModule,
   ],
 })
 export class BFFModule {}

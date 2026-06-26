@@ -2,9 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AttendanceUnityService } from '../../../direct/attendance-unity/service/attendance_unity.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Kinship, edcenso_city } from '@prisma/client';
+import { Kinship } from '@prisma/client';
 import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
-import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
 import {
   CreateUserIdentifyWithFamilyDto,
   CreateUserIdentifyWithoutFamilyDto,
@@ -14,16 +13,15 @@ import { SeatchUserByNameOrCPFDto } from '../dto/search-user_identify-bff.dto';
 
 @Injectable()
 export class UserIdentifyBffService {
-  
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly attendanceUnityService: AttendanceUnityService,
-    private readonly edcensoService: EdcensoBffService,
   ) {}
 
   searchUserByNameOrCPF(nameorcpf: string) {
     return this.prismaService.user_identify.findMany({
-      
+
       where: {
         OR: [
           {
@@ -51,7 +49,9 @@ export class UserIdentifyBffService {
       createUserWithoutFamily.attendance_unity.toString(),
     );
 
-    const edcenso_city = await this.edcensoService.getEdcensoCity(request);
+    const edcenso_city = await this.prismaService.edcenso_city.findFirst({
+      include: { edcenso_uf: true },
+    });
 
     const edcenso_uf = edcenso_city.edcenso_uf_fk;
 
@@ -88,7 +88,6 @@ export class UserIdentifyBffService {
         const vulnerabilityCreated = await tx.vulnerability.create({
           data: {
             ...vulnerability,
-            edcenso_city: { connect: { id: edcenso_city.id } },
           },
         });
 
@@ -124,7 +123,6 @@ export class UserIdentifyBffService {
         const userIdentifyCreated = await tx.user_identify.create({
           data: {
             ...userIdentify,
-            edcenso_city: { connect: { id: edcenso_city.id } },
           },
         });
 
@@ -139,7 +137,6 @@ export class UserIdentifyBffService {
         const familyCreated = await tx.family.create({
           data: {
             ...family,
-            edcenso_city: { connect: { id: edcenso_city.id } },
             address: { connect: { id: addressCreated.id } },
             attendance_unity: {
               connect: { id: createUserWithoutFamily.attendance_unity },
@@ -153,7 +150,6 @@ export class UserIdentifyBffService {
             data: {
               family: { connect: { id: familyCreated.id } },
               benefits: { connect: { id: benefit.benefits_fk } },
-              edcenso_city: { connect: { id: edcenso_city.id } },
               value: benefit.value,
             },
           });
@@ -165,21 +161,11 @@ export class UserIdentifyBffService {
           },
         });
 
-        const cityOptional = optionalKeyValidation(
-          request.user.edcenso_city_fk,
-          {
-            connect: {
-              id: request.user.edcenso_city_fk,
-            },
-          },
-        );
-
         await tx.user_identify.update({
           where: {
             id: userIdentifyCreated.id,
-            edcenso_city_fk: request.user.edcenso_city_fk,
           },
-          data: { family: familyOptional, edcenso_city: cityOptional },
+          data: { family: familyOptional },
         });
 
         return {
@@ -198,10 +184,6 @@ export class UserIdentifyBffService {
     request: Request,
     createUserWithFamily: CreateUserIdentifyWithFamilyDto,
   ): Promise<any> {
-    const edcenso_city = await this.edcensoService.getEdcensoCity(request);
-
-    const edcenso_uf = edcenso_city.edcenso_uf_fk;
-
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {
         const userIdentify = {
@@ -237,7 +219,6 @@ export class UserIdentifyBffService {
         const userIdentifyCreated = await tx.user_identify.create({
           data: {
             ...userIdentify,
-            edcenso_city: { connect: { id: edcenso_city.id } },
             family: { connect: { id: userIdentify.family } },
           },
         });
@@ -254,11 +235,11 @@ export class UserIdentifyBffService {
   async getUsersIdentify(user: JwtPayload, attendance_unity_fk: string) {
     let attendance_unity: string = attendance_unity_fk
       ? attendance_unity_fk
-      : user.attendance_unity_fk.toString();
+      : (user.attendance_unity_ids[0]?.toString() ?? '');
 
     const usersIdentify = await this.prismaService.$queryRaw`
-    SELECT ui.id, ui.name, ui.cpf, ui.birthday 
-    FROM user_identify ui 
+    SELECT ui.id, ui.name, ui.cpf, ui.birthday
+    FROM user_identify ui
     `;
 
     return usersIdentify;

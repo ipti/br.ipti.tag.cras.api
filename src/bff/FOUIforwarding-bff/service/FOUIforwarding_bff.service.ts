@@ -114,11 +114,6 @@ export class FOUIForwardingBffService {
 
         const attendance = await tx.attendance.create({
           data: {
-            edcenso_city: {
-              connect: {
-                id: user.edcenso_city_fk,
-              },
-            },
             user_identify: user_identifyOptional,
             technician: {
               connect: {

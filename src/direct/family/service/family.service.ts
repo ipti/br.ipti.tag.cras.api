@@ -68,11 +68,6 @@ export class FamilyService {
             id: createFamily.attendance_unity,
           },
         },
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
-          },
-        },
         vulnerability: {
           connect: {
             id: createFamily.vulnerability,
@@ -87,17 +82,12 @@ export class FamilyService {
   async findAll(request: Request): Promise<family[]> {
     var allFamily;
 
-    if (request.user.attendance_unity_fk === null) {
-      allFamily = await this.prismaService.family.findMany({
-        where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-        },
-      });
+    if (request.user.attendance_unity_ids.length === 0) {
+      allFamily = await this.prismaService.family.findMany();
     } else {
       allFamily = await this.prismaService.family.findMany({
         where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-          attendance_unity_fk: request.user.attendance_unity_fk,
+          attendance_unity_fk: { in: request.user.attendance_unity_ids },
         },
       });
     }
@@ -109,7 +99,6 @@ export class FamilyService {
     const family = await this.prismaService.family.findUnique({
       where: {
         id: +id,
-        edcenso_city_fk: request.user.edcenso_city_fk,
       },
     });
 
@@ -138,12 +127,6 @@ export class FamilyService {
       },
     );
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const vulnerabilityOptional = optionalKeyValidation(
       UpdateFamilyDto.vulnerability,
       {
@@ -154,12 +137,11 @@ export class FamilyService {
     );
 
     const familyUpdated = await this.prismaService.family.update({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
       data: {
         ...UpdateFamilyDto,
         address: addressOptional,
         attendance_unity: attendanceUnityOptional,
-        edcenso_city: cityOptional,
         vulnerability: vulnerabilityOptional,
       },
     });
@@ -171,7 +153,7 @@ export class FamilyService {
     await this.findOne(request, id);
 
     const familyDeleted = await this.prismaService.family.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return familyDeleted;

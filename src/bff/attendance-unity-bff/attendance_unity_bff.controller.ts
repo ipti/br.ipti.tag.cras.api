@@ -22,6 +22,7 @@ import { AttendanceUnityBffService } from './service/attendance_unity_bff.servic
 import { Request } from 'express';
 import { AttendanceUnityAndAddress } from './doc/attendance_unity_bff';
 import { CreateAttendanceUnityAndAddressDto } from './dto/create-attendance_unity_bff.dto';
+import { UpdateAttendanceUnityAndAddressDto } from './dto/update-attendance_unity_bff.dto';
 
 @ApiTags('AttendanceUnityBff')
 @UseGuards(JwtAuthGuard)
@@ -53,5 +54,19 @@ export class AttendanceUnityBffController {
       request.user,
       attendance_unity_fk,
     );
+  }
+
+  @Put(':id')
+  @ApiOkResponse({ description: 'Atualiza unidade e endereço' })
+  updateAttendanceUnityAndAddress(
+    @Param('id') id: string,
+    @Body() dto: UpdateAttendanceUnityAndAddressDto,
+  ) {
+    return this.AttendanceUnityBffService.updateUnityAttendanceAndAddress(id, dto);
+  }
+
+  @Get(':id')
+  getAttendanceUnityById(@Param('id') id: string) {
+    return this.AttendanceUnityBffService.getAttendanceUnityById(id);
   }
 }
