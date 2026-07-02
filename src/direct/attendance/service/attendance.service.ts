@@ -84,11 +84,6 @@ export class AttendanceService {
             id: attendance_unity.id,
           },
         },
-        edcenso_city: {
-          connect: {
-            id: attendance_unity.edcenso_city_fk,
-          },
-        },
       },
     });
 
@@ -97,9 +92,7 @@ export class AttendanceService {
 
   async findAll(request: Request): Promise<attendance[]> {
 
-    const allAttendance = await this.prismaService.attendance.findMany({
-      where: { edcenso_city_fk: request.user.edcenso_city_fk },
-    });
+    const allAttendance = await this.prismaService.attendance.findMany();
 
     return allAttendance;
   }
@@ -107,7 +100,7 @@ export class AttendanceService {
   async findOne(request: Request, id: string): Promise<attendance> {
 
     const attendance = await this.prismaService.attendance.findUnique({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     if (!attendance) {
@@ -149,21 +142,14 @@ export class AttendanceService {
       },
     });
 
-    const edcensoCityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const attendanceUpdated = await this.prismaService.attendance.update({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
       data: {
         ...UpdateAttendanceDto,
         user_identify: userOptional,
         technician: technicianOptional,
         task: taskOptional,
         attendance_unity: attendanceUnityOptional,
-        edcenso_city: edcensoCityOptional,
       },
     });
 
@@ -174,7 +160,7 @@ export class AttendanceService {
     await this.findOne(request, id);
 
     const attendanceDeleted = await this.prismaService.attendance.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return attendanceDeleted;

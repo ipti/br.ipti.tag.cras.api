@@ -1,17 +1,20 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Benefits, ForwadingType, PrismaClient } from '@prisma/client';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Benefits, ForwadingType, PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const prisma = new PrismaClient();
 
 @Injectable()
 export class SeedService implements OnModuleInit {
+  private readonly logger = new Logger(SeedService.name);
+
   async onModuleInit() {
+    await this.seedAdminUser();
+    await this.seedFromSqlDump();
     const seed = await prisma.$transaction(async (tx) => {
-      const benefits = await tx.benefits.findMany({
-        where: {
-          edcenso_city_fk: null,
-        },
-      });
+      const benefits = await tx.benefits.findMany();
 
       const benefitsToCreate = [
         {
@@ -53,18 +56,14 @@ export class SeedService implements OnModuleInit {
         data: benefitsToCreateFiltered,
       });
 
-      const tasks = await tx.task.findMany({
-        where: {
-          edcenso_city_fk: null,
-        },
-      });
+      const tasks = await tx.task.findMany();
 
       const tasksToCreate = [
         {
           name: 'Serviço de Convivência e Fortalecimento de Vínculos',
-          description: `É um serviço realizado em grupos, 
+          description: `É um serviço realizado em grupos,
           organizado a partir de percursos, de modo a garantir aquisições progressivas a seus usuários,
-          de acordo com seu ciclo de vida, a fim de complementar o trabalho social com famílias e prevenir 
+          de acordo com seu ciclo de vida, a fim de complementar o trabalho social com famílias e prevenir
           a ocorrência de situações de risco social.`,
           canDelete: false,
           isCollective: true,
@@ -150,5 +149,59 @@ export class SeedService implements OnModuleInit {
         data: forwardingsToCreateFiltered,
       });
     });
+  }
+
+  private async seedFromSqlDump() {
+    const ufCount = await prisma.edcenso_uf.count();
+    const cityCount = await prisma.edcenso_city.count();
+    if (ufCount > 0 && cityCount > 0) return;
+
+    const sqlPath = path.join(process.cwd(), 'db', 'dump-city-state.sql');
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+
+    if (ufCount === 0) {
+      const match = sql.match(/INSERT INTO `state` VALUES (.+);/);
+      if (match) {
+        await prisma.$executeRawUnsafe(
+          `INSERT IGNORE INTO \`edcenso_uf\` (id, acronym, name) VALUES ${match[1]}`,
+        );
+        this.logger.log('27 estados (UF) inseridos.');
+      }
+    }
+
+    if (cityCount === 0) {
+      const match = sql.match(/INSERT INTO `city` VALUES (.+);/);
+      if (match) {
+        await prisma.$executeRawUnsafe(
+          `INSERT IGNORE INTO \`edcenso_city\` (id, edcenso_uf_fk, name, cep_initial, cep_final, ddd1, ddd2) VALUES ${match[1]}`,
+        );
+        this.logger.log('Municípios inseridos.');
+      }
+    }
+  }
+
+  private async seedAdminUser() {
+    const existing = await prisma.user.findUnique({
+      where: { username: 'admin' },
+    });
+
+    if (existing) return;
+
+    const password = await bcrypt.hash('admin@cras', 12);
+
+    await prisma.user.create({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: {
+        name: 'Administrador',
+        username: 'admin',
+        email: 'admin@cras.gov.br',
+        password,
+        role: Role.ADMIN,
+      } as any,
+    });
+
+    this.logger.log(
+      'Usuário admin criado. Login: admin | Senha: admin@cras',
+    );
   }
 }

@@ -30,8 +30,20 @@ export class EdcensoBffController {
   constructor(private readonly edcensoBffService: EdcensoBffService) { }
 
   @Get('city')
-  @ApiOkResponse({ description: 'Retorna a cidade do usuário logado' })
+  @ApiOkResponse({ description: 'Retorna cidade por ID' })
   async getEdcensoCity(@Query('edcenso_city_fk') edcenso_city_fk: string): Promise<edcenso_city> {
     return this.edcensoBffService.getEdcensoCityById(edcenso_city_fk);
+  }
+
+  @Get('uf')
+  @ApiOkResponse({ description: 'Retorna todos os estados (UF)' })
+  async getAllUf() {
+    return this.edcensoBffService.getAllUf();
+  }
+
+  @Get('cities-by-uf')
+  @ApiOkResponse({ description: 'Retorna cidades filtradas por UF' })
+  async getCitiesByUf(@Query('uf_fk') uf_fk: string) {
+    return this.edcensoBffService.getCitiesByUf(uf_fk);
   }
 }

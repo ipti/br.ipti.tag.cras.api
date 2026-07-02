@@ -1,11 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateForwardingDto } from '../dto/create-forwarding.dto';
-import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
 import { JwtPayload } from 'src/utils/jwt.interface';
 import { UpdateForwardingDto } from '../dto/update-forwarding.dto';
-import { Status_document } from '@prisma/client';
 
 @Injectable()
 export class ForwardingBffService {
@@ -18,11 +15,6 @@ export class ForwardingBffService {
     const forwarding = await this.prismaService.forwading.create({
       data: {
         ...forwardingCreate,
-        edcenso_city: {
-          connect: {
-            id: user.edcenso_city_fk,
-          },
-        },
       },
     });
 
@@ -57,19 +49,8 @@ export class ForwardingBffService {
   }
 
   async getforwardings(user: JwtPayload) {
-    const forwardings = await this.prismaService.forwading.findMany({
-      where: {
-        edcenso_city_fk: user.edcenso_city_fk,
-      },
-    });
+    const forwardings = await this.prismaService.forwading.findMany();
 
-    const defaultForwarding = await this.prismaService.forwading.findMany({
-      where: {
-        edcenso_city_fk: null,
-        canDelete: false,
-      },
-    });
-
-    return [...defaultForwarding, ...forwardings];
+    return forwardings;
   }
 }

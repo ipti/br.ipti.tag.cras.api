@@ -25,7 +25,7 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @IsEnum(Role, { message: 'Invalid role. Role must be SECRETARY, TECHNICIAN.' })
+  @IsEnum(Role, { message: 'Invalid role. Role must be ADMIN, SECRETARY or TECHNICIAN.' })
   role: Role;
 
   @IsOptional()

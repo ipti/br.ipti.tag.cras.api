@@ -1,12 +1,11 @@
 import { Role } from "@prisma/client";
 
 export interface JwtPayload {
+  id: number;
   name: string;
   username: string;
-  id: number;
   role: Role;
-  edcenso_city_fk: number;
-  attendance_unity_fk?: number;
+  attendance_unity_ids: number[];
 }
 
 declare module 'express' {

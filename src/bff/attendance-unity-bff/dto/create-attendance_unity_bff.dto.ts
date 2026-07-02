@@ -12,33 +12,33 @@ import { BenefitsForFamily } from '../../../utils/types';
 import { CadSUAS, Kinship } from '@prisma/client';
 
 export class CreateAttendanceUnityAndAddressDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  address: string;
+  address?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  telephone: string;
+  telephone?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  reference: string;
+  reference?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  conditions: string;
+  conditions?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  construction_type: string;
+  construction_type?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  rooms: number;
+  rooms?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  rent_value: number;
+  rent_value?: number;
 
   @IsNotEmpty()
   @IsString()
@@ -54,5 +54,9 @@ export class CreateAttendanceUnityAndAddressDto {
 
   @IsOptional()
   @IsString()
-  email: string;
+  email?: string;
+
+  @IsOptional()
+  @IsNumber()
+  edcenso_city_fk?: number;
 }

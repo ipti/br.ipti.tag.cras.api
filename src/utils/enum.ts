@@ -1,7 +1,7 @@
 export enum Role {
+  "ADMIN" = "ADMIN",
   "SECRETARY" = "SECRETARY",
   "TECHNICIAN" = "TECHNICIAN",
-  "USER" = "USER",
 }
 
 export enum Benefits {

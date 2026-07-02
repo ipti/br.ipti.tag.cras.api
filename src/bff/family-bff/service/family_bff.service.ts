@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AttendanceUnityService } from '../../../direct/attendance-unity/service/attendance_unity.service';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Role } from '@prisma/client';
+import { Permission, hasPermission } from 'src/auth/permissions';
 
 @Injectable()
 export class FamilyBffService {
@@ -12,7 +11,6 @@ export class FamilyBffService {
     const family = await this.prismaService.family.findUnique({
       where: {
         id: +familyId,
-        edcenso_city_fk: request.user.edcenso_city_fk,
       },
       include: {
         address: true,
@@ -67,10 +65,10 @@ export class FamilyBffService {
           id: 'desc',
         },
       });
-    } else if (request.user.attendance_unity_fk !== null) {
+    } else if (request.user.attendance_unity_ids.length > 0) {
       family = await this.prismaService.family.findMany({
         where: {
-          attendance_unity_fk: request.user.attendance_unity_fk,
+          attendance_unity_fk: { in: request.user.attendance_unity_ids },
         },
         include: {
           user_identify: {
@@ -89,9 +87,6 @@ export class FamilyBffService {
       });
     } else {
       family = await this.prismaService.family.findMany({
-        where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-        },
         include: {
           user_identify: {
             select: {
@@ -125,20 +120,19 @@ export class FamilyBffService {
 
   async deleteFamily(request: Request, familyId: string): Promise<any> {
     try {
-      if (request.user.role !== Role.SECRETARY) {
+      if (!hasPermission(request.user.role, Permission.FAMILY_DELETE)) {
         throw new HttpException(
           {
-            status: HttpStatus.UNAUTHORIZED,
+            status: HttpStatus.FORBIDDEN,
             error: 'Você não tem permissão para deletar uma família',
           },
-          HttpStatus.UNAUTHORIZED,
+          HttpStatus.FORBIDDEN,
         );
       }
 
       const family = await this.prismaService.family.findUnique({
         where: {
           id: +familyId,
-          edcenso_city_fk: request.user.edcenso_city_fk,
         },
       });
 

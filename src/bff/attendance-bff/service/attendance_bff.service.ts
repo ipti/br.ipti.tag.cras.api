@@ -3,13 +3,11 @@ import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMultiFamilyAttendanceDto } from '../dto/create-multifamilyattendance.dto';
 import { CreateAttendanceNewUserBffDto } from '../dto/create-newuserattendance_bff.dto';
-import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
 
 @Injectable()
 export class AttendanceBffService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly edcensoService: EdcensoBffService,
   ) { }
 
   async getAttendance(
@@ -31,10 +29,10 @@ export class AttendanceBffService {
           id: 'desc',
         },
       });
-    } else if (request.user.attendance_unity_fk !== null) {
+    } else if (request.user.attendance_unity_ids.length > 0) {
       attendance = await this.prismaService.attendance.findMany({
         where: {
-          attendance_unity_fk: request.user.attendance_unity_fk,
+          attendance_unity_fk: { in: request.user.attendance_unity_ids },
         },
         include: {
           task: true,
@@ -46,9 +44,6 @@ export class AttendanceBffService {
       });
     } else {
       attendance = await this.prismaService.attendance.findMany({
-        where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-        },
         include: {
           task: true,
           technician: true,
@@ -94,7 +89,7 @@ export class AttendanceBffService {
         } else {
           attendance_unity = await tx.attendance_unity.findUnique({
             where: {
-              id: request.user.attendance_unity_fk,
+              id: request.user.attendance_unity_ids[0],
             },
           });
         }
@@ -108,13 +103,11 @@ export class AttendanceBffService {
         if (!task) {
           throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
         }
-        const edcenso_city = await this.edcensoService.getEdcensoCity(request);
 
         const user = await tx.user_identify.create({
           data: {    // lembrar de revisar isso aqui
             name: createAttendanceNewUserBffDto.name,
             cpf: createAttendanceNewUserBffDto.cpf,
-            edcenso_city: { connect: { id: edcenso_city.id } },
             initial_date: new Date(Date.now()).toISOString(),
           },
         });
@@ -135,11 +128,6 @@ export class AttendanceBffService {
                 id: task.id,
               },
             },
-            edcenso_city: {
-              connect: {
-                id: request.user.edcenso_city_fk,
-              },
-            },
             user_identify: {
               connect: {
                 id: user.id,
@@ -153,7 +141,7 @@ export class AttendanceBffService {
           },
         });
 
-      
+
         return attendance;
       },
     );
@@ -194,7 +182,7 @@ export class AttendanceBffService {
         } else {
           attendance_unity = await tx.attendance_unity.findUnique({
             where: {
-              id: request.user.attendance_unity_fk,
+              id: request.user.attendance_unity_ids[0],
             },
           });
         }
@@ -226,11 +214,6 @@ export class AttendanceBffService {
                 id: task.id,
               },
             },
-            edcenso_city: {
-              connect: {
-                id: request.user.edcenso_city_fk,
-              },
-            },
             description: createMultiFamilyAttendanceDTO.description,
             date: createMultiFamilyAttendanceDTO.date,
             result: createMultiFamilyAttendanceDTO.result,
@@ -250,11 +233,6 @@ export class AttendanceBffService {
               family: {
                 connect: {
                   id: familyId,
-                },
-              },
-              edcenso_city: {
-                connect: {
-                  id: request.user.edcenso_city_fk,
                 },
               },
             },
@@ -292,10 +270,10 @@ export class AttendanceBffService {
           id: 'desc',
         },
       });
-    } else if (request.user.attendance_unity_fk !== null) {
+    } else if (request.user.attendance_unity_ids.length > 0) {
       attendances = await this.prismaService.attendance.findMany({
         where: {
-          attendance_unity_fk: request.user.attendance_unity_fk,
+          attendance_unity_fk: { in: request.user.attendance_unity_ids },
         },
         include: {
           group_attendance: {
@@ -316,9 +294,6 @@ export class AttendanceBffService {
       });
     } else {
       attendances = await this.prismaService.attendance.findMany({
-        where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-        },
         include: {
           group_attendance: {
             select: {
@@ -447,11 +422,6 @@ export class AttendanceBffService {
         family: {
           connect: {
             id: family.id,
-          },
-        },
-        edcenso_city: {
-          connect: {
-            id: request.user.edcenso_city_fk,
           },
         },
       },

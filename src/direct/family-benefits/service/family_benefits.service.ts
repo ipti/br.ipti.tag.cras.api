@@ -20,7 +20,6 @@ export class FamilyBenefitsService {
           where: {
             family_fk: createFamilyBenefits.family,
             benefits_fk: createFamilyBenefits.benefits,
-            edcenso_city_fk: request.user.edcenso_city_fk,
           },
         });
 
@@ -44,11 +43,6 @@ export class FamilyBenefitsService {
                 id: createFamilyBenefits.benefits,
               },
             },
-            edcenso_city: {
-              connect: {
-                id: request.user.edcenso_city_fk,
-              },
-            },
           },
         });
 
@@ -60,13 +54,7 @@ export class FamilyBenefitsService {
   }
 
   async findAll(request: Request): Promise<family_benefits[]> {
-    const allFamilyBenefits = await this.prismaService.family_benefits.findMany(
-      {
-        where: {
-          edcenso_city_fk: request.user.edcenso_city_fk,
-        },
-      },
-    );
+    const allFamilyBenefits = await this.prismaService.family_benefits.findMany();
 
     return allFamilyBenefits;
   }
@@ -74,7 +62,7 @@ export class FamilyBenefitsService {
   async findOne(request: Request, id: string): Promise<family_benefits> {
     const family_benefits = await this.prismaService.family_benefits.findUnique(
       {
-        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+        where: { id: +id },
       },
     );
 
@@ -110,20 +98,13 @@ export class FamilyBenefitsService {
       },
     );
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
-
     const family_benefitsUpdated =
       await this.prismaService.family_benefits.update({
-        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+        where: { id: +id },
         data: {
           ...UpdateFamilyBenefitsDto,
           family: familyOptional,
           benefits: benefitsOptional,
-          edcenso_city: cityOptional,
         },
       });
 
@@ -135,7 +116,7 @@ export class FamilyBenefitsService {
 
     const family_benefitsDeleted =
       await this.prismaService.family_benefits.delete({
-        where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+        where: { id: +id },
       });
 
     return family_benefitsDeleted;

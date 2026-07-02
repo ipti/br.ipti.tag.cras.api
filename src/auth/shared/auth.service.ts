@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -23,57 +24,46 @@ export class AuthService {
       );
     }
 
-    var attendance_unity_fk = null;
-
-    const isTechnician = await this.prismaService.technician.findUnique({
+    const userUnities = await this.prismaService.user_attendance_unity.findMany({
       where: { user_fk: userFound.id },
+      select: { attendance_unity_fk: true },
     });
 
-    if (isTechnician) {
-      attendance_unity_fk = isTechnician.attendance_unity_fk;
-    } else {
-      const attendance_unity =
-        await this.prismaService.attendance_unity.findFirst({
-          where: { edcenso_city_fk: userFound.edcenso_city_fk },
-        });
+    const attendance_unity_ids = userUnities.map((u) => u.attendance_unity_fk);
 
-      if (attendance_unity) {
-        attendance_unity_fk = attendance_unity.id;
-      }
-    }
-
-    if (!isTechnician && userFound.role === Role.TECHNICIAN) {
+    if (userFound.role === Role.TECHNICIAN && attendance_unity_ids.length === 0) {
       throw new HttpException(
         'USER NOT ASSIGNED TO ANY ATTENDANCE UNITY!',
         HttpStatus.FORBIDDEN,
       );
     }
 
-    if (
-      userFound &&
-      this.validateMd5Password(userPassword, userFound.password)
-    ) {
-      const { name, username, id, role, edcenso_city_fk } = userFound;
+    const passwordValid = await this.verifyPassword(
+      userPassword,
+      userFound.password,
+      userFound.id,
+    );
 
-      return {
-        name,
-        username,
-        id,
-        role,
-        edcenso_city_fk,
-        attendance_unity_fk: attendance_unity_fk,
-      };
-    }
-    return null;
+    if (!passwordValid) return null;
+
+    const { name, username, id, role } = userFound;
+
+    return {
+      name,
+      username,
+      id,
+      role,
+      attendance_unity_ids,
+    };
   }
 
   async login(user: any) {
     const payload = {
+      name: user.name,
       username: user.username,
       sub: user.id,
       role: user.role,
-      edcenso_city_fk: user.edcenso_city_fk,
-      attendance_unity_fk: user.attendance_unity_fk,
+      attendance_unity_ids: user.attendance_unity_ids,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -81,15 +71,27 @@ export class AuthService {
     };
   }
 
-  private validateMd5Password(password: string, encryptedPassword: string) {
-    const currentEncryptedPassword = this.encryptedMd5Password(password);
-    if (currentEncryptedPassword === encryptedPassword) {
-      return true;
-    }
-    return false;
-  }
+  private async verifyPassword(
+    plain: string,
+    stored: string,
+    userId: number,
+  ): Promise<boolean> {
+    const isBcrypt = stored.startsWith('$2');
 
-  private encryptedMd5Password(password: string) {
-    return crypto.createHash('md5').update(password).digest('hex');
+    if (isBcrypt) {
+      return bcrypt.compare(plain, stored);
+    }
+
+    // Senha ainda em MD5 — verifica e migra para bcrypt
+    const md5Hash = crypto.createHash('md5').update(plain).digest('hex');
+    if (md5Hash !== stored) return false;
+
+    const newHash = await bcrypt.hash(plain, 12);
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { password: newHash },
+    });
+
+    return true;
   }
 }

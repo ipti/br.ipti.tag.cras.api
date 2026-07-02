@@ -14,21 +14,19 @@ export class AddressService {
     request: Request,
     createAddress: CreateAddressDto,
   ): Promise<address> {
+    const { edcenso_city_fk, ...rest } = createAddress;
+
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {
-        const edcenso_city = await tx.edcenso_city.findFirst({
-          where: { id: request.user.edcenso_city_fk },
-        });
+        const city = edcenso_city_fk
+          ? await tx.edcenso_city.findUnique({ where: { id: edcenso_city_fk } })
+          : await tx.edcenso_city.findFirst();
 
         const createdAddress = await tx.address.create({
           data: {
-            ...createAddress,
-            edcenso_city: {
-              connect: { id: edcenso_city.id },
-            },
-            edcenso_uf: {
-              connect: { id: edcenso_city.edcenso_uf_fk },
-            },
+            ...rest,
+            edcenso_city: city ? { connect: { id: city.id } } : undefined,
+            edcenso_uf: city ? { connect: { id: city.edcenso_uf_fk } } : undefined,
           },
         });
 
@@ -40,16 +38,14 @@ export class AddressService {
   }
 
   async findAll(request: Request): Promise<address[]> {
-    const allAddress = await this.prismaService.address.findMany({
-      where: { edcenso_city_fk: request.user.edcenso_city_fk },
-    });
+    const allAddress = await this.prismaService.address.findMany();
 
     return allAddress;
   }
 
   async findOne(request: Request, id: string): Promise<address> {
     const address = await this.prismaService.address.findUnique({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     if (!address) {
@@ -62,37 +58,29 @@ export class AddressService {
   async update(
     request: Request,
     id: string,
-    UpdateAddressDto: UpdateAddressDto,
+    updateAddressDto: UpdateAddressDto,
   ): Promise<address> {
     await this.findOne(request, id);
 
-    const edcenso_city = await this.prismaService.edcenso_city.findUnique({
-      where: { id: request.user.edcenso_city_fk },
-      select: { edcenso_uf_fk: true },
-    });
+    const { edcenso_city_fk, ...rest } = updateAddressDto;
 
-    if(!edcenso_city) throw new HttpException('City not found', HttpStatus.NOT_FOUND);
+    let cityData: { edcenso_city_fk?: number; edcenso_uf_fk?: number } = {};
 
-    const ufOptional = optionalKeyValidation(edcenso_city.edcenso_uf_fk, {
-      connect: {
-        id: edcenso_city.edcenso_uf_fk,
-      },
-    });
+    if (edcenso_city_fk) {
+      const city = await this.prismaService.edcenso_city.findUnique({
+        where: { id: edcenso_city_fk },
+      });
 
-    const cityOptional = optionalKeyValidation(request.user.edcenso_city_fk, {
-      connect: {
-        id: request.user.edcenso_city_fk,
-      },
-    });
+      if (!city) {
+        throw new HttpException('Cidade não encontrada', HttpStatus.NOT_FOUND);
+      }
 
+      cityData = { edcenso_city_fk: city.id, edcenso_uf_fk: city.edcenso_uf_fk };
+    }
 
     const addressUpdated = await this.prismaService.address.update({
-      data: {
-        ...UpdateAddressDto,
-        edcenso_city: cityOptional,
-        edcenso_uf: ufOptional,
-      },
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      data: { ...rest, ...cityData } as any,
+      where: { id: +id },
     });
 
     return addressUpdated;
@@ -102,7 +90,7 @@ export class AddressService {
     await this.findOne(request, id);
 
     const addressDeleted = await this.prismaService.address.delete({
-      where: { id: +id, edcenso_city_fk: request.user.edcenso_city_fk },
+      where: { id: +id },
     });
 
     return addressDeleted;

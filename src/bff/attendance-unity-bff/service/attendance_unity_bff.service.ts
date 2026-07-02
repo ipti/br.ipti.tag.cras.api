@@ -1,45 +1,52 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Kinship, edcenso_city } from '@prisma/client';
-import { optionalKeyValidation } from 'src/utils/optionalKeysValidation';
+import { Kinship } from '@prisma/client';
 import { CreateAttendanceUnityAndAddressDto } from '../dto/create-attendance_unity_bff.dto';
-import { EdcensoBffService } from 'src/bff/edcenso-bff/service/edcenso_bff.service';
+import { UpdateAttendanceUnityAndAddressDto } from '../dto/update-attendance_unity_bff.dto';
 import { JwtPayload } from 'src/utils/jwt.interface';
-import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AttendanceUnityBffService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly edcensoService: EdcensoBffService,
   ) {}
 
   async createUnityAttendanceAndAddress(
     request: Request,
     createAttendanceAndAddress: CreateAttendanceUnityAndAddressDto,
   ) {
-    const edcenso_city = await this.edcensoService.getEdcensoCity(request);
-    const edcenso_uf = edcenso_city.edcenso_uf_fk;
+    let edcenso_city_fk: number | undefined;
+    let edcenso_uf_fk: number | undefined;
+
+    if (createAttendanceAndAddress.edcenso_city_fk) {
+      const edcenso_city = await this.prismaService.edcenso_city.findUnique({
+        where: { id: createAttendanceAndAddress.edcenso_city_fk },
+        include: { edcenso_uf: true },
+      });
+
+      if (!edcenso_city) {
+        throw new HttpException('Cidade não encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      edcenso_city_fk = edcenso_city.id;
+      edcenso_uf_fk = edcenso_city.edcenso_uf_fk;
+    }
 
     const transactionResult = await this.prismaService.$transaction(
       async (tx) => {
-        const address = {
-          address: createAttendanceAndAddress.address,
-          telephone: createAttendanceAndAddress.telephone,
-          reference: createAttendanceAndAddress.reference,
-          conditions: createAttendanceAndAddress.conditions,
-          construction_type: createAttendanceAndAddress.construction_type,
-          rooms: createAttendanceAndAddress.rooms,
-          rent_value: createAttendanceAndAddress.rent_value,
-        };
-
         const addressCreated = await tx.address.create({
           data: {
-            ...address,
-            edcenso_city: { connect: { id: edcenso_city.id } },
-            edcenso_uf: { connect: { id: edcenso_uf } },
-          },
+            address: createAttendanceAndAddress.address ?? null,
+            telephone: createAttendanceAndAddress.telephone ?? null,
+            reference: createAttendanceAndAddress.reference ?? null,
+            conditions: createAttendanceAndAddress.conditions ?? null,
+            construction_type: createAttendanceAndAddress.construction_type ?? null,
+            rooms: createAttendanceAndAddress.rooms ?? null,
+            rent_value: createAttendanceAndAddress.rent_value ?? null,
+            edcenso_city_fk: edcenso_city_fk ?? null,
+            edcenso_uf_fk: edcenso_uf_fk ?? null,
+          } as any,
         });
 
         const attendanceUnity = {
@@ -52,7 +59,6 @@ export class AttendanceUnityBffService {
         const attendanceUnityCreated = await tx.attendance_unity.create({
           data: {
             ...attendanceUnity,
-            edcenso_city: { connect: { id: edcenso_city.id } },
             address: { connect: { id: addressCreated.id } },
           },
         });
@@ -67,19 +73,113 @@ export class AttendanceUnityBffService {
     return transactionResult;
   }
 
+  async updateUnityAttendanceAndAddress(
+    id: string,
+    dto: UpdateAttendanceUnityAndAddressDto,
+  ) {
+    const unity = await this.prismaService.attendance_unity.findUnique({
+      where: { id: parseInt(id) },
+      select: { id: true, address_fk: true },
+    });
+
+    if (!unity) {
+      throw new HttpException(
+        'Unidade de atendimento não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    let edcenso_city_fk: number | null = null;
+    let edcenso_uf_fk: number | null = null;
+
+    if (dto.edcenso_city_fk) {
+      const city = await this.prismaService.edcenso_city.findUnique({
+        where: { id: dto.edcenso_city_fk },
+      });
+
+      if (!city) {
+        throw new HttpException('Cidade não encontrada', HttpStatus.NOT_FOUND);
+      }
+
+      edcenso_city_fk = city.id;
+      edcenso_uf_fk = city.edcenso_uf_fk;
+    }
+
+    return this.prismaService.$transaction(async (tx) => {
+      await tx.address.update({
+        where: { id: unity.address_fk },
+        data: {
+          address: dto.address ?? undefined,
+          telephone: dto.telephone ?? undefined,
+          reference: dto.reference ?? undefined,
+          conditions: dto.conditions ?? undefined,
+          construction_type: dto.construction_type ?? undefined,
+          rooms: dto.rooms ?? undefined,
+          rent_value: dto.rent_value ?? undefined,
+          edcenso_city_fk: edcenso_city_fk ?? undefined,
+          edcenso_uf_fk: edcenso_uf_fk ?? undefined,
+        } as any,
+      });
+
+      return tx.attendance_unity.update({
+        where: { id: unity.id },
+        data: {
+          name: dto.name ?? undefined,
+          unity_number: dto.unity_number ?? undefined,
+          type: dto.type ?? undefined,
+          email: dto.email ?? undefined,
+        },
+        include: {
+          address: {
+            include: {
+              edcenso_city: { include: { edcenso_uf: true } },
+            },
+          },
+        },
+      });
+    });
+  }
+
+  async getAttendanceUnityById(id: string) {
+    const attendanceUnity = await this.prismaService.attendance_unity.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        address: {
+          include: {
+            edcenso_city: {
+              include: { edcenso_uf: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!attendanceUnity) {
+      throw new HttpException(
+        'Unidade de atendimento não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return attendanceUnity;
+  }
+
   async getAttendanceUnity(user: JwtPayload, attendance_unity_fk?: string) {
     let attendance_unity: string = attendance_unity_fk
       ? attendance_unity_fk
-      : user.attendance_unity_fk.toString();
+      : (user.attendance_unity_ids[0]?.toString() ?? '');
 
     const attendanceUnity =
       await this.prismaService.attendance_unity.findUnique({
         where: { id: parseInt(attendance_unity) },
         include: {
-          address: true,
-          edcenso_city: {
+          address: {
             include: {
-              edcenso_uf: true,
+              edcenso_city: {
+                include: {
+                  edcenso_uf: true,
+                },
+              },
             },
           },
         },
