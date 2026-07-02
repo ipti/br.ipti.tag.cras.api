@@ -38,6 +38,10 @@ export class CreateFOUIForwardingDto {
   @IsEnum(Status_document)
   status: Status_document;
 
+  @IsOptional()
+  @IsNumber()
+  technician_fk?: number;
+
   @IsNotEmpty()
   @IsISO8601()
   date: string;

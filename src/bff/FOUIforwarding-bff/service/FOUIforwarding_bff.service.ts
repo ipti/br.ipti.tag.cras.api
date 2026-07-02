@@ -90,14 +90,16 @@ export class FOUIForwardingBffService {
           },
         });
 
-        const technician = await tx.technician.findUnique({
-          where: {
-            user_fk: user.id,
-          },
-        });
+        const technician = forwardingCreate.technician_fk
+          ? await tx.technician.findUnique({
+              where: { id: forwardingCreate.technician_fk },
+            })
+          : await tx.technician.findUnique({
+              where: { user_fk: user.id },
+            });
 
         if (!technician) {
-          throw new HttpException('Technician not found', 404);
+          throw new HttpException('Técnico não encontrado', 404);
         }
 
         const task = await tx.task.findFirst({
