@@ -6,6 +6,6 @@ export class AppService {
     return 'Hello World!';
   }
   getOrigins(): any {
-    return ['http://localhost:3000', 'https://cras.tag.ong.br', 'http://localhost:3001'];
+    return ['http://localhost:3000', 'https://cras.tag.ong.br', 'http://localhost:3001', 'https://santaluzia.cras.tag.ong.br'];
   }
 }
