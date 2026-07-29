@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -12,6 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
+import { Response } from 'express';
 import { JwtAuthGuard } from '../../auth/shared/jwt-auth.guard';
 import { FileUploadBffService } from './service/file_upload_bff.service';
 
@@ -32,6 +34,14 @@ export class FileUploadBffController {
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
     return this.fileUploadBffService.getFile(id);
+  }
+
+  @Get(':id/stream')
+  async stream(
+    @Param('id', ParseIntPipe) id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.fileUploadBffService.streamFile(id, res);
   }
 
   @Delete(':id')

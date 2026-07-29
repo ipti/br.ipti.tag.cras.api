@@ -33,8 +33,8 @@ import { UserIdentifyVulnerabilityBffModule } from './bff/user_identify_vulnerab
 import { ForwardingBffModule } from './bff/forwarding-bff/forwarding_bff.module';
 import { TechnicianVisitsBffModule } from './bff/technician-visits-bff/technician_visits.module';
 import { UserBffModule } from './bff/user-bff/user_bff.module';
-import { HappyChildFamilyModule } from './direct/happy-child-family/happy_child_family.module';
 import { FileUploadBffModule } from './bff/file-upload/file_upload_bff.module';
+import { HappyChildFamilyModule } from './direct/happy-child-family/happy_child_family.module';
 
 @Module({
   imports: [

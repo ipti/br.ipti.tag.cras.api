@@ -2,7 +2,9 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { BlobServiceClient } from '@azure/storage-blob';
 import { randomUUID } from 'crypto';
@@ -14,25 +16,43 @@ const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 
 @Injectable()
 export class FileUploadBffService {
-  private readonly blobServiceClient: BlobServiceClient;
+  private blobServiceClient: BlobServiceClient | null = null;
   private readonly containerName: string;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {
-    const connectionString = this.config.get<string>(
-      'AZURE_STORAGE_CONNECTION_STRING',
-    );
-    if (!connectionString) {
-      throw new Error('AZURE_STORAGE_CONNECTION_STRING não configurada');
-    }
     this.containerName = this.config.get<string>(
       'AZURE_STORAGE_CONTAINER_NAME',
       'cras-uploads',
     );
-    this.blobServiceClient =
-      BlobServiceClient.fromConnectionString(connectionString);
+    const connectionString = this.config.get<string>(
+      'AZURE_STORAGE_CONNECTION_STRING',
+    );
+    if (connectionString) {
+      try {
+        this.blobServiceClient =
+          BlobServiceClient.fromConnectionString(connectionString);
+      } catch {
+        console.warn(
+          '[FileUpload] AZURE_STORAGE_CONNECTION_STRING inválida — upload de arquivos desativado.',
+        );
+      }
+    } else {
+      console.warn(
+        '[FileUpload] AZURE_STORAGE_CONNECTION_STRING ausente — upload de arquivos desativado.',
+      );
+    }
+  }
+
+  private ensureAzure(): BlobServiceClient {
+    if (!this.blobServiceClient) {
+      throw new BadRequestException(
+        'Serviço de armazenamento não configurado. Verifique AZURE_STORAGE_CONNECTION_STRING.',
+      );
+    }
+    return this.blobServiceClient;
   }
 
   async uploadFile(file: Express.Multer.File, folder = 'logos') {
@@ -51,10 +71,10 @@ export class FileUploadBffService {
     const ext = path.extname(file.originalname).toLowerCase() || '.png';
     const blobName = `${folder}/${randomUUID()}${ext}`;
 
-    const containerClient = this.blobServiceClient.getContainerClient(
+    const containerClient = this.ensureAzure().getContainerClient(
       this.containerName,
     );
-    await containerClient.createIfNotExists({ access: 'blob' });
+    await containerClient.createIfNotExists();
 
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
     await blockBlobClient.uploadData(file.buffer, {
@@ -81,13 +101,27 @@ export class FileUploadBffService {
     return record;
   }
 
+  async streamFile(id: number, res: Response): Promise<StreamableFile> {
+    const record = await this.prisma.file_upload.findUnique({ where: { id } });
+    if (!record) throw new NotFoundException('Arquivo não encontrado');
+
+    const containerClient = this.ensureAzure().getContainerClient(record.container);
+    const blobClient = containerClient.getBlobClient(record.blob_name);
+    const buffer = await blobClient.downloadToBuffer();
+
+    res.setHeader('Content-Type', record.mime_type);
+    res.setHeader('Cache-Control', 'private, max-age=3600');
+
+    return new StreamableFile(buffer);
+  }
+
   async deleteFile(id: number) {
     const record = await this.prisma.file_upload.findUnique({ where: { id } });
     if (!record) {
       throw new NotFoundException('Arquivo não encontrado');
     }
 
-    const containerClient = this.blobServiceClient.getContainerClient(
+    const containerClient = this.ensureAzure().getContainerClient(
       record.container,
     );
     const blockBlobClient = containerClient.getBlockBlobClient(record.blob_name);
