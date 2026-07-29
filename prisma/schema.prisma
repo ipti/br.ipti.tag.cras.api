@@ -238,6 +238,8 @@ model attendance_unity {
   type                    CadSUAS                  @default(CRAS)
   unity_number            String?
   email                   String?
+  logo_fk                 Int?
+  logo                    file_upload?             @relation(fields: [logo_fk], references: [id])
   attendance              attendance[]
   address                 address                  @relation(fields: [address_fk], references: [id])
   family                  family[]
@@ -245,6 +247,21 @@ model attendance_unity {
   technician_visits       technician_visits[]
   family_on_hc            family_on_hc[]
   user_attendance_unities user_attendance_unity[]
+
+  @@index([logo_fk], map: "attendance_unity_logo_fk_fkey")
+}
+
+model file_upload {
+  id               Int                @id @default(autoincrement())
+  blob_url         String             @db.Text
+  blob_name        String             @unique
+  original_name    String
+  mime_type        String
+  size_bytes       Int
+  container        String
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  attendance_unity attendance_unity[]
 }
 
 model condicionalities {

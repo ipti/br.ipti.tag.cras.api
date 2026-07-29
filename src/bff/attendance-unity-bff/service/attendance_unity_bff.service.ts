@@ -5,11 +5,13 @@ import { Kinship } from '@prisma/client';
 import { CreateAttendanceUnityAndAddressDto } from '../dto/create-attendance_unity_bff.dto';
 import { UpdateAttendanceUnityAndAddressDto } from '../dto/update-attendance_unity_bff.dto';
 import { JwtPayload } from 'src/utils/jwt.interface';
+import { FileUploadBffService } from '../../file-upload/service/file_upload_bff.service';
 
 @Injectable()
 export class AttendanceUnityBffService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly fileUploadBffService: FileUploadBffService,
   ) {}
 
   async createUnityAttendanceAndAddress(
@@ -128,8 +130,10 @@ export class AttendanceUnityBffService {
           unity_number: dto.unity_number ?? undefined,
           type: dto.type ?? undefined,
           email: dto.email ?? undefined,
+          logo_fk: dto.logo_fk ?? undefined,
         },
         include: {
+          logo: true,
           address: {
             include: {
               edcenso_city: { include: { edcenso_uf: true } },
@@ -144,6 +148,7 @@ export class AttendanceUnityBffService {
     const attendanceUnity = await this.prismaService.attendance_unity.findUnique({
       where: { id: parseInt(id) },
       include: {
+        logo: true,
         address: {
           include: {
             edcenso_city: {
@@ -173,6 +178,7 @@ export class AttendanceUnityBffService {
       await this.prismaService.attendance_unity.findUnique({
         where: { id: parseInt(attendance_unity) },
         include: {
+          logo: true,
           address: {
             include: {
               edcenso_city: {
@@ -193,5 +199,37 @@ export class AttendanceUnityBffService {
     }
 
     return attendanceUnity;
+  }
+
+  async updateUnityLogo(id: string, logo_fk: number | null) {
+    const unity = await this.prismaService.attendance_unity.findUnique({
+      where: { id: parseInt(id) },
+      include: { logo: true },
+    });
+
+    if (!unity) {
+      throw new HttpException(
+        'Unidade de atendimento não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Se já existe uma logo diferente, deletar a antiga do blob e do banco
+    if (unity.logo_fk && unity.logo_fk !== logo_fk) {
+      await this.fileUploadBffService.deleteFile(unity.logo_fk);
+    }
+
+    return this.prismaService.attendance_unity.update({
+      where: { id: parseInt(id) },
+      data: { logo_fk },
+      include: {
+        logo: true,
+        address: {
+          include: {
+            edcenso_city: { include: { edcenso_uf: true } },
+          },
+        },
+      },
+    });
   }
 }

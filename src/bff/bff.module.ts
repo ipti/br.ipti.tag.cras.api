@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AttendanceBffModule } from './attendance-bff/attendance_bff.module';
+import { FileUploadBffModule } from './file-upload/file_upload_bff.module';
 import { AttendanceUnityBffModule } from './attendance-unity-bff/attendance_unity_bff.module';
 import { ChartsModule } from './charts/charts.module';
 import { EdcensoBffModule } from './edcenso-bff/edcenso_bff.module';
@@ -28,6 +29,7 @@ import { UserBffModule } from './user-bff/user_bff.module';
     UserIdentifyVulnerabilityBffModule,
     TechnicianVisitsBffModule,
     UserBffModule,
+    FileUploadBffModule,
   ],
 })
 export class BFFModule {}

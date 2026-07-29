@@ -59,4 +59,8 @@ export class CreateAttendanceUnityAndAddressDto {
   @IsOptional()
   @IsNumber()
   edcenso_city_fk?: number;
+
+  @IsOptional()
+  @IsNumber()
+  logo_fk?: number;
 }

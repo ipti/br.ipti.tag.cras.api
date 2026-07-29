@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -68,5 +67,13 @@ export class AttendanceUnityBffController {
   @Get(':id')
   getAttendanceUnityById(@Param('id') id: string) {
     return this.AttendanceUnityBffService.getAttendanceUnityById(id);
+  }
+
+  @Patch(':id/logo')
+  updateLogo(
+    @Param('id') id: string,
+    @Body('logo_fk') logo_fk: number | null,
+  ) {
+    return this.AttendanceUnityBffService.updateUnityLogo(id, logo_fk ?? null);
   }
 }
