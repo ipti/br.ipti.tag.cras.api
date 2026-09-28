@@ -42,8 +42,8 @@ export class CreateUserIdentifyDto {
   birth_certificate: number;
 
   @IsOptional()
-  @IsNumber()
-  nis: number;
+  @IsString()
+  nis: string;
 
   @IsOptional()
   @IsString()

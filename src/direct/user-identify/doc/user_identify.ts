@@ -29,7 +29,7 @@ export class UserIdentifyDocument {
     readonly birth_certificate: number;
     
     @ApiProperty()
-    readonly nis: number;
+    readonly nis: string;
     
     @ApiProperty()
     readonly rg_number: string;

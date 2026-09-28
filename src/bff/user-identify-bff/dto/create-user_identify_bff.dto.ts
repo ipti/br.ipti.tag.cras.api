@@ -42,8 +42,8 @@ export class CreateUserIdentifyWithoutFamilyDto {
   birth_certificate?: number;
 
   @IsOptional()
-  @IsNumber()
-  nis?: number;
+  @IsString()
+  nis?: string;
 
   @IsOptional()
   @IsString()
@@ -209,8 +209,8 @@ export class CreateUserIdentifyWithFamilyDto {
   birth_certificate?: number;
 
   @IsOptional()
-  @IsNumber()
-  nis?: number;
+  @IsString()
+  nis?: string;
 
   @IsOptional()
   @IsString()

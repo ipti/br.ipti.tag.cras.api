@@ -18,7 +18,7 @@ model user_identify {
   number                      String?
   birthday                    String?
   birth_certificate           Int?
-  nis                         Int?
+  nis                         String?
   rg_number                   String?
   rg_date_emission            String?
   uf_rg                       String?

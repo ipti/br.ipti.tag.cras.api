@@ -25,7 +25,7 @@ export class UserIdentifyWithoutFamily {
   birth_certificate?: number;
 
   @ApiProperty()
-  nis?: number;
+  nis?: string;
 
   @ApiProperty()
   rg_number?: string;
@@ -153,7 +153,7 @@ export class UserIdentifyWithFamily {
   birth_certificate?: number;
 
   @ApiProperty()
-  nis?: number;
+  nis?: string;
 
   @ApiProperty()
   rg_number?: string;
